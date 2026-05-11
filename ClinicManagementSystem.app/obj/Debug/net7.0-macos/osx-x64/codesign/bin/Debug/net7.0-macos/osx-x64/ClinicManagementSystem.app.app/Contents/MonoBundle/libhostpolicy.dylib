@@ -1,0 +1,1 @@
+-v --force --timestamp=none --sign - /Users/fares/Projects/ClinicManagementSystem.app/ClinicManagementSystem.app/bin/Debug/net7.0-macos/osx-x64/ClinicManagementSystem.app.app/Contents/MonoBundle/libhostpolicy.dylib

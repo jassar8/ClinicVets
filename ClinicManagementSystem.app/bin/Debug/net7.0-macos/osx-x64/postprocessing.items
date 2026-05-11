@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <_PostProcessingItem Include="ClinicManagementSystem.app.app/Contents/MacOS/ClinicManagementSystem.app">
+      <BCSymbolMapName>ClinicManagementSystem.app.bcsymbolmap</BCSymbolMapName>
+      <NoDSymUtil>true</NoDSymUtil>
+      <dSYMSourcePathExists>false</dSYMSourcePathExists>
+      <NoSymbolStrip>true</NoSymbolStrip>
+      <dSYMInfoPlistRelativePath>ClinicManagementSystem.app.app.dSYM\Contents\Info.plist</dSYMInfoPlistRelativePath>
+      <SymbolFile>/Users/fares/Projects/ClinicManagementSystem.app/ClinicManagementSystem.app/obj/Debug/net7.0-macos/osx-x64/mtouch-symbols.list</SymbolFile>
+      <DSymName>ClinicManagementSystem.app.app.dSYM</DSymName>
+      <SourceProjectPath>/Users/fares/Projects/ClinicManagementSystem.app/ClinicManagementSystem.app</SourceProjectPath>
+    </_PostProcessingItem>
+  </ItemGroup>
+</Project>
