@@ -1,0 +1,86 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/fares/Projects/ClinicManagementSystem.app/ClinicManagementSystem.app/ClinicManagementSystem.app.csproj": {}
+  },
+  "projects": {
+    "/Users/fares/Projects/ClinicManagementSystem.app/ClinicManagementSystem.app/ClinicManagementSystem.app.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/fares/Projects/ClinicManagementSystem.app/ClinicManagementSystem.app/ClinicManagementSystem.app.csproj",
+        "projectName": "ClinicManagementSystem.app",
+        "projectPath": "/Users/fares/Projects/ClinicManagementSystem.app/ClinicManagementSystem.app/ClinicManagementSystem.app.csproj",
+        "packagesPath": "/Users/fares/.nuget/packages/",
+        "outputPath": "/Users/fares/Projects/ClinicManagementSystem.app/ClinicManagementSystem.app/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/fares/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0-macos"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0-macos13.0": {
+            "targetAlias": "net7.0-macos",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net7.0-macos13.0": {
+          "targetAlias": "net7.0-macos",
+          "dependencies": {
+            "Microsoft.Data.Sqlite": {
+              "target": "Package",
+              "version": "[10.0.7, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Runtime.osx-x64",
+              "version": "[7.0.20, 7.0.20]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.osx-x64",
+              "version": "[7.0.20, 7.0.20]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.macOS": {
+              "privateAssets": "all"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.317/RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "osx-x64": {
+          "#import": []
+        }
+      }
+    }
+  }
+}

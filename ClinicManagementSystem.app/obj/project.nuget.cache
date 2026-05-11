@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "dgSpecHash": "YuzcLJtXh5ZbAjkHIlgkjSHVGt0w9TJqZz4QyPEZguQnR+ixav1jU61ggf2egYON8xN5eBfvqt20Zuhc295Ilg==",
+  "success": true,
+  "projectFilePath": "/Users/fares/Projects/ClinicManagementSystem.app/ClinicManagementSystem.app/ClinicManagementSystem.app.csproj",
+  "expectedPackageFiles": [
+    "/Users/fares/.nuget/packages/microsoft.data.sqlite/10.0.7/microsoft.data.sqlite.10.0.7.nupkg.sha512",
+    "/Users/fares/.nuget/packages/microsoft.data.sqlite.core/10.0.7/microsoft.data.sqlite.core.10.0.7.nupkg.sha512",
+    "/Users/fares/.nuget/packages/sqlitepclraw.bundle_e_sqlite3/2.1.11/sqlitepclraw.bundle_e_sqlite3.2.1.11.nupkg.sha512",
+    "/Users/fares/.nuget/packages/sqlitepclraw.core/2.1.11/sqlitepclraw.core.2.1.11.nupkg.sha512",
+    "/Users/fares/.nuget/packages/sqlitepclraw.lib.e_sqlite3/2.1.11/sqlitepclraw.lib.e_sqlite3.2.1.11.nupkg.sha512",
+    "/Users/fares/.nuget/packages/sqlitepclraw.provider.e_sqlite3/2.1.11/sqlitepclraw.provider.e_sqlite3.2.1.11.nupkg.sha512",
+    "/Users/fares/.nuget/packages/system.memory/4.5.3/system.memory.4.5.3.nupkg.sha512",
+    "/Users/fares/.nuget/packages/microsoft.aspnetcore.app.runtime.osx-x64/7.0.20/microsoft.aspnetcore.app.runtime.osx-x64.7.0.20.nupkg.sha512",
+    "/Users/fares/.nuget/packages/microsoft.netcore.app.runtime.osx-x64/7.0.20/microsoft.netcore.app.runtime.osx-x64.7.0.20.nupkg.sha512"
+  ],
+  "logs": []
+}
