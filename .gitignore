@@ -1,0 +1,15 @@
+# Build artifacts
+**/bin/
+**/obj/
+
+# User-specific IDE settings
+.vs/
+.vscode/
+
+# Rider / ReSharper
+.idea/
+*.sln.iml
+
+# OS files
+Thumbs.db
+.DS_Store
