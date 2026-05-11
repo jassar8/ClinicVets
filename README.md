@@ -91,6 +91,17 @@ C#, Windows Forms or WPF, Excel or Database
 - Data storage problems
 - Missing validation rules
 
+## Repository layout (for review and demo)
+
+| Area | Path | Purpose |
+|------|------|--------|
+| Domain (models) | `src/ClinicVets.Core/Entities/` | `Employee` and future domain types |
+| Application (services) | `src/ClinicVets.Application/Services/`, `Interfaces/` | Business logic and contracts |
+| Infrastructure (data) | `src/ClinicVets.Infrastructure/Repositories/` | Local JSON persistence (`JsonFileEmployeeRepository`) |
+| Desktop (UI) | `src/ClinicVets.Desktop/Forms/`, `UI/` | WinForms screens and shared theme colors |
+| Tests | `tests/ClinicVets.Tests/` | Unit tests (xUnit) |
+| Assets | `assets/icons/` | Optional `.ico` instructions for the EXE |
+
 ## Running As Standalone Windows EXE (Demo)
 
 The course demo runs as a **WinForms desktop app** (no browser, no localhost web server).

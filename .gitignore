@@ -6,6 +6,7 @@ publish/
 # User-specific IDE settings
 .vs/
 .vscode/
+*.user
 
 # Rider / ReSharper
 .idea/
