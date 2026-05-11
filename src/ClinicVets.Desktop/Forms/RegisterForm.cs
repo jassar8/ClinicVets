@@ -4,32 +4,38 @@ using ClinicVets.Desktop.UI;
 namespace ClinicVets.Desktop.Forms;
 
 /// <summary>
-/// New employee registration — saves via application service to local JSON store.
+/// Employee registration — maximized layout with centered responsive form card.
 /// </summary>
 public class RegisterForm : Form
 {
     private readonly EmployeeRegistrationService _registration;
+    private readonly Panel _body = new();
+    private readonly Panel _card = new();
+    private readonly FlowLayoutPanel _flow = new();
     private readonly TextBox _fullName = new();
     private readonly TextBox _email = new();
     private readonly TextBox _password = new();
     private readonly ComboBox _role = new();
     private readonly Label _error = new();
+    private readonly Button _save = new();
+    private readonly Button _cancel = new();
 
     public RegisterForm(EmployeeRegistrationService registration)
     {
         _registration = registration;
+
         Text = "ClinicVets — Employee Registration";
-        FormBorderStyle = FormBorderStyle.FixedDialog;
-        MaximizeBox = false;
-        MinimizeBox = false;
-        StartPosition = FormStartPosition.CenterParent;
-        ClientSize = new Size(440, 480);
+        MinimumSize = new Size(960, 640);
+        MaximizeBox = true;
+        MinimizeBox = true;
         BackColor = UiTheme.PageBackground;
-        Font = new Font("Segoe UI", 10F);
+        Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+        StartPosition = FormStartPosition.CenterParent;
+        WindowState = FormWindowState.Maximized;
 
         var header = new Panel
         {
-            Height = 64,
+            Height = 96,
             Dock = DockStyle.Top,
             BackColor = UiTheme.HeaderBlue
         };
@@ -37,74 +43,135 @@ public class RegisterForm : Form
         {
             Text = "Create Employee Account",
             ForeColor = Color.White,
-            Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 22F, FontStyle.Bold, GraphicsUnit.Point),
             AutoSize = true,
-            Location = new Point(20, 20)
+            Location = new Point(40, 28)
         });
 
-        var card = new Panel
+        _body.Dock = DockStyle.Fill;
+        _body.BackColor = UiTheme.PageBackground;
+        _body.Resize += (_, _) => Relayout();
+
+        _card.BackColor = UiTheme.CardWhite;
+        _card.Paint += (_, e) =>
         {
-            Location = new Point(28, 84),
-            Size = new Size(384, 360),
-            BackColor = UiTheme.CardWhite
+            using var pen = new Pen(UiTheme.CardBorder, 1);
+            e.Graphics.DrawRectangle(pen, 0, 0, _card.Width - 1, _card.Height - 1);
         };
 
-        var y = 16;
-        void AddRow(string caption, Control field, int fieldHeight = 28)
-        {
-            card.Controls.Add(new Label { Text = caption, Location = new Point(20, y), AutoSize = true });
-            y += 22;
-            field.Location = new Point(20, y);
-            field.Width = 344;
-            field.Height = fieldHeight;
-            card.Controls.Add(field);
-            y += fieldHeight + 14;
-        }
+        _flow.Dock = DockStyle.Fill;
+        _flow.FlowDirection = FlowDirection.TopDown;
+        _flow.WrapContents = false;
+        _flow.AutoScroll = true;
+        _flow.Padding = new Padding(40, 36, 40, 36);
+        _flow.BackColor = UiTheme.CardWhite;
+        _flow.SizeChanged += (_, _) => SyncWidths();
 
-        AddRow("Full Name", _fullName);
-        AddRow("Email", _email);
+        _fullName.Height = 44;
+        _fullName.Font = Font;
+        _email.Height = 44;
+        _email.Font = Font;
         _password.UseSystemPasswordChar = true;
-        AddRow("Password", _password);
+        _password.Height = 44;
+        _password.Font = Font;
 
-        card.Controls.Add(new Label { Text = "Role", Location = new Point(20, y), AutoSize = true });
-        y += 22;
         _role.DropDownStyle = ComboBoxStyle.DropDownList;
         _role.Items.AddRange(new object[] { "Veterinarian", "Secretary", "Administrator" });
-        _role.Location = new Point(20, y);
-        _role.Width = 344;
-        _role.Height = 28;
-        card.Controls.Add(_role);
-        y += 42;
+        _role.Height = 44;
+        _role.Font = Font;
 
-        _error.Location = new Point(20, y);
-        _error.Size = new Size(344, 52);
         _error.ForeColor = UiTheme.ErrorText;
-        y += 60;
+        _error.Text = string.Empty;
+        _error.AutoSize = false;
+        _error.Height = 56;
+        _error.TextAlign = ContentAlignment.TopLeft;
 
-        var save = new Button
+        _save.Text = "Register";
+        _save.Height = 52;
+        _save.BackColor = UiTheme.HeaderBlue;
+        _save.ForeColor = Color.White;
+        _save.FlatStyle = FlatStyle.Flat;
+        _save.FlatAppearance.BorderSize = 0;
+        _save.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+        _save.Click += async (_, _) => await SaveAsync();
+
+        _cancel.Text = "Close";
+        _cancel.Height = 48;
+        _cancel.FlatStyle = FlatStyle.Flat;
+        _cancel.DialogResult = DialogResult.Cancel;
+
+        var buttonRow = new TableLayoutPanel
         {
-            Text = "Register",
-            Location = new Point(20, y),
-            Size = new Size(160, 34),
-            BackColor = UiTheme.HeaderBlue,
-            ForeColor = Color.White,
-            FlatStyle = FlatStyle.Flat
+            ColumnCount = 2,
+            Height = 56,
+            Margin = new Padding(0, 8, 0, 0)
         };
-        save.FlatAppearance.BorderSize = 0;
-        save.Click += async (_, _) => await SaveAsync();
+        buttonRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+        buttonRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+        buttonRow.Controls.Add(_save, 0, 0);
+        buttonRow.Controls.Add(_cancel, 1, 0);
+        _save.Dock = DockStyle.Fill;
+        _cancel.Dock = DockStyle.Fill;
+        _save.Margin = new Padding(0, 0, 8, 0);
+        _cancel.Margin = new Padding(8, 0, 0, 0);
 
-        var cancel = new Button
-        {
-            Text = "Close",
-            Location = new Point(204, y),
-            Size = new Size(160, 34),
-            DialogResult = DialogResult.Cancel
-        };
+        void AddCaption(string text) =>
+            _flow.Controls.Add(new Label
+            {
+                Text = text,
+                ForeColor = UiTheme.TextDark,
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point),
+                AutoSize = true,
+                Margin = new Padding(0, 4, 0, 6)
+            });
 
-        card.Controls.AddRange(new Control[] { _error, save, cancel });
-        Controls.Add(card);
+        AddCaption("Full Name");
+        _flow.Controls.Add(_fullName);
+        AddCaption("Email");
+        _flow.Controls.Add(_email);
+        AddCaption("Password");
+        _flow.Controls.Add(_password);
+        AddCaption("Role");
+        _flow.Controls.Add(_role);
+        _flow.Controls.Add(_error);
+        _flow.Controls.Add(buttonRow);
+
+        _card.Controls.Add(_flow);
+        _body.Controls.Add(_card);
+        Controls.Add(_body);
         Controls.Add(header);
-        CancelButton = cancel;
+
+        CancelButton = _cancel;
+        Resize += (_, _) => Relayout();
+        Shown += (_, _) =>
+        {
+            WindowState = FormWindowState.Maximized;
+            Relayout();
+            SyncWidths();
+        };
+    }
+
+    private void SyncWidths()
+    {
+        var inner = Math.Max(320, _flow.ClientSize.Width - _flow.Padding.Horizontal);
+        foreach (Control c in _flow.Controls)
+        {
+            if (c is TableLayoutPanel row)
+            {
+                row.Width = inner;
+                continue;
+            }
+
+            if (c is Label { AutoSize: true })
+                continue;
+            c.Width = inner;
+        }
+    }
+
+    private void Relayout()
+    {
+        ResponsiveLayout.CenterCard(_body, _card, 48, 640, 56, 56);
+        SyncWidths();
     }
 
     private async Task SaveAsync()

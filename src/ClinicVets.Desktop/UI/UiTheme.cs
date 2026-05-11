@@ -9,6 +9,8 @@ public static class UiTheme
     public static Color HeaderBlue => Color.FromArgb(30, 95, 164);
     public static Color HeaderBlueDark => Color.FromArgb(24, 79, 132);
     public static Color CardWhite => Color.White;
+    public static Color CardBorder => Color.FromArgb(220, 230, 240);
+    public static Color MetricTileBackground => Color.FromArgb(247, 251, 255);
     public static Color TextMuted => Color.FromArgb(90, 110, 130);
     public static Color TextDark => Color.FromArgb(38, 54, 74);
     public static Color ErrorText => Color.FromArgb(180, 40, 40);
