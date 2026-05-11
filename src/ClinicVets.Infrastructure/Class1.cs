@@ -31,4 +31,10 @@ public class InMemoryEmployeeRepository : IEmployeeRepository
 
         return Task.FromResult(employee);
     }
+
+    public Task AddAsync(Employee employee)
+    {
+        _employees.Add(employee);
+        return Task.CompletedTask;
+    }
 }

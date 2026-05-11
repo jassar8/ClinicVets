@@ -90,3 +90,13 @@ C#, Windows Forms or WPF, Excel or Database
 - GUI usability issues
 - Data storage problems
 - Missing validation rules
+
+## Running As Standalone Windows EXE (Demo)
+
+1. Open PowerShell in the project root.
+2. Run:
+   `.\publish-win-x64.ps1`
+3. After publish completes, start:
+   `.\publish\win-x64\ClinicVets.Web.exe`
+
+When the EXE starts, it opens the browser automatically to the ClinicVets UI.

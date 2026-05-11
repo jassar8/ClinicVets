@@ -7,10 +7,14 @@ namespace ClinicVets.Web.Controllers;
 public class AuthController : Controller
 {
     private readonly EmployeeAuthenticationService _employeeAuthenticationService;
+    private readonly EmployeeRegistrationService _employeeRegistrationService;
 
-    public AuthController(EmployeeAuthenticationService employeeAuthenticationService)
+    public AuthController(
+        EmployeeAuthenticationService employeeAuthenticationService,
+        EmployeeRegistrationService employeeRegistrationService)
     {
         _employeeAuthenticationService = employeeAuthenticationService;
+        _employeeRegistrationService = employeeRegistrationService;
     }
 
     [HttpGet]
@@ -38,5 +42,37 @@ public class AuthController : Controller
 
         TempData["SuccessMessage"] = $"Welcome, {result.Employee!.FullName}.";
         return RedirectToAction("Dashboard", "Home");
+    }
+
+    [HttpGet]
+    public IActionResult Register()
+    {
+        return View(new RegisterEmployeeViewModel());
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(RegisterEmployeeViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            TempData["ErrorMessage"] = "Please complete all required fields correctly.";
+            return View(model);
+        }
+
+        var result = await _employeeRegistrationService.RegisterAsync(
+            model.FullName,
+            model.Email,
+            model.Password,
+            model.Role);
+
+        if (!result.IsSuccess)
+        {
+            TempData["ErrorMessage"] = result.Message;
+            return View(model);
+        }
+
+        TempData["SuccessMessage"] = result.Message;
+        return RedirectToAction("Login");
     }
 }

@@ -2,10 +2,16 @@
     ViewData["Title"] = "ClinicVets Home";
 }
 
-<div class="text-center py-5">
-    <h1 class="display-5 mb-3">ClinicVets Demo Portal</h1>
-    <p class="lead text-muted mb-4">Veterinary Clinic Management System - employee access demo.</p>
-    <a asp-controller="Auth" asp-action="Login" class="btn btn-primary btn-lg px-4">
-        Go to Employee Login
-    </a>
-</div>
+<section class="hero-panel">
+    <div class="hero-content">
+        <span class="hero-badge">ClinicVets Demo</span>
+        <h1 class="hero-title">Veterinary Clinic Management System</h1>
+        <p class="hero-description">
+            Simple and clean employee authentication demo for course presentation.
+        </p>
+        <div class="hero-actions">
+            <a asp-controller="Auth" asp-action="Login" class="btn btn-primary btn-lg">Employee Login</a>
+            <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-primary btn-lg">Employee Registration</a>
+        </div>
+    </div>
+</section>
