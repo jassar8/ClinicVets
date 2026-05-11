@@ -1,0 +1,16 @@
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\bin\Debug\net9.0\ClinicVets.Application.deps.json
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\bin\Debug\net9.0\ClinicVets.Application.dll
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\bin\Debug\net9.0\ClinicVets.Application.pdb
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\bin\Debug\net9.0\ClinicVets.Core.dll
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\bin\Debug\net9.0\ClinicVets.Core.pdb
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\obj\Debug\net9.0\ClinicVets.Application.csproj.AssemblyReference.cache
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\obj\Debug\net9.0\ClinicVets.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\obj\Debug\net9.0\ClinicVets.Application.AssemblyInfoInputs.cache
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\obj\Debug\net9.0\ClinicVets.Application.AssemblyInfo.cs
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\obj\Debug\net9.0\ClinicVets.Application.csproj.CoreCompileInputs.cache
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\obj\Debug\net9.0\ClinicVets.Application.sourcelink.json
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\obj\Debug\net9.0\ClinicVe.80FA5B95.Up2Date
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\obj\Debug\net9.0\ClinicVets.Application.dll
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\obj\Debug\net9.0\refint\ClinicVets.Application.dll
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\obj\Debug\net9.0\ClinicVets.Application.pdb
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\src\ClinicVets.Application\obj\Debug\net9.0\ref\ClinicVets.Application.dll

@@ -1,0 +1,64 @@
+@model ClinicVets.Web.Models.RegisterEmployeeViewModel
+@{
+    ViewData["Title"] = "Employee Registration";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h2 class="mb-3">Employee Registration</h2>
+                <p class="text-muted mb-4">Create a new employee account for the clinic team.</p>
+
+                @if (TempData["SuccessMessage"] is string successMessage)
+                {
+                    <div class="alert alert-success">@successMessage</div>
+                }
+
+                @if (TempData["ErrorMessage"] is string errorMessage)
+                {
+                    <div class="alert alert-danger">@errorMessage</div>
+                }
+
+                <form asp-action="Register" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" placeholder="Enter full name" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" placeholder="example@clinicvets.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control" placeholder="Enter password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Role" class="form-label"></label>
+                        <select asp-for="Role" class="form-select">
+                            <option value="">Select role</option>
+                            <option>Veterinarian</option>
+                            <option>Secretary</option>
+                            <option>Administrator</option>
+                        </select>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Register Employee</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
