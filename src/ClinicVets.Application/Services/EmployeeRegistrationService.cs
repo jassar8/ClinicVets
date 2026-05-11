@@ -18,6 +18,7 @@ public class EmployeeRegistrationService
         string password,
         string role)
     {
+        // Basic validation kept in the service for clear demo flow and backend safety.
         if (string.IsNullOrWhiteSpace(fullName) ||
             string.IsNullOrWhiteSpace(email) ||
             string.IsNullOrWhiteSpace(password) ||
@@ -33,14 +34,15 @@ public class EmployeeRegistrationService
             return (false, "An employee with this email already exists.");
         }
 
-        await _employeeRepository.AddAsync(new Employee
+        var employee = new Employee
         {
             FullName = fullName.Trim(),
             Email = normalizedEmail,
             Password = password.Trim(),
             Role = role.Trim()
-        });
+        };
 
+        await _employeeRepository.AddAsync(employee);
         return (true, "Employee registered successfully.");
     }
 }
