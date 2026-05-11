@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>ClinicVets</AssemblyName>
+    <RootNamespace>ClinicVets.Desktop</RootNamespace>
+    <ApplicationTitle>ClinicVets</ApplicationTitle>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ClinicVets.Application\ClinicVets.Application.csproj" />
+    <ProjectReference Include="..\ClinicVets.Infrastructure\ClinicVets.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

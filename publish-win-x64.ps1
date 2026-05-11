@@ -5,11 +5,11 @@ param(
 $ErrorActionPreference = "Stop"
 $publishPath = ".\publish\win-x64"
 
-Write-Host "Publishing ClinicVets for Windows x64..." -ForegroundColor Cyan
+Write-Host "Publishing ClinicVets (WinForms desktop) for Windows x64..." -ForegroundColor Cyan
 
-Get-Process ClinicVets.Web -ErrorAction SilentlyContinue | Stop-Process -Force
+Get-Process | Where-Object { $_.ProcessName -like '*ClinicVets*' } | Stop-Process -Force -ErrorAction SilentlyContinue
 
-dotnet publish .\src\ClinicVets.Web\ClinicVets.Web.csproj `
+dotnet publish .\src\ClinicVets.Desktop\ClinicVets.Desktop.csproj `
     -c $Configuration `
     -r win-x64 `
     --self-contained true `
@@ -19,10 +19,10 @@ dotnet publish .\src\ClinicVets.Web\ClinicVets.Web.csproj `
     -o $publishPath
 
 if ($LASTEXITCODE -ne 0) {
-    throw "Publish failed. Ensure no running ClinicVets.Web.exe instance is locking the publish folder."
+    throw "Publish failed. Close any running ClinicVets.exe, then run this script again."
 }
 
 Write-Host ""
 Write-Host "Publish complete." -ForegroundColor Green
-Write-Host "Run this file:" -ForegroundColor Yellow
-Write-Host "$publishPath\ClinicVets.Web.exe"
+Write-Host "Run this file (keep the whole publish\win-x64 folder together):" -ForegroundColor Yellow
+Write-Host "$publishPath\ClinicVets.exe"

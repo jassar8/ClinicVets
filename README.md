@@ -93,10 +93,15 @@ C#, Windows Forms or WPF, Excel or Database
 
 ## Running As Standalone Windows EXE (Demo)
 
+The course demo runs as a **WinForms desktop app** (no browser, no localhost web server).
+
 1. Open PowerShell in the project root.
 2. Run:
    `.\publish-win-x64.ps1`
-3. After publish completes, start:
-   `.\publish\win-x64\ClinicVets.Web.exe`
+3. After publish completes, double-click:
+   `.\publish\win-x64\ClinicVets.exe`
 
-When the EXE starts, it opens the browser automatically to the ClinicVets UI.
+Keep the entire `publish\win-x64` folder together when copying to another PC.
+
+Employee data is saved locally under:
+`%LocalAppData%\ClinicVets\employees.json`
