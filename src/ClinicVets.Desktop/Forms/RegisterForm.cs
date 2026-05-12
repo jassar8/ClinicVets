@@ -37,28 +37,7 @@ public class RegisterForm : Form
         StartPosition = FormStartPosition.CenterParent;
         WindowState = FormWindowState.Maximized;
 
-        var header = new Panel
-        {
-            Height = 78,
-            Dock = DockStyle.Top,
-            BackColor = UiTheme.HeaderBlue
-        };
-        header.Controls.Add(new Label
-        {
-            Text = "ClinicVets",
-            ForeColor = Color.White,
-            Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point),
-            AutoSize = true,
-            Location = new Point(40, 14)
-        });
-        header.Controls.Add(new Label
-        {
-            Text = "Employee onboarding",
-            ForeColor = UiTheme.SubtitleOnHeader,
-            AutoSize = true,
-            Location = new Point(40, 46),
-            Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point)
-        });
+        var header = UiHeaderBar.Create("Add a staff member to your clinic workspace");
 
         _body.Dock = DockStyle.Fill;
         _body.BackColor = UiTheme.PageBackground;
@@ -71,15 +50,20 @@ public class RegisterForm : Form
         _flow.FlowDirection = FlowDirection.TopDown;
         _flow.WrapContents = false;
         _flow.AutoScroll = true;
-        _flow.Padding = new Padding(44, 36, 44, 36);
+        _flow.Padding = new Padding(48, 40, 48, 40);
         _flow.BackColor = Color.Transparent;
         _flow.SizeChanged += (_, _) => SyncWidths();
 
-        _heroTitle = UiStyles.CreateHeroTitle("Create employee account");
-        _heroSubtitle = UiStyles.CreateHeroSubtitle("Complete the fields below to add a colleague");
+        _heroTitle = UiStyles.CreateHeroTitle("New employee");
+        _heroSubtitle = UiStyles.CreateHeroSubtitle("All fields are required. Passwords must meet clinic security rules.");
 
+        _fullName.PlaceholderText = "Full name (e.g. Dr. Jane Doe)";
         UiStyles.ApplyTextBox(_fullName);
+
+        _email.PlaceholderText = "Work email (used to sign in)";
         UiStyles.ApplyTextBox(_email);
+
+        _password.PlaceholderText = "8–10 characters: letter, digit, and special character";
         _password.UseSystemPasswordChar = true;
         UiStyles.ApplyTextBox(_password);
 
@@ -87,27 +71,26 @@ public class RegisterForm : Form
         _role.Items.AddRange(new object[] { "Veterinarian", "Secretary", "Administrator" });
         UiStyles.ApplyComboBox(_role);
 
-        _error.ForeColor = UiTheme.ErrorText;
+        UiStyles.ApplyFeedbackLabel(_error, UiFeedbackKind.None);
         _error.Text = string.Empty;
-        _error.AutoSize = false;
-        _error.Height = 56;
-        _error.TextAlign = ContentAlignment.TopLeft;
-        _error.Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point);
-        _error.Margin = new Padding(0, 4, 0, 0);
+        _error.Height = 68;
+        _error.Margin = new Padding(0, 8, 0, 0);
 
         _save.Text = "Save employee";
         UiStyles.ApplyPrimaryButton(_save);
+        _save.Margin = new Padding(0, 12, 0, 0);
         _save.Click += async (_, _) => await SaveAsync();
 
         _cancel.Text = "Back to sign in";
         UiStyles.ApplySecondaryButton(_cancel);
+        _cancel.Margin = new Padding(0, 8, 0, 0);
         _cancel.DialogResult = DialogResult.Cancel;
 
         var buttonRow = new TableLayoutPanel
         {
             ColumnCount = 2,
-            Height = UiTheme.PrimaryButtonHeight + 8,
-            Margin = new Padding(0, 12, 0, 0)
+            Height = UiTheme.PrimaryButtonHeight + 10,
+            Margin = new Padding(0, 8, 0, 0)
         };
         buttonRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
         buttonRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
@@ -120,13 +103,15 @@ public class RegisterForm : Form
 
         var hint = new Label
         {
-            Text = "Password: 8–10 characters with a letter, digit, and special character.",
+            Text =
+                "Tip: choose a memorable password that still meets the rules above. " +
+                "The new employee can sign in immediately after registration.",
             ForeColor = UiTheme.TextMuted,
             Font = new Font("Segoe UI", 9.5F, FontStyle.Regular, GraphicsUnit.Point),
             AutoSize = false,
-            Height = 40,
+            Height = 52,
             TextAlign = ContentAlignment.TopCenter,
-            Margin = new Padding(0, 8, 0, 0)
+            Margin = new Padding(0, 12, 0, 0)
         };
 
         _flow.Controls.Add(_heroTitle);
@@ -178,22 +163,29 @@ public class RegisterForm : Form
 
     private void Relayout()
     {
-        ResponsiveLayout.CenterCard(_body, _card, 48, 640, 40, 48);
+        ResponsiveLayout.CenterCard(_body, _card, 52, 680, 44, 52);
         SyncWidths();
     }
 
     private async Task SaveAsync()
     {
         _error.Text = string.Empty;
+        UiStyles.ApplyFeedbackLabel(_error, UiFeedbackKind.None);
         var roleText = _role.SelectedIndex >= 0 ? _role.SelectedItem?.ToString() ?? string.Empty : string.Empty;
         var result = await _registration.RegisterAsync(_fullName.Text, _email.Text, _password.Text, roleText);
         if (!result.IsSuccess)
         {
             _error.Text = result.Message;
+            UiStyles.ApplyFeedbackLabel(_error, UiFeedbackKind.Error);
             return;
         }
 
-        MessageBox.Show(this, result.Message, "ClinicVets", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        MessageBox.Show(
+            this,
+            result.Message + Environment.NewLine + Environment.NewLine + "They can now sign in from the login screen.",
+            "Registration complete — ClinicVets",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Information);
         DialogResult = DialogResult.OK;
         Close();
     }

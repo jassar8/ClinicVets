@@ -31,28 +31,7 @@ public class DashboardForm : Form
         Bounds = Screen.PrimaryScreen?.WorkingArea ?? new Rectangle(0, 0, 1280, 800);
         WindowState = FormWindowState.Maximized;
 
-        var header = new Panel
-        {
-            Height = 78,
-            Dock = DockStyle.Top,
-            BackColor = UiTheme.HeaderBlue
-        };
-        header.Controls.Add(new Label
-        {
-            Text = "ClinicVets",
-            ForeColor = Color.White,
-            Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point),
-            AutoSize = true,
-            Location = new Point(40, 14)
-        });
-        header.Controls.Add(new Label
-        {
-            Text = "Dashboard — signed-in workspace",
-            ForeColor = UiTheme.SubtitleOnHeader,
-            AutoSize = true,
-            Location = new Point(40, 46),
-            Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point)
-        });
+        var header = UiHeaderBar.Create("Home — your clinic workspace overview");
 
         _body.Dock = DockStyle.Fill;
         _body.BackColor = UiTheme.PageBackground;
@@ -66,12 +45,12 @@ public class DashboardForm : Form
             Dock = DockStyle.Fill,
             ColumnCount = 1,
             RowCount = 4,
-            Padding = new Padding(44, 40, 44, 36),
+            Padding = new Padding(48, 44, 48, 40),
             BackColor = Color.Transparent
         };
         root.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
         root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 220F));
+        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 224F));
         root.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
         root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
@@ -83,17 +62,17 @@ public class DashboardForm : Form
             AutoSize = false,
             Height = 56,
             TextAlign = ContentAlignment.MiddleCenter,
-            Margin = new Padding(0, 0, 0, 4)
+            Margin = new Padding(0, 4, 0, 4)
         };
         _metaLine = new Label
         {
             Text = $"{_employee.Email}   ·   {_employee.Role}",
             ForeColor = UiTheme.TextMuted,
             AutoSize = false,
-            Height = 32,
+            Height = 34,
             TextAlign = ContentAlignment.MiddleCenter,
             Font = UiStyles.HeroSubtitleFont,
-            Margin = new Padding(0, 0, 0, 20)
+            Margin = new Padding(0, 0, 0, 22)
         };
 
         var headerStack = new FlowLayoutPanel
@@ -101,7 +80,7 @@ public class DashboardForm : Form
             FlowDirection = FlowDirection.TopDown,
             AutoSize = true,
             WrapContents = false,
-            Margin = new Padding(0, 0, 0, 8),
+            Margin = new Padding(0, 0, 0, 10),
             BackColor = Color.Transparent
         };
         headerStack.Controls.Add(_welcomeHeading);
@@ -112,15 +91,16 @@ public class DashboardForm : Form
             Dock = DockStyle.Fill,
             ColumnCount = 3,
             RowCount = 1,
-            Margin = new Padding(0, 8, 0, 16)
+            Margin = new Padding(0, 4, 0, 18)
         };
         metrics.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
         metrics.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.34F));
         metrics.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
         metrics.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-        var m0 = MakeMetricTile("Authentication", "Active session", Color.FromArgb(46, 160, 100), new Padding(0, 0, 12, 0));
-        var m1 = MakeMetricTile("Module", "Employee access", UiTheme.HeaderBlue, new Padding(6, 0, 6, 0));
-        var m2 = MakeMetricTile("Status", "Demo ready", UiTheme.TextDark, new Padding(12, 0, 0, 0));
+        var sage = Color.FromArgb(74, 138, 108);
+        var m0 = MakeMetricTile("Session", "Signed in", sage, new Padding(0, 0, 12, 0));
+        var m1 = MakeMetricTile("Access", "Employee portal", UiTheme.PrimaryButton, new Padding(6, 0, 6, 0));
+        var m2 = MakeMetricTile("Environment", "Demo build", UiTheme.TextMuted, new Padding(12, 0, 0, 0));
         metrics.Controls.Add(m0, 0, 0);
         metrics.Controls.Add(m1, 1, 0);
         metrics.Controls.Add(m2, 2, 0);
@@ -131,24 +111,25 @@ public class DashboardForm : Form
         _detailInfo = new Label
         {
             Text =
-                "This screen is the application home after login. " +
-                "You can extend this area with visits, treatments, billing, and other clinic modules as your project grows.",
+                "This home screen is ready for course demos. From here you can later add visits, " +
+                "treatments, billing, and patient records while keeping the same calm clinic styling.",
             ForeColor = UiTheme.TextMuted,
-            Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point),
+            Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point),
             AutoSize = true,
             Dock = DockStyle.Fill,
-            Margin = new Padding(0, 8, 0, 20)
+            Margin = new Padding(0, 10, 0, 22)
         };
 
         var logout = new Button
         {
             Text = "Sign out",
-            Width = 220,
+            Width = 240,
             Font = UiStyles.SecondaryButtonFont,
             Anchor = AnchorStyles.None
         };
         UiStyles.ApplySecondaryButton(logout);
         logout.Height = UiTheme.SecondaryButtonHeight;
+        logout.Margin = new Padding(0, 4, 0, 0);
         logout.Click += (_, _) => Close();
 
         var footer = new FlowLayoutPanel
@@ -157,7 +138,7 @@ public class DashboardForm : Form
             AutoSize = true,
             WrapContents = false,
             BackColor = Color.Transparent,
-            Padding = new Padding(0, 8, 0, 0)
+            Padding = new Padding(0, 4, 0, 0)
         };
         footer.Controls.Add(logout);
 
@@ -184,30 +165,28 @@ public class DashboardForm : Form
         var p = new Panel
         {
             Margin = margin,
-            BackColor = UiTheme.MetricTileBackground,
-            Padding = new Padding(20, 18, 20, 18)
+            BackColor = Color.Transparent,
+            Padding = new Padding(22, 20, 20, 20)
         };
-        p.Paint += (_, e) =>
-        {
-            using var pen = new Pen(accent, 3);
-            e.Graphics.DrawLine(pen, 0, 4, 0, p.Height - 4);
-        };
+        p.Paint += (_, e) => UiChrome.PaintMetricTile(p, e, accent);
 
         var t = new Label
         {
             Text = title,
             ForeColor = UiTheme.TextMuted,
-            Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point),
+            Font = new Font("Segoe UI", 10.25F, FontStyle.Regular, GraphicsUnit.Point),
             AutoSize = true,
-            Location = new Point(12, 12)
+            Location = new Point(22, 18),
+            BackColor = Color.Transparent
         };
         var v = new Label
         {
             Text = value,
             ForeColor = UiTheme.TextDark,
-            Font = new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point),
+            Font = new Font("Segoe UI", 15.5F, FontStyle.Bold, GraphicsUnit.Point),
             AutoSize = true,
-            Location = new Point(12, 38)
+            Location = new Point(22, 44),
+            BackColor = Color.Transparent
         };
         p.Controls.Add(t);
         p.Controls.Add(v);
@@ -216,10 +195,10 @@ public class DashboardForm : Form
 
     private void Relayout()
     {
-        ResponsiveLayout.CenterCard(_body, _card, 40, 1200, 40, 48);
+        ResponsiveLayout.CenterCard(_body, _card, 48, 1180, 44, 52);
         if (_card.ClientSize.Width > 0)
         {
-            var inner = Math.Max(320, _card.ClientSize.Width - 88);
+            var inner = Math.Max(320, _card.ClientSize.Width - 96);
             _welcomeHeading.Width = inner;
             _metaLine.Width = inner;
             _detailInfo.MaximumSize = new Size(inner, 0);

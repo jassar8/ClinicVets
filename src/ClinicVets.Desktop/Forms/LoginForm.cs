@@ -39,28 +39,7 @@ public class LoginForm : Form
         Bounds = Screen.PrimaryScreen?.WorkingArea ?? new Rectangle(0, 0, 1280, 800);
         WindowState = FormWindowState.Maximized;
 
-        var header = new Panel
-        {
-            Height = 78,
-            Dock = DockStyle.Top,
-            BackColor = UiTheme.HeaderBlue
-        };
-        header.Controls.Add(new Label
-        {
-            Text = "ClinicVets",
-            ForeColor = Color.White,
-            Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point),
-            AutoSize = true,
-            Location = new Point(40, 14)
-        });
-        header.Controls.Add(new Label
-        {
-            Text = "Veterinary clinic management — employee access",
-            ForeColor = UiTheme.SubtitleOnHeader,
-            AutoSize = true,
-            Location = new Point(40, 46),
-            Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point)
-        });
+        var header = UiHeaderBar.Create("Veterinary clinic management — employee sign in");
 
         _body.Dock = DockStyle.Fill;
         _body.BackColor = UiTheme.PageBackground;
@@ -73,33 +52,33 @@ public class LoginForm : Form
         _flow.FlowDirection = FlowDirection.TopDown;
         _flow.WrapContents = false;
         _flow.AutoScroll = true;
-        _flow.Padding = new Padding(44, 40, 44, 40);
+        _flow.Padding = new Padding(48, 44, 48, 44);
         _flow.BackColor = Color.Transparent;
         _flow.SizeChanged += (_, _) => SyncFlowChildWidths();
 
-        _heroTitle = UiStyles.CreateHeroTitle("ClinicVets");
-        _heroSubtitle = UiStyles.CreateHeroSubtitle("Sign in to your account");
+        _heroTitle = UiStyles.CreateHeroTitle("Welcome back");
+        _heroSubtitle = UiStyles.CreateHeroSubtitle("Sign in with your clinic email and password");
 
-        _email.PlaceholderText = "name@clinicvets.com";
+        _email.PlaceholderText = "Work email (e.g. name@clinicvets.com)";
         UiStyles.ApplyTextBox(_email);
 
+        _password.PlaceholderText = "Your password";
         _password.UseSystemPasswordChar = true;
         UiStyles.ApplyTextBox(_password);
 
-        _error.ForeColor = UiTheme.ErrorText;
+        UiStyles.ApplyFeedbackLabel(_error, UiFeedbackKind.None);
         _error.Text = string.Empty;
-        _error.AutoSize = false;
-        _error.Height = 52;
-        _error.TextAlign = ContentAlignment.TopLeft;
-        _error.Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point);
-        _error.Margin = new Padding(0, 4, 0, 0);
+        _error.Height = 60;
+        _error.Margin = new Padding(0, 8, 0, 0);
 
         _login.Text = "Sign in";
         UiStyles.ApplyPrimaryButton(_login);
+        _login.Margin = new Padding(0, 16, 0, 8);
         _login.Click += async (_, _) => await LoginAsync();
 
-        _register.Text = "Register employee";
+        _register.Text = "Register new employee";
         UiStyles.ApplySecondaryButton(_register);
+        _register.Margin = new Padding(0, 4, 0, 0);
         _register.Click += (_, _) =>
         {
             using var reg = new RegisterForm(_registration);
@@ -107,13 +86,16 @@ public class LoginForm : Form
         };
 
         var hint = _demoHint;
-        hint.Text = "Demo sign-in: vet@clinicvets.com / Vet12!ab";
-        hint.ForeColor = UiTheme.TextMuted;
+        hint.Text = "Demo: vet@clinicvets.com  ·  Vet12!ab";
+        hint.ForeColor = UiTheme.SuccessText;
         hint.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
         hint.AutoSize = false;
         hint.TextAlign = ContentAlignment.MiddleCenter;
-        hint.Margin = new Padding(0, 14, 0, 0);
-        hint.Height = 36;
+        hint.Margin = new Padding(0, 18, 0, 0);
+        hint.Height = 40;
+        hint.BackColor = Color.FromArgb(236, 246, 241);
+
+        _flow.Controls.Add(_heroTitle);
         _flow.Controls.Add(_heroSubtitle);
         _flow.Controls.Add(UiStyles.CreateFieldCaption("Email"));
         _flow.Controls.Add(_email);
@@ -141,7 +123,7 @@ public class LoginForm : Form
 
     private void SyncFlowChildWidths()
     {
-        var inner = Math.Max(280, _flow.ClientSize.Width - _flow.Padding.Horizontal);
+        var inner = Math.Max(300, _flow.ClientSize.Width - _flow.Padding.Horizontal);
         foreach (Control c in _flow.Controls)
         {
             if (c is Label { AutoSize: true } lbl && lbl != _error && lbl != _heroTitle && lbl != _heroSubtitle)
@@ -152,13 +134,19 @@ public class LoginForm : Form
 
     private void Relayout()
     {
-        ResponsiveLayout.CenterCard(_body, _card, horizontalPadding: 48, maxCardWidth: 520, topOffset: 40, bottomPadding: 48);
+        ResponsiveLayout.CenterCard(_body, _card, horizontalPadding: 52, maxCardWidth: 560, topOffset: 44, bottomPadding: 52);
         SyncFlowChildWidths();
+    }
+
+    private void ClearFeedback()
+    {
+        _error.Text = string.Empty;
+        UiStyles.ApplyFeedbackLabel(_error, UiFeedbackKind.None);
     }
 
     private async Task LoginAsync()
     {
-        _error.Text = string.Empty;
+        ClearFeedback();
         _login.Enabled = false;
         try
         {
@@ -166,6 +154,7 @@ public class LoginForm : Form
             if (!result.IsSuccess)
             {
                 _error.Text = result.Message;
+                UiStyles.ApplyFeedbackLabel(_error, UiFeedbackKind.Error);
                 return;
             }
 
@@ -173,6 +162,7 @@ public class LoginForm : Form
             using var dash = new DashboardForm(result.Employee!);
             dash.ShowDialog();
             _password.Clear();
+            ClearFeedback();
             Show();
         }
         finally
