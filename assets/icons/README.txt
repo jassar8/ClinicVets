@@ -1,9 +1,6 @@
-Optional application icon for WinForms:
+ClinicVets application icon (Windows)
 
-1. Add a file named app.ico in this folder.
-2. In src/ClinicVets.Desktop/ClinicVets.Desktop.csproj add:
-   <PropertyGroup>
-     <ApplicationIcon>..\..\assets\icons\app.ico</ApplicationIcon>
-   </PropertyGroup>
+- app.ico — multi-resolution ICO (16–256 px) used for the EXE, Explorer, taskbar, and window title bars.
+- generate_app_icon.py — regenerates app.ico from the same palette as UiTheme.HeaderBlue (Pillow required: pip install Pillow).
 
-The desktop app runs correctly without a custom icon (Windows default is used).
+The desktop project references app.ico via ApplicationIcon and embeds a copy for WinForms window chrome.

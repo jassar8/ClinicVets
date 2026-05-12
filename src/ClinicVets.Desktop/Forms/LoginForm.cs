@@ -1,4 +1,5 @@
 using ClinicVets.Application.Services;
+using ClinicVets.Desktop;
 using ClinicVets.Desktop.UI;
 
 namespace ClinicVets.Desktop.Forms;
@@ -25,6 +26,7 @@ public class LoginForm : Form
         _registration = registration;
 
         Text = "ClinicVets — Login";
+        Icon = AppBranding.CreateWindowIcon();
         MinimumSize = new Size(960, 640);
         MaximizeBox = true;
         MinimizeBox = true;

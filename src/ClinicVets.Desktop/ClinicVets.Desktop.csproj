@@ -9,7 +9,14 @@
     <AssemblyName>ClinicVets</AssemblyName>
     <RootNamespace>ClinicVets.Desktop</RootNamespace>
     <ApplicationTitle>ClinicVets</ApplicationTitle>
+    <ApplicationIcon>..\..\assets\icons\app.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\assets\icons\app.ico">
+      <LogicalName>ClinicVets.app.ico</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ClinicVets.Application\ClinicVets.Application.csproj" />

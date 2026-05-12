@@ -1,4 +1,5 @@
 using ClinicVets.Core.Entities;
+using ClinicVets.Desktop;
 using ClinicVets.Desktop.UI;
 
 namespace ClinicVets.Desktop.Forms;
@@ -18,6 +19,7 @@ public class DashboardForm : Form
         _employee = employee;
 
         Text = "ClinicVets — Dashboard";
+        Icon = AppBranding.CreateWindowIcon();
         MinimumSize = new Size(960, 640);
         MaximizeBox = true;
         MinimizeBox = true;
