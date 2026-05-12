@@ -1,15 +1,12 @@
 using ClinicVets.Application.Services;
-using ClinicVets.Desktop;
 using ClinicVets.Desktop.UI;
 
 namespace ClinicVets.Desktop.Forms;
 
-/// <summary>
-/// Employee registration — maximized layout with centered responsive form card.
-/// </summary>
-public class RegisterForm : Form
+public sealed class RegisterPage : UserControl
 {
     private readonly EmployeeRegistrationService _registration;
+    private readonly MainShellForm _shell;
     private readonly Panel _body = new();
     private readonly Panel _card = new();
     private readonly FlowLayoutPanel _flow = new();
@@ -23,19 +20,17 @@ public class RegisterForm : Form
     private readonly Label _heroTitle;
     private readonly Label _heroSubtitle;
 
-    public RegisterForm(EmployeeRegistrationService registration)
+    public Button BackButton => _cancel;
+
+    public RegisterPage(EmployeeRegistrationService registration, MainShellForm shell)
     {
         _registration = registration;
+        _shell = shell;
 
-        Text = "ClinicVets — Employee Registration";
-        Icon = AppBranding.CreateWindowIcon();
-        MinimumSize = new Size(960, 640);
-        MaximizeBox = true;
-        MinimizeBox = true;
+        SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
+        UpdateStyles();
         BackColor = UiTheme.PageBackground;
-        Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
-        StartPosition = FormStartPosition.CenterParent;
-        WindowState = FormWindowState.Maximized;
+        Font = shell.Font;
 
         var header = UiHeaderBar.Create("Add a staff member to your clinic workspace");
 
@@ -84,7 +79,7 @@ public class RegisterForm : Form
         _cancel.Text = "Back to sign in";
         UiStyles.ApplySecondaryButton(_cancel);
         _cancel.Margin = new Padding(0, 8, 0, 0);
-        _cancel.DialogResult = DialogResult.Cancel;
+        _cancel.Click += (_, _) => _shell.NavigateToLogin();
 
         var buttonRow = new TableLayoutPanel
         {
@@ -130,17 +125,15 @@ public class RegisterForm : Form
 
         _card.Controls.Add(_flow);
         _body.Controls.Add(_card);
-        Controls.Add(_body);
-        Controls.Add(header);
 
-        CancelButton = _cancel;
+        var root = new Panel { Dock = DockStyle.Fill, BackColor = UiTheme.PageBackground };
+        root.Controls.Add(_body);
+        root.Controls.Add(header);
+
+        Controls.Add(root);
+
         Resize += (_, _) => Relayout();
-        Shown += (_, _) =>
-        {
-            WindowState = FormWindowState.Maximized;
-            Relayout();
-            SyncWidths();
-        };
+        Load += (_, _) => Relayout();
     }
 
     private void SyncWidths()
@@ -169,24 +162,33 @@ public class RegisterForm : Form
 
     private async Task SaveAsync()
     {
-        _error.Text = string.Empty;
-        UiStyles.ApplyFeedbackLabel(_error, UiFeedbackKind.None);
-        var roleText = _role.SelectedIndex >= 0 ? _role.SelectedItem?.ToString() ?? string.Empty : string.Empty;
-        var result = await _registration.RegisterAsync(_fullName.Text, _email.Text, _password.Text, roleText);
-        if (!result.IsSuccess)
+        _save.Enabled = false;
+        try
         {
-            _error.Text = result.Message;
-            UiStyles.ApplyFeedbackLabel(_error, UiFeedbackKind.Error);
-            return;
-        }
+            _error.Text = string.Empty;
+            UiStyles.ApplyFeedbackLabel(_error, UiFeedbackKind.None);
+            var roleText = _role.SelectedIndex >= 0 ? _role.SelectedItem?.ToString() ?? string.Empty : string.Empty;
+            var result = await _registration.RegisterAsync(_fullName.Text, _email.Text, _password.Text, roleText);
+            if (!result.IsSuccess)
+            {
+                _error.Text = result.Message;
+                UiStyles.ApplyFeedbackLabel(_error, UiFeedbackKind.Error);
+                return;
+            }
 
-        MessageBox.Show(
-            this,
-            result.Message + Environment.NewLine + Environment.NewLine + "They can now sign in from the login screen.",
-            "Registration complete — ClinicVets",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Information);
-        DialogResult = DialogResult.OK;
-        Close();
+            var owner = FindForm();
+            MessageBox.Show(
+                owner,
+                result.Message + Environment.NewLine + Environment.NewLine + "They can now sign in from the login screen.",
+                "Registration complete — ClinicVets",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+            _shell.NavigateToLogin();
+        }
+        finally
+        {
+            if (_save.IsHandleCreated)
+                _save.Enabled = true;
+        }
     }
 }

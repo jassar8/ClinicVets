@@ -1,16 +1,13 @@
 using ClinicVets.Application.Services;
-using ClinicVets.Desktop;
 using ClinicVets.Desktop.UI;
 
 namespace ClinicVets.Desktop.Forms;
 
-/// <summary>
-/// Employee login — opens maximized with a centered responsive card.
-/// </summary>
-public class LoginForm : Form
+public sealed class LoginPage : UserControl
 {
     private readonly EmployeeAuthenticationService _auth;
     private readonly EmployeeRegistrationService _registration;
+    private readonly MainShellForm _shell;
     private readonly Panel _body = new();
     private readonly Panel _card = new();
     private readonly FlowLayoutPanel _flow = new();
@@ -23,21 +20,18 @@ public class LoginForm : Form
     private readonly Label _heroSubtitle;
     private readonly Label _demoHint = new();
 
-    public LoginForm(EmployeeAuthenticationService auth, EmployeeRegistrationService registration)
+    public Button SubmitButton => _login;
+
+    public LoginPage(EmployeeAuthenticationService auth, EmployeeRegistrationService registration, MainShellForm shell)
     {
         _auth = auth;
         _registration = registration;
+        _shell = shell;
 
-        Text = "ClinicVets — Login";
-        Icon = AppBranding.CreateWindowIcon();
-        MinimumSize = new Size(960, 640);
-        MaximizeBox = true;
-        MinimizeBox = true;
+        SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
+        UpdateStyles();
         BackColor = UiTheme.PageBackground;
-        Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
-        StartPosition = FormStartPosition.Manual;
-        Bounds = Screen.PrimaryScreen?.WorkingArea ?? new Rectangle(0, 0, 1280, 800);
-        WindowState = FormWindowState.Maximized;
+        Font = shell.Font;
 
         var header = UiHeaderBar.Create("Veterinary clinic management — employee sign in");
 
@@ -79,11 +73,7 @@ public class LoginForm : Form
         _register.Text = "Register new employee";
         UiStyles.ApplySecondaryButton(_register);
         _register.Margin = new Padding(0, 4, 0, 0);
-        _register.Click += (_, _) =>
-        {
-            using var reg = new RegisterForm(_registration);
-            reg.ShowDialog(this);
-        };
+        _register.Click += (_, _) => _shell.NavigateToRegister();
 
         var hint = _demoHint;
         hint.Text = "Demo: vet@clinicvets.com  ·  Vet12!ab";
@@ -108,17 +98,15 @@ public class LoginForm : Form
 
         _card.Controls.Add(_flow);
         _body.Controls.Add(_card);
-        Controls.Add(_body);
-        Controls.Add(header);
 
-        AcceptButton = _login;
+        var root = new Panel { Dock = DockStyle.Fill, BackColor = UiTheme.PageBackground };
+        root.Controls.Add(_body);
+        root.Controls.Add(header);
+
+        Controls.Add(root);
+
         Resize += (_, _) => Relayout();
-        Shown += (_, _) =>
-        {
-            WindowState = FormWindowState.Maximized;
-            Relayout();
-            SyncFlowChildWidths();
-        };
+        Load += (_, _) => Relayout();
     }
 
     private void SyncFlowChildWidths()
@@ -158,16 +146,14 @@ public class LoginForm : Form
                 return;
             }
 
-            Hide();
-            using var dash = new DashboardForm(result.Employee!);
-            dash.ShowDialog();
             _password.Clear();
             ClearFeedback();
-            Show();
+            _shell.NavigateToDashboard(result.Employee!);
         }
         finally
         {
-            _login.Enabled = true;
+            if (_login.IsHandleCreated)
+                _login.Enabled = true;
         }
     }
 }

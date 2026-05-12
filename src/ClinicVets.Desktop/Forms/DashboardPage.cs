@@ -1,35 +1,27 @@
 using ClinicVets.Core.Entities;
-using ClinicVets.Desktop;
 using ClinicVets.Desktop.UI;
 
 namespace ClinicVets.Desktop.Forms;
 
-/// <summary>
-/// Post-login dashboard — full screen with responsive metrics row.
-/// </summary>
-public class DashboardForm : Form
+public sealed class DashboardPage : UserControl
 {
     private readonly Employee _employee;
+    private readonly MainShellForm _shell;
     private readonly Panel _body = new();
     private readonly Panel _card = new();
     private readonly Label _detailInfo;
     private readonly Label _welcomeHeading;
     private readonly Label _metaLine;
 
-    public DashboardForm(Employee employee)
+    public DashboardPage(Employee employee, MainShellForm shell)
     {
         _employee = employee;
+        _shell = shell;
 
-        Text = "ClinicVets — Dashboard";
-        Icon = AppBranding.CreateWindowIcon();
-        MinimumSize = new Size(960, 640);
-        MaximizeBox = true;
-        MinimizeBox = true;
+        SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
+        UpdateStyles();
         BackColor = UiTheme.PageBackground;
-        Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
-        StartPosition = FormStartPosition.Manual;
-        Bounds = Screen.PrimaryScreen?.WorkingArea ?? new Rectangle(0, 0, 1280, 800);
-        WindowState = FormWindowState.Maximized;
+        Font = shell.Font;
 
         var header = UiHeaderBar.Create("Home — your clinic workspace overview");
 
@@ -130,7 +122,7 @@ public class DashboardForm : Form
         UiStyles.ApplySecondaryButton(logout);
         logout.Height = UiTheme.SecondaryButtonHeight;
         logout.Margin = new Padding(0, 4, 0, 0);
-        logout.Click += (_, _) => Close();
+        logout.Click += (_, _) => _shell.NavigateToLogin();
 
         var footer = new FlowLayoutPanel
         {
@@ -149,15 +141,15 @@ public class DashboardForm : Form
 
         _card.Controls.Add(root);
         _body.Controls.Add(_card);
-        Controls.Add(_body);
-        Controls.Add(header);
+
+        var panelRoot = new Panel { Dock = DockStyle.Fill, BackColor = UiTheme.PageBackground };
+        panelRoot.Controls.Add(_body);
+        panelRoot.Controls.Add(header);
+
+        Controls.Add(panelRoot);
 
         Resize += (_, _) => Relayout();
-        Shown += (_, _) =>
-        {
-            WindowState = FormWindowState.Maximized;
-            Relayout();
-        };
+        Load += (_, _) => Relayout();
     }
 
     private static Panel MakeMetricTile(string title, string value, Color accent, Padding margin)
