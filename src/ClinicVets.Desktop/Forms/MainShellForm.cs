@@ -37,7 +37,7 @@ public sealed class MainShellForm : Form
     {
         AcceptButton = null;
         CancelButton = null;
-        var page = new LoginPage(_auth, _registration, this);
+        var page = new LoginPage(_auth, this);
         AcceptButton = page.SubmitButton;
         SwapContent(page);
     }
