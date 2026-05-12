@@ -1,6 +1,10 @@
-ClinicVets application icon (Windows)
+ClinicVets Windows shell icon
 
-- app.ico — multi-resolution ICO (16–256 px) used for the EXE, Explorer, taskbar, and window title bars.
-- Regenerated from assets/branding/ClinicVetsLogo.png using tools/BuildIcon (Magick.NET).
+The multi-resolution `.ico` used for the EXE, Explorer, shortcuts, taskbar, and title bar
+is maintained next to the desktop project at:
 
-The desktop project references app.ico via ApplicationIcon and embeds a copy for WinForms window chrome.
+  src/ClinicVets.Desktop/Assets/app.ico
+
+Regenerate it from the logo PNG (repo root):
+
+  dotnet run --project tools/BuildIcon/BuildIcon.csproj -c Release -- assets/branding/ClinicVetsLogo.png src/ClinicVets.Desktop/Assets/app.ico

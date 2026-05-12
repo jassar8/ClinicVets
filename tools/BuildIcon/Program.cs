@@ -2,7 +2,7 @@ using ImageMagick;
 
 /// <summary>
 /// Builds a multi-resolution Windows .ico from a source PNG for sharp taskbar / title bar / EXE icons.
-/// Usage: BuildIcon input.png output.ico
+/// Usage: BuildIcon input.png output.ico (output is usually src/ClinicVets.Desktop/Assets/app.ico)
 /// </summary>
 internal static class Program
 {

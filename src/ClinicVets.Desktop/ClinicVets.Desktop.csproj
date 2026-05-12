@@ -9,11 +9,20 @@
     <AssemblyName>ClinicVets</AssemblyName>
     <RootNamespace>ClinicVets.Desktop</RootNamespace>
     <ApplicationTitle>ClinicVets</ApplicationTitle>
-    <ApplicationIcon>..\..\assets\icons\app.ico</ApplicationIcon>
+    <!-- Icon lives under this project so the Win32 resource compiler and publish apphost always embed it reliably. -->
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <AssemblyTitle>ClinicVets</AssemblyTitle>
+    <Description>Veterinary clinic management (desktop)</Description>
+    <Product>ClinicVets</Product>
+    <Company>ClinicVets</Company>
+    <Copyright>Copyright © ClinicVets</Copyright>
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+    <InformationalVersion>1.0.0</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\..\assets\icons\app.ico">
+    <EmbeddedResource Include="Assets\app.ico">
       <LogicalName>ClinicVets.app.ico</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\assets\branding\ClinicVetsLogo.png">
