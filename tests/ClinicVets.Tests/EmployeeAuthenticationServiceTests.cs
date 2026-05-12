@@ -33,7 +33,7 @@ public class EmployeeAuthenticationServiceTests
     {
         var repo = new FakeEmployeeRepository();
         var registration = new EmployeeRegistrationService(repo);
-        await registration.RegisterAsync("U", "user@x.com", "correct", "Secretary");
+        await registration.RegisterAsync("User", "user@x.com", "Correct1!", "Secretary");
         var sut = new EmployeeAuthenticationService(repo);
 
         var (ok, _, employee) = await sut.LoginAsync("user@x.com", "wrong");
@@ -47,10 +47,10 @@ public class EmployeeAuthenticationServiceTests
     {
         var repo = new FakeEmployeeRepository();
         var registration = new EmployeeRegistrationService(repo);
-        await registration.RegisterAsync("Jane", "Jane@X.COM", "p1", "Administrator");
+        await registration.RegisterAsync("Jane", "Jane@X.COM", "Valid1!ab", "Administrator");
         var sut = new EmployeeAuthenticationService(repo);
 
-        var (ok, _, employee) = await sut.LoginAsync("  jane@x.com  ", "p1");
+        var (ok, _, employee) = await sut.LoginAsync("  jane@x.com  ", "Valid1!ab");
 
         Assert.True(ok);
         Assert.NotNull(employee);

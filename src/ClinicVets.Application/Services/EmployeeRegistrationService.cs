@@ -1,4 +1,5 @@
 using ClinicVets.Application.Interfaces;
+using ClinicVets.Application.Validation;
 using ClinicVets.Core.Entities;
 
 namespace ClinicVets.Application.Services;
@@ -25,6 +26,21 @@ public class EmployeeRegistrationService
             string.IsNullOrWhiteSpace(role))
         {
             return (false, "All fields are required.");
+        }
+
+        if (!EmployeeInputValidation.IsValidFullName(fullName))
+        {
+            return (false, "Full name must be between 2 and 120 characters.");
+        }
+
+        if (!EmployeeInputValidation.IsValidEmail(email))
+        {
+            return (false, "Please enter a valid email address.");
+        }
+
+        if (!EmployeeInputValidation.IsValidPassword(password))
+        {
+            return (false, "Password must be 8–10 characters and include a letter, a digit, and a special character.");
         }
 
         var normalizedEmail = email.Trim().ToLowerInvariant();
