@@ -91,6 +91,10 @@ C#, Windows Forms or WPF, Excel or Database
 - Data storage problems
 - Missing validation rules
 
+## Architecture
+
+All business logic runs in **C#** (no Python, Node.js, or web-server backend). The WinForms desktop host calls **Application** services, which use **Infrastructure** repositories for local JSON storage.
+
 ## Repository layout (for review and demo)
 
 | Area | Path | Purpose |
@@ -100,7 +104,7 @@ C#, Windows Forms or WPF, Excel or Database
 | Infrastructure (data) | `src/ClinicVets.Infrastructure/Repositories/` | Local JSON persistence (`JsonFileEmployeeRepository`) |
 | Desktop (UI) | `src/ClinicVets.Desktop/Forms/`, `UI/` | WinForms screens and shared theme colors |
 | Tests | `tests/ClinicVets.Tests/` | Unit tests (xUnit) |
-| Assets | `assets/icons/` | Optional `.ico` instructions for the EXE |
+| Assets | `assets/icons/` | Application `.ico` for the Windows EXE |
 
 ## Running As Standalone Windows EXE (Demo)
 
