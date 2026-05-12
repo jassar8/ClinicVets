@@ -80,7 +80,8 @@ def _draw_paw(draw: ImageDraw.ImageDraw, size: int, anchor_x: int, anchor_y: int
 
 def main() -> None:
     out = Path(__file__).resolve().parent / "app.ico"
-    sizes = [16, 24, 32, 48, 64, 128, 256]
+    # Largest first: Windows picks the default frame for shell views.
+    sizes = [256, 128, 64, 48, 32, 24, 16]
     images = [draw_icon(s) for s in sizes]
     images[0].save(
         out,
