@@ -1,7 +1,7 @@
 using ClinicVets.Application.Interfaces;
 using ClinicVets.Core.Entities;
 
-namespace ClinicVets.Tests.Fakes;
+namespace ClinicVets.Tests.Integration;
 
 /// <summary>
 /// In-memory repository for unit tests only (not used by the desktop app).

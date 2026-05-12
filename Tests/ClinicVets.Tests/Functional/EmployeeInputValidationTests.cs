@@ -1,6 +1,6 @@
 using ClinicVets.Application.Validation;
 
-namespace ClinicVets.Tests;
+namespace ClinicVets.Tests.Functional;
 
 public class EmployeeInputValidationTests
 {

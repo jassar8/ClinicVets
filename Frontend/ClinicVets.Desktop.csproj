@@ -9,8 +9,8 @@
     <AssemblyName>ClinicVets</AssemblyName>
     <RootNamespace>ClinicVets.Desktop</RootNamespace>
     <ApplicationTitle>ClinicVets</ApplicationTitle>
-    <!-- Icon lives under this project so the Win32 resource compiler and publish apphost always embed it reliably. -->
-    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <!-- Multi-size ICO under this project so Win32 resources and publish apphost embed the EXE/shortcut icon reliably. -->
+    <ApplicationIcon>Assets\ClinicVets.ico</ApplicationIcon>
     <AssemblyTitle>ClinicVets</AssemblyTitle>
     <Description>Veterinary clinic management (desktop)</Description>
     <Product>ClinicVets</Product>
@@ -22,17 +22,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\app.ico">
+    <EmbeddedResource Include="Assets\ClinicVets.ico">
       <LogicalName>ClinicVets.app.ico</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\assets\branding\ClinicVetsLogo.png">
+    <EmbeddedResource Include="Assets\ClinicVetsLogo.png">
       <LogicalName>ClinicVets.logo.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClinicVets.Application\ClinicVets.Application.csproj" />
-    <ProjectReference Include="..\ClinicVets.Infrastructure\ClinicVets.Infrastructure.csproj" />
+    <ProjectReference Include="..\Backend\ClinicVets.Application\ClinicVets.Application.csproj" />
+    <ProjectReference Include="..\Backend\ClinicVets.Infrastructure\ClinicVets.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

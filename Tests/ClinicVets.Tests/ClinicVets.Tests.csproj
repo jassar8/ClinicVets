@@ -1,10 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <RootNamespace>ClinicVets.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ClinicVets.Application\ClinicVets.Application.csproj" />
-    <ProjectReference Include="..\..\src\ClinicVets.Core\ClinicVets.Core.csproj" />
+    <ProjectReference Include="..\..\Backend\ClinicVets.Application\ClinicVets.Application.csproj" />
+    <ProjectReference Include="..\..\Backend\ClinicVets.Core\ClinicVets.Core.csproj" />
   </ItemGroup>
 
 </Project>

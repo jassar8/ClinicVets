@@ -2,6 +2,7 @@
 **/bin/
 **/obj/
 publish/
+PublishedApp/
 
 # User-specific IDE settings
 .vs/
@@ -15,3 +16,5 @@ publish/
 # OS files
 Thumbs.db
 .DS_Store
+
+.fake

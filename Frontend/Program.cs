@@ -1,6 +1,6 @@
 using ClinicVets.Application.Services;
 using ClinicVets.Desktop.Forms;
-using ClinicVets.Infrastructure.Repositories;
+using ClinicVets.Infrastructure.Data;
 
 namespace ClinicVets.Desktop;
 

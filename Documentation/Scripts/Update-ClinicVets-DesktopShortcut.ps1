@@ -1,5 +1,5 @@
 param(
-    [Parameter(Mandatory = $true, HelpMessage = "Full path to ClinicVets.exe (e.g. publish\\win-x64\\ClinicVets.exe)")]
+    [Parameter(Mandatory = $true, HelpMessage = "Full path to ClinicVets.exe (e.g. PublishedApp\\ClinicVets.exe)")]
     [string] $ExePath
 )
 

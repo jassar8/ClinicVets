@@ -2,7 +2,7 @@ using System.Text.Json;
 using ClinicVets.Application.Interfaces;
 using ClinicVets.Core.Entities;
 
-namespace ClinicVets.Infrastructure.Repositories;
+namespace ClinicVets.Infrastructure.Data;
 
 /// <summary>
 /// Persists employees to a JSON file under the user's local app data (desktop demo, no database).

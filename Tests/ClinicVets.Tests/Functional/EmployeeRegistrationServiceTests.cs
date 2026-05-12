@@ -1,7 +1,7 @@
 using ClinicVets.Application.Services;
-using ClinicVets.Tests.Fakes;
+using ClinicVets.Tests.Integration;
 
-namespace ClinicVets.Tests;
+namespace ClinicVets.Tests.Functional;
 
 public class EmployeeRegistrationServiceTests
 {

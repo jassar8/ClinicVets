@@ -3,13 +3,13 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$publishPath = ".\publish\win-x64"
+$publishPath = ".\PublishedApp"
 
 Write-Host "Publishing ClinicVets (WinForms desktop) for Windows x64..." -ForegroundColor Cyan
 
 Get-Process | Where-Object { $_.ProcessName -like '*ClinicVets*' } | Stop-Process -Force -ErrorAction SilentlyContinue
 
-dotnet publish .\src\ClinicVets.Desktop\ClinicVets.Desktop.csproj `
+dotnet publish .\Frontend\ClinicVets.Desktop.csproj `
     -c $Configuration `
     -r win-x64 `
     --self-contained true `
@@ -24,5 +24,5 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host ""
 Write-Host "Publish complete." -ForegroundColor Green
-Write-Host "Run this file (keep the whole publish\win-x64 folder together):" -ForegroundColor Yellow
+Write-Host "Run this file (keep the whole PublishedApp folder together):" -ForegroundColor Yellow
 Write-Host "$publishPath\ClinicVets.exe"
