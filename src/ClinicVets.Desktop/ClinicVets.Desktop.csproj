@@ -16,6 +16,9 @@
     <EmbeddedResource Include="..\..\assets\icons\app.ico">
       <LogicalName>ClinicVets.app.ico</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\..\assets\branding\ClinicVetsLogo.png">
+      <LogicalName>ClinicVets.logo.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

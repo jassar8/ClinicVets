@@ -3,18 +3,20 @@ using System.Drawing;
 namespace ClinicVets.Desktop;
 
 /// <summary>
-/// Loads the embedded multi-size ICO for window chrome (title bar and taskbar).
+/// Loads embedded branding: multi-size ICO for window / EXE chrome and PNG for in-app header clarity.
 /// </summary>
 internal static class AppBranding
 {
     private const string IconResourceName = "ClinicVets.app.ico";
-    private static Icon? _template;
+    private const string LogoResourceName = "ClinicVets.logo.png";
+
+    private static Icon? _iconTemplate;
     private static Image? _headerImage;
 
     public static Icon CreateWindowIcon()
     {
-        _template ??= LoadTemplate();
-        return (Icon)_template.Clone();
+        _iconTemplate ??= LoadIconTemplate();
+        return (Icon)_iconTemplate.Clone();
     }
 
     /// <summary>Cached bitmap for in-app header logo (do not dispose from consumers).</summary>
@@ -23,12 +25,15 @@ internal static class AppBranding
         if (_headerImage is not null)
             return _headerImage;
 
-        using var icon = LoadTemplate();
-        _headerImage = icon.ToBitmap();
+        var asm = typeof(AppBranding).Assembly;
+        using var stream = asm.GetManifestResourceStream(LogoResourceName)
+            ?? throw new InvalidOperationException($"Missing embedded resource '{LogoResourceName}'.");
+        using var loaded = Image.FromStream(stream);
+        _headerImage = new Bitmap(loaded);
         return _headerImage;
     }
 
-    private static Icon LoadTemplate()
+    private static Icon LoadIconTemplate()
     {
         var asm = typeof(AppBranding).Assembly;
         using var stream = asm.GetManifestResourceStream(IconResourceName)
