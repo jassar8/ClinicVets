@@ -20,6 +20,8 @@ public class RegisterForm : Form
     private readonly Label _error = new();
     private readonly Button _save = new();
     private readonly Button _cancel = new();
+    private readonly Label _heroTitle;
+    private readonly Label _heroSubtitle;
 
     public RegisterForm(EmployeeRegistrationService registration)
     {
@@ -37,76 +39,75 @@ public class RegisterForm : Form
 
         var header = new Panel
         {
-            Height = 96,
+            Height = 78,
             Dock = DockStyle.Top,
             BackColor = UiTheme.HeaderBlue
         };
         header.Controls.Add(new Label
         {
-            Text = "Create Employee Account",
+            Text = "ClinicVets",
             ForeColor = Color.White,
-            Font = new Font("Segoe UI", 22F, FontStyle.Bold, GraphicsUnit.Point),
+            Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point),
             AutoSize = true,
-            Location = new Point(40, 28)
+            Location = new Point(40, 14)
+        });
+        header.Controls.Add(new Label
+        {
+            Text = "Employee onboarding",
+            ForeColor = UiTheme.SubtitleOnHeader,
+            AutoSize = true,
+            Location = new Point(40, 46),
+            Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point)
         });
 
         _body.Dock = DockStyle.Fill;
         _body.BackColor = UiTheme.PageBackground;
         _body.Resize += (_, _) => Relayout();
 
-        _card.BackColor = UiTheme.CardWhite;
-        _card.Paint += (_, e) =>
-        {
-            using var pen = new Pen(UiTheme.CardBorder, 1);
-            e.Graphics.DrawRectangle(pen, 0, 0, _card.Width - 1, _card.Height - 1);
-        };
+        _card.BackColor = Color.Transparent;
+        _card.Paint += (_, e) => UiChrome.PaintCardWithShadow(_card, e, UiTheme.CardCornerRadius);
 
         _flow.Dock = DockStyle.Fill;
         _flow.FlowDirection = FlowDirection.TopDown;
         _flow.WrapContents = false;
         _flow.AutoScroll = true;
-        _flow.Padding = new Padding(40, 36, 40, 36);
-        _flow.BackColor = UiTheme.CardWhite;
+        _flow.Padding = new Padding(44, 36, 44, 36);
+        _flow.BackColor = Color.Transparent;
         _flow.SizeChanged += (_, _) => SyncWidths();
 
-        _fullName.Height = 44;
-        _fullName.Font = Font;
-        _email.Height = 44;
-        _email.Font = Font;
+        _heroTitle = UiStyles.CreateHeroTitle("Create employee account");
+        _heroSubtitle = UiStyles.CreateHeroSubtitle("Complete the fields below to add a colleague");
+
+        UiStyles.ApplyTextBox(_fullName);
+        UiStyles.ApplyTextBox(_email);
         _password.UseSystemPasswordChar = true;
-        _password.Height = 44;
-        _password.Font = Font;
+        UiStyles.ApplyTextBox(_password);
 
         _role.DropDownStyle = ComboBoxStyle.DropDownList;
         _role.Items.AddRange(new object[] { "Veterinarian", "Secretary", "Administrator" });
-        _role.Height = 44;
-        _role.Font = Font;
+        UiStyles.ApplyComboBox(_role);
 
         _error.ForeColor = UiTheme.ErrorText;
         _error.Text = string.Empty;
         _error.AutoSize = false;
         _error.Height = 56;
         _error.TextAlign = ContentAlignment.TopLeft;
+        _error.Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point);
+        _error.Margin = new Padding(0, 4, 0, 0);
 
-        _save.Text = "Register";
-        _save.Height = 52;
-        _save.BackColor = UiTheme.HeaderBlue;
-        _save.ForeColor = Color.White;
-        _save.FlatStyle = FlatStyle.Flat;
-        _save.FlatAppearance.BorderSize = 0;
-        _save.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+        _save.Text = "Save employee";
+        UiStyles.ApplyPrimaryButton(_save);
         _save.Click += async (_, _) => await SaveAsync();
 
-        _cancel.Text = "Close";
-        _cancel.Height = 48;
-        _cancel.FlatStyle = FlatStyle.Flat;
+        _cancel.Text = "Back to sign in";
+        UiStyles.ApplySecondaryButton(_cancel);
         _cancel.DialogResult = DialogResult.Cancel;
 
         var buttonRow = new TableLayoutPanel
         {
             ColumnCount = 2,
-            Height = 56,
-            Margin = new Padding(0, 8, 0, 0)
+            Height = UiTheme.PrimaryButtonHeight + 8,
+            Margin = new Padding(0, 12, 0, 0)
         };
         buttonRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
         buttonRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
@@ -117,26 +118,30 @@ public class RegisterForm : Form
         _save.Margin = new Padding(0, 0, 8, 0);
         _cancel.Margin = new Padding(8, 0, 0, 0);
 
-        void AddCaption(string text) =>
-            _flow.Controls.Add(new Label
-            {
-                Text = text,
-                ForeColor = UiTheme.TextDark,
-                Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point),
-                AutoSize = true,
-                Margin = new Padding(0, 4, 0, 6)
-            });
+        var hint = new Label
+        {
+            Text = "Password: 8–10 characters with a letter, digit, and special character.",
+            ForeColor = UiTheme.TextMuted,
+            Font = new Font("Segoe UI", 9.5F, FontStyle.Regular, GraphicsUnit.Point),
+            AutoSize = false,
+            Height = 40,
+            TextAlign = ContentAlignment.TopCenter,
+            Margin = new Padding(0, 8, 0, 0)
+        };
 
-        AddCaption("Full Name");
+        _flow.Controls.Add(_heroTitle);
+        _flow.Controls.Add(_heroSubtitle);
+        _flow.Controls.Add(UiStyles.CreateFieldCaption("Full name"));
         _flow.Controls.Add(_fullName);
-        AddCaption("Email");
+        _flow.Controls.Add(UiStyles.CreateFieldCaption("Email"));
         _flow.Controls.Add(_email);
-        AddCaption("Password");
+        _flow.Controls.Add(UiStyles.CreateFieldCaption("Password"));
         _flow.Controls.Add(_password);
-        AddCaption("Role");
+        _flow.Controls.Add(UiStyles.CreateFieldCaption("Role"));
         _flow.Controls.Add(_role);
         _flow.Controls.Add(_error);
         _flow.Controls.Add(buttonRow);
+        _flow.Controls.Add(hint);
 
         _card.Controls.Add(_flow);
         _body.Controls.Add(_card);
@@ -164,15 +169,16 @@ public class RegisterForm : Form
                 continue;
             }
 
-            if (c is Label { AutoSize: true })
+            if (c is Label { AutoSize: true } lbl && lbl != _error && lbl != _heroTitle && lbl != _heroSubtitle)
                 continue;
+
             c.Width = inner;
         }
     }
 
     private void Relayout()
     {
-        ResponsiveLayout.CenterCard(_body, _card, 48, 640, 56, 56);
+        ResponsiveLayout.CenterCard(_body, _card, 48, 640, 40, 48);
         SyncWidths();
     }
 

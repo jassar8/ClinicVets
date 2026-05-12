@@ -80,14 +80,14 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
         {
             FullName = "Dr. Amir Levi",
             Email = "vet@clinicvets.com",
-            Password = "Vet123!",
+            Password = "Vet12!ab",
             Role = "Veterinarian"
         },
         new Employee
         {
             FullName = "Maya Cohen",
             Email = "secretary@clinicvets.com",
-            Password = "Sec123!",
+            Password = "Sec12!ab",
             Role = "Secretary"
         }
     ];

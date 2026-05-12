@@ -13,6 +13,8 @@ public class DashboardForm : Form
     private readonly Panel _body = new();
     private readonly Panel _card = new();
     private readonly Label _detailInfo;
+    private readonly Label _welcomeHeading;
+    private readonly Label _metaLine;
 
     public DashboardForm(Employee employee)
     {
@@ -31,44 +33,41 @@ public class DashboardForm : Form
 
         var header = new Panel
         {
-            Height = 100,
+            Height = 78,
             Dock = DockStyle.Top,
             BackColor = UiTheme.HeaderBlue
         };
         header.Controls.Add(new Label
         {
-            Text = "ClinicVets Dashboard",
+            Text = "ClinicVets",
             ForeColor = Color.White,
-            Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point),
+            Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point),
             AutoSize = true,
-            Location = new Point(40, 22)
+            Location = new Point(40, 14)
         });
         header.Controls.Add(new Label
         {
-            Text = "You are signed in to the clinic management demo.",
+            Text = "Dashboard — signed-in workspace",
             ForeColor = UiTheme.SubtitleOnHeader,
             AutoSize = true,
-            Location = new Point(40, 62),
-            Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point)
+            Location = new Point(40, 46),
+            Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point)
         });
 
         _body.Dock = DockStyle.Fill;
         _body.BackColor = UiTheme.PageBackground;
         _body.Resize += (_, _) => Relayout();
 
-        _card.BackColor = UiTheme.CardWhite;
-        _card.Paint += (_, e) =>
-        {
-            using var pen = new Pen(UiTheme.CardBorder, 1);
-            e.Graphics.DrawRectangle(pen, 0, 0, _card.Width - 1, _card.Height - 1);
-        };
+        _card.BackColor = Color.Transparent;
+        _card.Paint += (_, e) => UiChrome.PaintCardWithShadow(_card, e, UiTheme.CardCornerRadius);
 
         var root = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
             ColumnCount = 1,
             RowCount = 4,
-            Padding = new Padding(40, 36, 40, 32)
+            Padding = new Padding(44, 40, 44, 36),
+            BackColor = Color.Transparent
         };
         root.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
         root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
@@ -76,20 +75,24 @@ public class DashboardForm : Form
         root.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
         root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
-        var welcome = new Label
+        _welcomeHeading = new Label
         {
             Text = $"Welcome, {_employee.FullName}",
-            Font = new Font("Segoe UI", 20F, FontStyle.Bold, GraphicsUnit.Point),
+            Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point),
             ForeColor = UiTheme.TextDark,
-            AutoSize = true,
-            Margin = new Padding(0, 0, 0, 8)
+            AutoSize = false,
+            Height = 56,
+            TextAlign = ContentAlignment.MiddleCenter,
+            Margin = new Padding(0, 0, 0, 4)
         };
-        var meta = new Label
+        _metaLine = new Label
         {
             Text = $"{_employee.Email}   ·   {_employee.Role}",
             ForeColor = UiTheme.TextMuted,
-            AutoSize = true,
-            Font = new Font("Segoe UI", 11.5F, FontStyle.Regular, GraphicsUnit.Point),
+            AutoSize = false,
+            Height = 32,
+            TextAlign = ContentAlignment.MiddleCenter,
+            Font = UiStyles.HeroSubtitleFont,
             Margin = new Padding(0, 0, 0, 20)
         };
 
@@ -98,10 +101,11 @@ public class DashboardForm : Form
             FlowDirection = FlowDirection.TopDown,
             AutoSize = true,
             WrapContents = false,
-            Margin = new Padding(0, 0, 0, 8)
+            Margin = new Padding(0, 0, 0, 8),
+            BackColor = Color.Transparent
         };
-        headerStack.Controls.Add(welcome);
-        headerStack.Controls.Add(meta);
+        headerStack.Controls.Add(_welcomeHeading);
+        headerStack.Controls.Add(_metaLine);
 
         var metrics = new TableLayoutPanel
         {
@@ -138,19 +142,22 @@ public class DashboardForm : Form
 
         var logout = new Button
         {
-            Text = "Logout",
-            Height = 52,
-            Width = 200,
-            Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point),
-            Anchor = AnchorStyles.Left
+            Text = "Sign out",
+            Width = 220,
+            Font = UiStyles.SecondaryButtonFont,
+            Anchor = AnchorStyles.None
         };
+        UiStyles.ApplySecondaryButton(logout);
+        logout.Height = UiTheme.SecondaryButtonHeight;
         logout.Click += (_, _) => Close();
 
         var footer = new FlowLayoutPanel
         {
             FlowDirection = FlowDirection.LeftToRight,
             AutoSize = true,
-            WrapContents = false
+            WrapContents = false,
+            BackColor = Color.Transparent,
+            Padding = new Padding(0, 8, 0, 0)
         };
         footer.Controls.Add(logout);
 
@@ -209,8 +216,13 @@ public class DashboardForm : Form
 
     private void Relayout()
     {
-        ResponsiveLayout.CenterCard(_body, _card, 40, 1200, 48, 48);
+        ResponsiveLayout.CenterCard(_body, _card, 40, 1200, 40, 48);
         if (_card.ClientSize.Width > 0)
-            _detailInfo.MaximumSize = new Size(Math.Max(320, _card.ClientSize.Width - 120), 0);
+        {
+            var inner = Math.Max(320, _card.ClientSize.Width - 88);
+            _welcomeHeading.Width = inner;
+            _metaLine.Width = inner;
+            _detailInfo.MaximumSize = new Size(inner, 0);
+        }
     }
 }
