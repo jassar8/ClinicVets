@@ -58,9 +58,12 @@ public static class UiTheme
     public static int InputRadius => 14;
     public static int InputPaddingH => 14;
 
-    public const int StandardButtonHeight = 48;
+    public const int StandardButtonHeight = 50;
     public static int PrimaryButtonHeight => StandardButtonHeight;
     public static int SecondaryButtonHeight => StandardButtonHeight;
+
+    /// <summary>Sidebar navigation row height (must match <see cref="ModernSidebarNavButton"/>).</summary>
+    public const int SidebarNavItemHeight = 52;
     public static int ButtonCornerRadius => 16;
 
     public static Color PrimaryButton => TealMain;
@@ -93,7 +96,7 @@ public static class UiTheme
     public static Color SidebarMuted => SidebarNavText;
     public static Color SidebarItemHover => SidebarNavHover;
     public static Color SidebarItemActive => SidebarNavActive;
-    public static int SidebarWidth => 272;
+    public static int SidebarWidth => 300;
 
     public static Color HeaderBlue => HeaderPrimary;
     public static Color HeaderBlueDark => HeaderPrimaryDark;
@@ -147,8 +150,8 @@ public static class UiTheme
         public const int PageGutter = 16;
         public const int CardInset = 16;
         public const int SectionGap = 12;
-        public const int HeaderMinHeight = 88;
-        public const int SidebarMinWidth = 248;
-        public const int SidebarMaxWidth = 288;
+        public const int HeaderMinHeight = 92;
+        public const int SidebarMinWidth = 260;
+        public const int SidebarMaxWidth = 320;
     }
 }

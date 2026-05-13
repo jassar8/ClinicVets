@@ -10,6 +10,7 @@ public sealed class ModernDangerButton : Button
 
     public ModernDangerButton()
     {
+        MinimumSize = new Size(120, UiTheme.PrimaryButtonHeight);
         FlatStyle = FlatStyle.Flat;
         FlatAppearance.BorderSize = 0;
         ForeColor = UiTheme.PrimaryButtonText;
@@ -37,6 +38,20 @@ public sealed class ModernDangerButton : Button
             _hover = false;
             Invalidate();
         };
+
+        UiButtonLayout.ApplyMinimumWidthForText(this);
+    }
+
+    protected override void OnTextChanged(EventArgs e)
+    {
+        base.OnTextChanged(e);
+        UiButtonLayout.ApplyMinimumWidthForText(this);
+    }
+
+    protected override void OnFontChanged(EventArgs e)
+    {
+        base.OnFontChanged(e);
+        UiButtonLayout.ApplyMinimumWidthForText(this);
     }
 
     protected override void OnEnabledChanged(EventArgs e)
@@ -121,11 +136,11 @@ public sealed class ModernDangerButton : Button
             Alignment = StringAlignment.Center,
             LineAlignment = StringAlignment.Center,
             Trimming = StringTrimming.EllipsisCharacter,
-            FormatFlags = StringFormatFlags.NoWrap
+            FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.LineLimit
         };
         using var brush = new SolidBrush(textColor);
         var textRect = ClientRectangle;
-        textRect.Inflate(-14, -8);
+        textRect.Inflate(-18, -10);
         g.DrawString(Text, Font, brush, textRect, format);
         g.ResetClip();
     }

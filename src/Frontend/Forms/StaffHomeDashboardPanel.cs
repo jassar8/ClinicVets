@@ -100,7 +100,7 @@ public sealed class StaffHomeDashboardPanel : UserControl
             ColumnCount = 4,
             RowCount = 1,
             BackColor = UiTheme.CardWhite,
-            MinimumSize = new Size(0, 108)
+            MinimumSize = new Size(0, 118)
         };
         for (var i = 0; i < 4; i++)
             grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
@@ -176,7 +176,8 @@ public sealed class StaffHomeDashboardPanel : UserControl
             BackColor = UiTheme.MetricTileBackground,
             Dock = DockStyle.Fill,
             TextAlign = ContentAlignment.BottomLeft,
-            UseCompatibleTextRendering = false
+            UseCompatibleTextRendering = false,
+            MaximumSize = new Size(240, 0)
         };
 
         var value = bindValue ?? new Label();
@@ -257,7 +258,7 @@ public sealed class StaffHomeDashboardPanel : UserControl
             BackColor = UiTheme.MetricTileBackground,
             UseCompatibleTextRendering = false
         });
-        var cal = new ModernOutlineButton { Text = "View calendar", AutoSize = true, Margin = new Padding(0, 2, 0, 2) };
+        var cal = new ModernOutlineButton { Text = "View calendar", Margin = new Padding(0, 2, 0, 2) };
         cal.Click += (_, _) => _navigate(ClinicShellNavKind.Visits);
         head.Controls.Add(cal);
 
@@ -288,8 +289,7 @@ public sealed class StaffHomeDashboardPanel : UserControl
         {
             Text = "+  New visit",
             Dock = DockStyle.Fill,
-            Height = 44,
-            Margin = new Padding(0, 10, 0, 0)
+            Margin = new Padding(0, 12, 0, 0)
         };
         newVisit.Click += (_, _) => _navigate(ClinicShellNavKind.Visits);
 
@@ -302,18 +302,19 @@ public sealed class StaffHomeDashboardPanel : UserControl
 
     private static Control MakeScheduleRow(string time, string pet, string breed, string service, string status)
     {
+        const int timeColW = 108;
         var row = new TableLayoutPanel
         {
             AutoSize = true,
             AutoSizeMode = AutoSizeMode.GrowAndShrink,
-            MinimumSize = new Size(0, 52),
-            Margin = new Padding(0, 0, 0, 8),
+            MinimumSize = new Size(0, 58),
+            Margin = new Padding(0, 0, 0, 10),
             ColumnCount = 3,
             RowCount = 1,
             BackColor = UiTheme.CardWhite,
-            Padding = new Padding(10, 8, 10, 8)
+            Padding = new Padding(12, 10, 12, 10)
         };
-        row.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 88F));
+        row.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, timeColW));
         row.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
         row.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
 
@@ -331,7 +332,22 @@ public sealed class StaffHomeDashboardPanel : UserControl
             TextAlign = ContentAlignment.MiddleCenter,
             BackColor = UiTheme.PrimaryButton,
             Dock = DockStyle.Fill,
-            Margin = new Padding(0, 2, 8, 2),
+            Margin = new Padding(0, 2, 10, 2),
+            UseCompatibleTextRendering = false,
+            AutoSize = false
+        };
+
+        var pending = status.Equals("Scheduled", StringComparison.OrdinalIgnoreCase);
+        var pill = new Label
+        {
+            Text = status,
+            AutoSize = true,
+            Padding = new Padding(10, 6, 10, 6),
+            Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point),
+            ForeColor = pending ? UiTheme.TealMain : UiTheme.SuccessText,
+            BackColor = pending ? UiTheme.AccentMintWash : UiTheme.SuccessBackground,
+            Margin = new Padding(10, 0, 0, 0),
+            TextAlign = ContentAlignment.MiddleCenter,
             UseCompatibleTextRendering = false
         };
 
@@ -350,41 +366,39 @@ public sealed class StaffHomeDashboardPanel : UserControl
             Text = $"{pet}   ·   {breed}",
             Font = new Font("Segoe UI", 10.5F, FontStyle.Bold, GraphicsUnit.Point),
             ForeColor = UiTheme.TextDark,
-            AutoSize = false,
-            AutoEllipsis = true,
+            AutoSize = true,
             Dock = DockStyle.Fill,
             TextAlign = ContentAlignment.BottomLeft,
             BackColor = UiTheme.CardWhite,
-            UseCompatibleTextRendering = false
+            UseCompatibleTextRendering = false,
+            MaximumSize = new Size(900, 0)
         };
         var svcLine = new Label
         {
             Text = service,
             Font = new Font("Segoe UI", 9.5F, FontStyle.Regular, GraphicsUnit.Point),
             ForeColor = UiTheme.TextMuted,
-            AutoSize = false,
-            AutoEllipsis = true,
+            AutoSize = true,
             Dock = DockStyle.Fill,
             TextAlign = ContentAlignment.TopLeft,
             BackColor = UiTheme.CardWhite,
-            UseCompatibleTextRendering = false
+            UseCompatibleTextRendering = false,
+            MaximumSize = new Size(900, 0)
         };
         mid.Controls.Add(petLine, 0, 0);
         mid.Controls.Add(svcLine, 0, 1);
 
-        var pending = status.Equals("Scheduled", StringComparison.OrdinalIgnoreCase);
-        var pill = new Label
+        void SyncDetailWidths()
         {
-            Text = status,
-            AutoSize = true,
-            Padding = new Padding(8, 4, 8, 4),
-            Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point),
-            ForeColor = pending ? UiTheme.TealMain : UiTheme.SuccessText,
-            BackColor = pending ? UiTheme.AccentMintWash : UiTheme.SuccessBackground,
-            Margin = new Padding(8, 0, 0, 0),
-            TextAlign = ContentAlignment.MiddleCenter,
-            UseCompatibleTextRendering = false
-        };
+            var pillW = pill.PreferredSize.Width + pill.Margin.Horizontal + 4;
+            var mw = Math.Max(120, row.ClientSize.Width - row.Padding.Horizontal - timeColW - pillW);
+            petLine.MaximumSize = new Size(mw, 0);
+            svcLine.MaximumSize = new Size(mw, 0);
+        }
+
+        row.Layout += (_, _) => SyncDetailWidths();
+        row.SizeChanged += (_, _) => SyncDetailWidths();
+        row.HandleCreated += (_, _) => SyncDetailWidths();
 
         row.Controls.Add(timeBox, 0, 0);
         row.Controls.Add(mid, 1, 0);
@@ -469,7 +483,7 @@ public sealed class StaffHomeDashboardPanel : UserControl
         flow.SizeChanged += (_, _) => SyncAct();
         flow.HandleCreated += (_, _) => SyncAct();
 
-        var all = new ModernOutlineButton { Text = "View all", Dock = DockStyle.Fill, Height = 38, Margin = new Padding(0, 6, 0, 0) };
+        var all = new ModernOutlineButton { Text = "View all", Dock = DockStyle.Fill, Margin = new Padding(0, 8, 0, 0) };
         all.Click += (_, _) => _navigate(ClinicShellNavKind.Customers);
 
         inner.Controls.Add(title, 0, 0);
@@ -546,23 +560,18 @@ public sealed class StaffHomeDashboardPanel : UserControl
         return outer;
     }
 
-    private Button QuickTile(string text, Color back, ClinicShellNavKind target)
+    private ModernPrimaryButton QuickTile(string text, Color back, ClinicShellNavKind target)
     {
         var allowed = ShellNavPermissions.CanAccess(_employee, target);
-        var b = new Button
+        var b = new ModernPrimaryButton
         {
             Text = text,
             Dock = DockStyle.Fill,
-            Margin = new Padding(5),
-            FlatStyle = FlatStyle.Flat,
-            ForeColor = Color.White,
-            Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point),
+            Margin = new Padding(8, 6, 8, 6),
             Cursor = allowed ? Cursors.Hand : Cursors.No,
-            BackColor = allowed ? back : UiTheme.ButtonDisabledFill,
             Enabled = allowed,
-            UseCompatibleTextRendering = false
+            AccentOverride = allowed ? back : null
         };
-        b.FlatAppearance.BorderSize = 0;
         b.Click += (_, _) =>
         {
             if (!allowed)

@@ -10,6 +10,7 @@ public sealed class ModernOutlineButton : Button
 
     public ModernOutlineButton()
     {
+        MinimumSize = new Size(120, UiTheme.SecondaryButtonHeight);
         FlatStyle = FlatStyle.Flat;
         FlatAppearance.BorderSize = 0;
         ForeColor = UiTheme.SecondaryButtonText;
@@ -38,6 +39,20 @@ public sealed class ModernOutlineButton : Button
             _hover = false;
             Invalidate();
         };
+
+        UiButtonLayout.ApplyMinimumWidthForText(this);
+    }
+
+    protected override void OnTextChanged(EventArgs e)
+    {
+        base.OnTextChanged(e);
+        UiButtonLayout.ApplyMinimumWidthForText(this);
+    }
+
+    protected override void OnFontChanged(EventArgs e)
+    {
+        base.OnFontChanged(e);
+        UiButtonLayout.ApplyMinimumWidthForText(this);
     }
 
     protected override void OnEnabledChanged(EventArgs e)
@@ -130,10 +145,13 @@ public sealed class ModernOutlineButton : Button
         {
             Alignment = StringAlignment.Center,
             LineAlignment = StringAlignment.Center,
-            Trimming = StringTrimming.EllipsisCharacter
+            Trimming = StringTrimming.EllipsisCharacter,
+            FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.LineLimit
         };
         using var brush = new SolidBrush(textColor);
-        g.DrawString(Text, Font, brush, ClientRectangle, format);
+        var textRect = ClientRectangle;
+        textRect.Inflate(-18, -10);
+        g.DrawString(Text, Font, brush, textRect, format);
         g.ResetClip();
     }
 

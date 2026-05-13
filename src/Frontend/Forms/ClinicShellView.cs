@@ -125,8 +125,7 @@ public sealed class ClinicShellView : UserControl
                 return;
             var row = new ModernSidebarNavButton(caption, kind)
             {
-                Height = 46,
-                Margin = new Padding(6, 2, 6, 2)
+                Margin = new Padding(6, 3, 6, 3)
             };
             row.Click += (_, _) => Navigate(kind);
             _navItems[kind] = row;
@@ -155,16 +154,16 @@ public sealed class ClinicShellView : UserControl
             Dock = DockStyle.Fill,
             ColumnCount = 1,
             RowCount = 1,
-            Padding = new Padding(12, 4, 12, 12),
+            Padding = new Padding(12, 6, 12, 12),
             BackColor = UiTheme.AdminSidebarBackground,
-            Height = 56
+            MinimumSize = new Size(0, 58)
         };
         bottom.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
         var logout = new Button
         {
             Text = "Logout",
             Dock = DockStyle.Fill,
-            Height = 44,
+            MinimumSize = new Size(0, UiTheme.StandardButtonHeight),
             FlatStyle = FlatStyle.Flat,
             ForeColor = Color.White,
             Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point),
@@ -174,6 +173,7 @@ public sealed class ClinicShellView : UserControl
         logout.FlatAppearance.BorderColor = UiTheme.SidebarLogoutBorder;
         logout.FlatAppearance.BorderSize = 1;
         logout.BackColor = UiTheme.SidebarLogoutBackground;
+        UiButtonLayout.ApplyMinimumWidthForText(logout, horizontalPadding: 32, floor: 96, ceiling: 400);
         logout.Click += (_, _) => _shell.NavigateToLogin();
         bottom.Controls.Add(logout, 0, 0);
 

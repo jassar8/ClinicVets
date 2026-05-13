@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using ClinicVets.Application.Shell;
@@ -15,7 +16,7 @@ public sealed class ModernSidebarNavButton : Panel
     {
         _caption = caption;
         Kind = kind;
-        Height = 46;
+        Height = UiTheme.SidebarNavItemHeight;
         Cursor = Cursors.Hand;
         TabStop = false;
         BackColor = UiTheme.AdminSidebarBackground;
@@ -81,7 +82,19 @@ public sealed class ModernSidebarNavButton : Panel
         using (var b = new SolidBrush(fill))
             g.FillPath(b, path);
 
-        var textRect = new Rectangle(16, 0, Width - 56, Height);
+        var leftPad = 18;
+        var rightReserve = 14;
+        if (BadgeCount is > 0)
+        {
+            using var badgeFont = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            var badgeText = BadgeCount > 99 ? "99+" : BadgeCount.Value.ToString();
+            var sz = TextRenderer.MeasureText(badgeText, badgeFont);
+            var badgeW = Math.Max(22, sz.Width + 10);
+            rightReserve = badgeW + 24;
+        }
+
+        var textW = Math.Max(32, Width - leftPad - rightReserve);
+        var textRect = new Rectangle(leftPad, 0, textW, Height);
         var captionColor = IsActive ? UiTheme.SidebarNavTextActive : _hover ? UiTheme.SidebarNavTextHover : UiTheme.SidebarNavText;
         TextRenderer.DrawText(
             g,
@@ -89,7 +102,11 @@ public sealed class ModernSidebarNavButton : Panel
             IsActive ? UiStyles.SidebarNavFontActive : UiStyles.SidebarNavFont,
             textRect,
             captionColor,
-            TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+            TextFormatFlags.Left |
+            TextFormatFlags.VerticalCenter |
+            TextFormatFlags.SingleLine |
+            TextFormatFlags.EndEllipsis |
+            TextFormatFlags.NoPadding);
 
         if (BadgeCount is > 0)
         {
