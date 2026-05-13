@@ -59,7 +59,7 @@ public sealed class LoginPage : UserControl
         _password.UseSystemPasswordChar = true;
 
         _emailHost = new RoundedInputHost(_email);
-        _passwordHost = new RoundedInputHost(_password);
+        _passwordHost = new RoundedInputHost(_password, showPasswordRevealToggle: true);
 
         _feedback.Clear();
 

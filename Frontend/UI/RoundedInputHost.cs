@@ -6,8 +6,9 @@ namespace ClinicVets.Desktop.UI;
 public sealed class RoundedInputHost : Panel
 {
     private bool _focused;
+    private readonly PasswordRevealToggle? _revealToggle;
 
-    public RoundedInputHost(TextBox inner)
+    public RoundedInputHost(TextBox inner, bool showPasswordRevealToggle = false)
     {
         Inner = inner;
         Height = UiTheme.InputHeight;
@@ -21,6 +22,13 @@ public sealed class RoundedInputHost : Panel
         inner.GotFocus += (_, _) => { _focused = true; Invalidate(); };
         inner.LostFocus += (_, _) => { _focused = false; Invalidate(); };
         Controls.Add(inner);
+
+        if (showPasswordRevealToggle)
+        {
+            _revealToggle = new PasswordRevealToggle(inner);
+            Controls.Add(_revealToggle);
+        }
+
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
         UpdateStyles();
     }
@@ -32,7 +40,19 @@ public sealed class RoundedInputHost : Panel
         base.OnResize(e);
         var padH = UiTheme.InputPaddingH;
         var innerH = Math.Max(26, ClientSize.Height - 10);
-        Inner.SetBounds(padH, (ClientSize.Height - innerH) / 2, Math.Max(40, ClientSize.Width - padH * 2), innerH);
+        var revealW = _revealToggle?.Width ?? 0;
+        var gap = revealW > 0 ? 6 : 0;
+        Inner.SetBounds(
+            padH,
+            (ClientSize.Height - innerH) / 2,
+            Math.Max(40, ClientSize.Width - padH * 2 - revealW - gap),
+            innerH);
+
+        if (_revealToggle is not null)
+        {
+            var h = Math.Max(28, ClientSize.Height - 8);
+            _revealToggle.SetBounds(ClientSize.Width - padH - _revealToggle.Width, (ClientSize.Height - h) / 2, _revealToggle.Width, h);
+        }
     }
 
     protected override void OnPaint(PaintEventArgs e)
