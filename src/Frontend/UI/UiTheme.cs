@@ -140,4 +140,15 @@ public static class UiTheme
 
     /// <summary>Neutral feedback / info banner surface.</summary>
     public static Color InfoBannerBackground => AccentMintWash;
+
+    /// <summary>Shared layout rhythm (px at 96 DPI; scales with <see cref="Application.SetHighDpiMode"/>).</summary>
+    public static class Layout
+    {
+        public const int PageGutter = 16;
+        public const int CardInset = 16;
+        public const int SectionGap = 12;
+        public const int HeaderMinHeight = 88;
+        public const int SidebarMinWidth = 248;
+        public const int SidebarMaxWidth = 288;
+    }
 }

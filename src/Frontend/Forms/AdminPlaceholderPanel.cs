@@ -9,8 +9,20 @@ public sealed class AdminPlaceholderPanel : UserControl
     {
         Dock = DockStyle.Fill;
         BackColor = UiTheme.CardWhite;
-        Padding = new Padding(32, 28, 32, 28);
-        Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+        Padding = new Padding(UiTheme.Layout.PageGutter, UiTheme.Layout.CardInset, UiTheme.Layout.PageGutter, UiTheme.Layout.CardInset);
+        Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point);
+
+        var root = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 1,
+            BackColor = UiTheme.CardWhite
+        };
+        root.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+
+        var titleLbl = UiStyles.CreateHeroTitle(title);
+        var subLbl = UiStyles.CreateHeroSubtitle(subtitle);
 
         var stack = new FlowLayoutPanel
         {
@@ -18,12 +30,23 @@ public sealed class AdminPlaceholderPanel : UserControl
             FlowDirection = FlowDirection.TopDown,
             WrapContents = false,
             AutoScroll = true,
-            BackColor = UiTheme.CardWhite
+            BackColor = UiTheme.CardWhite,
+            Padding = new Padding(4, 8, 4, 8)
         };
+        stack.Controls.Add(titleLbl);
+        stack.Controls.Add(subLbl);
 
-        stack.Controls.Add(UiStyles.CreateHeroTitle(title));
-        stack.Controls.Add(UiStyles.CreateHeroSubtitle(subtitle));
+        void Sync()
+        {
+            var inner = Math.Max(200, stack.ClientSize.Width - stack.Padding.Horizontal);
+            titleLbl.MaximumSize = new Size(inner, 0);
+            subLbl.MaximumSize = new Size(inner, 0);
+        }
 
-        Controls.Add(stack);
+        stack.SizeChanged += (_, _) => Sync();
+        stack.HandleCreated += (_, _) => Sync();
+
+        root.Controls.Add(stack, 0, 0);
+        Controls.Add(root);
     }
 }

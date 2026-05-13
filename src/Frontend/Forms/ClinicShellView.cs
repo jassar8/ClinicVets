@@ -29,8 +29,8 @@ public sealed class ClinicShellView : UserControl
     private readonly Label _headerTitle = new();
     private readonly Label _headerSubtitle = new();
     private readonly Label _clock = new();
-    private readonly Panel _workspace = new() { Dock = DockStyle.Fill, BackColor = UiTheme.ContentCanvas, Padding = new Padding(24, 20, 24, 24) };
-    private readonly ModernCardPanel _workspaceCard = new() { Dock = DockStyle.Fill, Padding = new Padding(4) };
+    private readonly Panel _workspace = new() { Dock = DockStyle.Fill, BackColor = UiTheme.ContentCanvas, Padding = new Padding(UiTheme.Layout.PageGutter, UiTheme.Layout.CardInset, UiTheme.Layout.PageGutter, UiTheme.Layout.CardInset) };
+    private readonly ModernCardPanel _workspaceCard = new() { Dock = DockStyle.Fill, Padding = new Padding(2) };
 
     private AdminUsersManagementPanel? _usersHub;
     private ModernSidebarNavButton? _navPending;
@@ -74,7 +74,7 @@ public sealed class ClinicShellView : UserControl
             RowCount = 1,
             BackColor = UiTheme.PageBackground
         };
-        split.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 280F));
+        split.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, UiTheme.SidebarWidth));
         split.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
 
         split.Controls.Add(BuildSidebar(), 0, 0);
@@ -94,55 +94,20 @@ public sealed class ClinicShellView : UserControl
         };
     }
 
-    private Panel BuildSidebar()
+    private Control BuildSidebar()
     {
-        var root = new Panel { Dock = DockStyle.Fill, BackColor = UiTheme.AdminSidebarBackground };
+        var root = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = UiTheme.AdminSidebarBackground,
+            ColumnCount = 1,
+            RowCount = 3
+        };
+        root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        root.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+        root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
-        var brand = new Panel
-        {
-            Dock = DockStyle.Top,
-            Height = 120,
-            Padding = new Padding(20, 24, 20, 12),
-            BackColor = UiTheme.AdminSidebarBackground
-        };
-        var logo = new PictureBox
-        {
-            Size = new Size(40, 40),
-            Location = new Point(20, 24),
-            SizeMode = PictureBoxSizeMode.Zoom,
-            BackColor = UiTheme.AdminSidebarBackground
-        };
-        try
-        {
-            logo.Image = AppBranding.GetHeaderImage();
-        }
-        catch
-        {
-            logo.Visible = false;
-        }
-
-        var title = new Label
-        {
-            Text = "ClinicVets",
-            Font = new Font("Segoe UI", 17F, FontStyle.Bold, GraphicsUnit.Point),
-            ForeColor = Color.White,
-            AutoSize = true,
-            Location = new Point(logo.Visible ? 68 : 20, 26),
-            BackColor = UiTheme.AdminSidebarBackground
-        };
-        var sub = new Label
-        {
-            Text = "Veterinary clinic system",
-            Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point),
-            ForeColor = UiTheme.SidebarTextMutedOnDark,
-            AutoSize = true,
-            Location = new Point(logo.Visible ? 68 : 20, 58),
-            MaximumSize = new Size(240, 0),
-            BackColor = UiTheme.AdminSidebarBackground
-        };
-        brand.Controls.Add(logo);
-        brand.Controls.Add(title);
-        brand.Controls.Add(sub);
+        root.Controls.Add(BuildSidebarBrand(), 0, 0);
 
         var navHost = new FlowLayoutPanel
         {
@@ -150,7 +115,7 @@ public sealed class ClinicShellView : UserControl
             FlowDirection = FlowDirection.TopDown,
             WrapContents = false,
             AutoScroll = true,
-            Padding = new Padding(12, 8, 12, 12),
+            Padding = new Padding(12, 4, 12, 8),
             BackColor = UiTheme.AdminSidebarBackground
         };
 
@@ -160,7 +125,7 @@ public sealed class ClinicShellView : UserControl
                 return;
             var row = new ModernSidebarNavButton(caption, kind)
             {
-                Width = 248,
+                Height = 46,
                 Margin = new Padding(6, 2, 6, 2)
             };
             row.Click += (_, _) => Navigate(kind);
@@ -179,17 +144,27 @@ public sealed class ClinicShellView : UserControl
         TryAdd("Pending approvals", ClinicShellNavKind.PendingApprovals);
         TryAdd("Settings", ClinicShellNavKind.Settings);
 
-        var bottom = new Panel
+        void SyncNav() => ResponsiveLayout.SyncSidebarNavButtonWidths(navHost);
+        navHost.SizeChanged += (_, _) => SyncNav();
+        navHost.HandleCreated += (_, _) => SyncNav();
+
+        root.Controls.Add(navHost, 0, 1);
+
+        var bottom = new TableLayoutPanel
         {
-            Dock = DockStyle.Bottom,
-            Height = 72,
-            Padding = new Padding(16, 8, 16, 16),
-            BackColor = UiTheme.AdminSidebarBackground
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 1,
+            Padding = new Padding(12, 4, 12, 12),
+            BackColor = UiTheme.AdminSidebarBackground,
+            Height = 56
         };
+        bottom.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
         var logout = new Button
         {
             Text = "Logout",
             Dock = DockStyle.Fill,
+            Height = 44,
             FlatStyle = FlatStyle.Flat,
             ForeColor = Color.White,
             Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point),
@@ -200,12 +175,74 @@ public sealed class ClinicShellView : UserControl
         logout.FlatAppearance.BorderSize = 1;
         logout.BackColor = UiTheme.SidebarLogoutBackground;
         logout.Click += (_, _) => _shell.NavigateToLogin();
-        bottom.Controls.Add(logout);
+        bottom.Controls.Add(logout, 0, 0);
 
-        root.Controls.Add(navHost);
-        root.Controls.Add(bottom);
-        root.Controls.Add(brand);
+        root.Controls.Add(bottom, 0, 2);
         return root;
+    }
+
+    private TableLayoutPanel BuildSidebarBrand()
+    {
+        var brand = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            ColumnCount = 2,
+            RowCount = 2,
+            Padding = new Padding(14, 16, 14, 10),
+            BackColor = UiTheme.AdminSidebarBackground
+        };
+        brand.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 52F));
+        brand.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+        brand.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        brand.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+        var logo = new PictureBox
+        {
+            Size = new Size(40, 40),
+            SizeMode = PictureBoxSizeMode.Zoom,
+            Margin = new Padding(0, 2, 0, 0),
+            BackColor = UiTheme.AdminSidebarBackground
+        };
+        try
+        {
+            logo.Image = AppBranding.GetHeaderImage();
+        }
+        catch
+        {
+            logo.Visible = false;
+        }
+
+        var title = new Label
+        {
+            Text = "ClinicVets",
+            Font = new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point),
+            ForeColor = Color.White,
+            AutoSize = true,
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.BottomLeft,
+            BackColor = UiTheme.AdminSidebarBackground,
+            UseCompatibleTextRendering = false
+        };
+        var sub = new Label
+        {
+            Text = "Veterinary clinic system",
+            Font = new Font("Segoe UI", 9.5F, FontStyle.Regular, GraphicsUnit.Point),
+            ForeColor = UiTheme.SidebarTextMutedOnDark,
+            AutoSize = true,
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.TopLeft,
+            MaximumSize = new Size(220, 0),
+            BackColor = UiTheme.AdminSidebarBackground,
+            UseCompatibleTextRendering = false
+        };
+
+        brand.Controls.Add(logo, 0, 0);
+        brand.SetRowSpan(logo, 2);
+        brand.Controls.Add(title, 1, 0);
+        brand.Controls.Add(sub, 1, 1);
+        return brand;
     }
 
     private Control BuildMainColumn()
@@ -219,7 +256,7 @@ public sealed class ClinicShellView : UserControl
         };
         if (_isQuickAccessDemo)
             col.RowStyles.Add(new RowStyle(SizeType.Absolute, DesktopBuildOptions.EnableDemoMode ? 54F : 36F));
-        col.RowStyles.Add(new RowStyle(SizeType.Absolute, 104F));
+        col.RowStyles.Add(new RowStyle(SizeType.Absolute, UiTheme.Layout.HeaderMinHeight + 8F));
         col.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 
         var headerRow = _isQuickAccessDemo ? 1 : 0;
@@ -291,50 +328,71 @@ public sealed class ClinicShellView : UserControl
             col.Controls.Add(demoStrip, 0, 0);
         }
 
-        var header = new Panel
+        var header = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
             BackColor = UiTheme.CardWhite,
-            Padding = new Padding(28, 16, 28, 12)
+            Padding = new Padding(20, 10, 20, 10),
+            ColumnCount = 3,
+            RowCount = 1
         };
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+        header.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+
         header.Paint += (_, e) =>
         {
             using var pen = new Pen(UiTheme.CardBorder, 1);
             e.Graphics.DrawLine(pen, 0, header.Height - 1, header.Width, header.Height - 1);
         };
 
-        _headerTitle.Font = new Font("Segoe UI", 21F, FontStyle.Bold, GraphicsUnit.Point);
+        var titleStack = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 2,
+            BackColor = UiTheme.CardWhite
+        };
+        titleStack.RowStyles.Add(new RowStyle(SizeType.Percent, 55F));
+        titleStack.RowStyles.Add(new RowStyle(SizeType.Percent, 45F));
+
+        _headerTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold, GraphicsUnit.Point);
         _headerTitle.ForeColor = UiTheme.TextDark;
-        _headerTitle.AutoSize = true;
-        _headerTitle.Location = new Point(28, 12);
+        _headerTitle.AutoSize = false;
+        _headerTitle.AutoEllipsis = true;
+        _headerTitle.Dock = DockStyle.Fill;
+        _headerTitle.TextAlign = ContentAlignment.MiddleLeft;
+        _headerTitle.BackColor = UiTheme.CardWhite;
+        _headerTitle.UseCompatibleTextRendering = false;
 
-        _headerSubtitle.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+        _headerSubtitle.Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point);
         _headerSubtitle.ForeColor = UiTheme.TextMuted;
-        _headerSubtitle.AutoSize = true;
-        _headerSubtitle.Location = new Point(28, 48);
-        _headerSubtitle.MaximumSize = new Size(520, 0);
+        _headerSubtitle.AutoSize = false;
+        _headerSubtitle.AutoEllipsis = true;
+        _headerSubtitle.Dock = DockStyle.Fill;
+        _headerSubtitle.TextAlign = ContentAlignment.TopLeft;
+        _headerSubtitle.BackColor = UiTheme.CardWhite;
+        _headerSubtitle.UseCompatibleTextRendering = false;
 
-        _clock.Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point);
+        titleStack.Controls.Add(_headerTitle, 0, 0);
+        titleStack.Controls.Add(_headerSubtitle, 0, 1);
+
+        _clock.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
         _clock.ForeColor = UiTheme.TextMuted;
-        _clock.AutoSize = true;
+        _clock.AutoSize = false;
+        _clock.Dock = DockStyle.Fill;
+        _clock.Margin = new Padding(0, 0, 16, 0);
         _clock.TextAlign = ContentAlignment.MiddleRight;
         _clock.BackColor = UiTheme.CardWhite;
+        _clock.UseCompatibleTextRendering = false;
 
         var profile = BuildProfileChip();
-        profile.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        profile.Margin = new Padding(0, 0, 0, 0);
 
-        header.Layout += (_, _) =>
-        {
-            _clock.Left = Math.Max(320, header.ClientSize.Width - profile.Width - _clock.Width - 48);
-            _clock.Top = (header.ClientSize.Height - _clock.Height) / 2;
-            profile.Left = header.ClientSize.Width - profile.Width - 28;
-            profile.Top = (header.ClientSize.Height - profile.Height) / 2;
-        };
-
-        header.Controls.Add(_headerTitle);
-        header.Controls.Add(_headerSubtitle);
-        header.Controls.Add(_clock);
-        header.Controls.Add(profile);
+        header.Controls.Add(titleStack, 0, 0);
+        header.Controls.Add(_clock, 1, 0);
+        header.Controls.Add(profile, 2, 0);
 
         _workspace.Controls.Add(_workspaceCard);
 
@@ -346,19 +404,25 @@ public sealed class ClinicShellView : UserControl
     private void UpdateClock() =>
         _clock.Text = $"{DateTime.Now:MMMM d, yyyy}   |   {DateTime.Now:h:mm tt}";
 
-    private Panel BuildProfileChip()
+    private TableLayoutPanel BuildProfileChip()
     {
-        var wrap = new Panel
+        var wrap = new TableLayoutPanel
         {
-            Width = 240,
-            Height = 56,
-            BackColor = Color.Transparent
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            ColumnCount = 3,
+            RowCount = 1,
+            BackColor = UiTheme.CardWhite
         };
+        wrap.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 48F));
+        wrap.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+        wrap.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 36F));
+        wrap.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 
         _profileAvatar = new Panel
         {
-            Size = new Size(44, 44),
-            Location = new Point(0, 6),
+            Dock = DockStyle.Fill,
+            Margin = new Padding(0, 4, 8, 4),
             BackColor = UiTheme.AccentMintSoft
         };
         _profileAvatar.Paint += (_, e) =>
@@ -367,13 +431,13 @@ public sealed class ClinicShellView : UserControl
             var letter = string.IsNullOrWhiteSpace(_employee.Username)
                 ? (_employee.FullName.Length > 0 ? _employee.FullName[0].ToString() : "?")
                 : _employee.Username.Trim()[0].ToString().ToUpperInvariant();
-            using var path = UiChrome.CreateRoundRectPath(new Rectangle(0, 0, _profileAvatar.Width - 1, _profileAvatar.Height - 1), 22);
+            using var path = UiChrome.CreateRoundRectPath(new Rectangle(0, 0, _profileAvatar.Width - 1, _profileAvatar.Height - 1), 20);
             using (var b = new SolidBrush(UiTheme.PrimaryButton))
                 e.Graphics.FillPath(b, path);
             TextRenderer.DrawText(
                 e.Graphics,
                 letter,
-                new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point),
+                new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point),
                 _profileAvatar.ClientRectangle,
                 Color.White,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
@@ -384,29 +448,52 @@ public sealed class ClinicShellView : UserControl
             ? (pr == EmployeeRole.Admin ? "Administrator" : EmployeeRoleNames.ToStoredString(pr))
             : eff.Role;
 
+        var textStack = new TableLayoutPanel
+        {
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            ColumnCount = 1,
+            RowCount = 2,
+            BackColor = UiTheme.CardWhite,
+            Margin = new Padding(0, 2, 8, 2)
+        };
+        textStack.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        textStack.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
         _profileNameLabel = new Label
         {
             Text = string.IsNullOrWhiteSpace(_employee.Username) ? _employee.FullName : _employee.Username,
-            Font = new Font("Segoe UI", 11.5F, FontStyle.Bold, GraphicsUnit.Point),
+            Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point),
             ForeColor = UiTheme.TextDark,
             AutoSize = true,
-            Location = new Point(52, 6),
-            MaximumSize = new Size(170, 0)
+            AutoEllipsis = true,
+            MaximumSize = new Size(200, 0),
+            BackColor = UiTheme.CardWhite,
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.BottomLeft,
+            UseCompatibleTextRendering = false
         };
         _profileRoleLabel = new Label
         {
             Text = roleText,
-            Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point),
+            Font = new Font("Segoe UI", 9.5F, FontStyle.Regular, GraphicsUnit.Point),
             ForeColor = UiTheme.TextMuted,
             AutoSize = true,
-            Location = new Point(52, 30)
+            AutoEllipsis = true,
+            MaximumSize = new Size(200, 0),
+            BackColor = UiTheme.CardWhite,
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.TopLeft,
+            UseCompatibleTextRendering = false
         };
+        textStack.Controls.Add(_profileNameLabel, 0, 0);
+        textStack.Controls.Add(_profileRoleLabel, 0, 1);
 
         var menuBtn = new Button
         {
             Text = "▾",
-            Size = new Size(28, 28),
-            Location = new Point(208, 14),
+            Dock = DockStyle.Fill,
+            Margin = new Padding(0, 6, 0, 6),
             FlatStyle = FlatStyle.Flat,
             ForeColor = UiTheme.TextMuted,
             TabStop = false,
@@ -418,10 +505,9 @@ public sealed class ClinicShellView : UserControl
         menu.Items.Add("Sign out", null, (_, _) => _shell.NavigateToLogin());
         menuBtn.Click += (_, _) => menu.Show(menuBtn, new Point(0, menuBtn.Height));
 
-        wrap.Controls.Add(_profileAvatar);
-        wrap.Controls.Add(_profileNameLabel);
-        wrap.Controls.Add(_profileRoleLabel);
-        wrap.Controls.Add(menuBtn);
+        wrap.Controls.Add(_profileAvatar, 0, 0);
+        wrap.Controls.Add(textStack, 1, 0);
+        wrap.Controls.Add(menuBtn, 2, 0);
         return wrap;
     }
 

@@ -45,10 +45,10 @@ public static class UiStyles
             Text = text,
             Font = HeroTitleFont,
             ForeColor = UiTheme.TextDark,
-            TextAlign = ContentAlignment.MiddleCenter,
-            AutoSize = false,
-            Height = 56,
-            Margin = new Padding(0, 6, 0, 4)
+            TextAlign = ContentAlignment.TopCenter,
+            AutoSize = true,
+            Margin = new Padding(0, 6, 0, 4),
+            UseCompatibleTextRendering = false
         };
 
     public static Label CreateHeroSubtitle(string text) =>
@@ -57,9 +57,9 @@ public static class UiStyles
             Text = text,
             Font = HeroSubtitleFont,
             ForeColor = UiTheme.TextMuted,
-            TextAlign = ContentAlignment.MiddleCenter,
-            AutoSize = false,
-            Height = 34,
-            Margin = new Padding(0, 0, 0, 24)
+            TextAlign = ContentAlignment.TopCenter,
+            AutoSize = true,
+            Margin = new Padding(0, 0, 0, 20),
+            UseCompatibleTextRendering = false
         };
 }

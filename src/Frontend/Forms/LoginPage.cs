@@ -11,7 +11,14 @@ public sealed class LoginPage : UserControl
     private readonly EmployeeAuthenticationService _auth;
     private readonly MainShellForm _shell;
     private readonly Panel _rightHost = new() { Dock = DockStyle.Fill };
-    private readonly Panel _body = new();
+    private readonly ModernCenteredCardHost _body = new()
+    {
+        Dock = DockStyle.Fill,
+        HorizontalPadding = 28,
+        VerticalPadding = 20,
+        MaxContentWidth = 520,
+        MinContentWidth = 300
+    };
     private readonly ModernCardPanel _card = new() { Padding = new Padding(4) };
     private readonly FlowLayoutPanel _flow = new();
     private readonly TextBox _email = new();
@@ -122,9 +129,7 @@ public sealed class LoginPage : UserControl
         _rightHost.BackColor = UiTheme.PageBackground;
         _rightHost.Paint += PaintBodyGradient;
 
-        _body.Dock = DockStyle.Fill;
         _body.BackColor = Color.Transparent;
-        _body.Resize += (_, _) => Relayout();
 
         _card.BackColor = Color.Transparent;
 
@@ -166,12 +171,13 @@ public sealed class LoginPage : UserControl
             "Default administrator: admin  ·  Admin123!" + Environment.NewLine +
             "Demo staff: vet@clinicvets.com  ·  Vet12!ab   |   secretary@clinicvets.com  ·  Sec12!ab";
         hint.ForeColor = UiTheme.SuccessText;
-        hint.Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point);
-        hint.AutoSize = false;
-        hint.TextAlign = ContentAlignment.MiddleCenter;
-        hint.Margin = new Padding(0, 20, 0, 0);
-        hint.Height = 56;
+        hint.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+        hint.AutoSize = true;
+        hint.TextAlign = ContentAlignment.TopCenter;
+        hint.Margin = new Padding(0, 16, 0, 0);
         hint.BackColor = UiTheme.SuccessBackground;
+        hint.Padding = new Padding(10, 10, 10, 10);
+        hint.UseCompatibleTextRendering = false;
 
         _flow.Controls.Add(_heroTitle);
         _flow.Controls.Add(_heroSubtitle);
@@ -194,8 +200,7 @@ public sealed class LoginPage : UserControl
         split.Controls.Add(_rightHost, 1, 0);
         Controls.Add(split);
 
-        Resize += (_, _) => Relayout();
-        Load += (_, _) => Relayout();
+        Load += (_, _) => SyncFlowChildWidths();
     }
 
     private static void PaintBrandPanel(object? sender, PaintEventArgs e)
@@ -228,19 +233,11 @@ public sealed class LoginPage : UserControl
 
     private void SyncFlowChildWidths()
     {
-        var inner = Math.Max(300, _flow.ClientSize.Width - _flow.Padding.Horizontal);
-        foreach (Control ctrl in _flow.Controls)
-        {
-            if (ctrl is Label { AutoSize: true } lbl && ctrl != _heroTitle && ctrl != _heroSubtitle && ctrl != _demoHint)
-                continue;
-            ctrl.Width = inner;
-        }
-    }
-
-    private void Relayout()
-    {
-        ResponsiveLayout.CenterCard(_body, _card, horizontalPadding: 40, maxCardWidth: 520, topOffset: 40, bottomPadding: 40);
-        SyncFlowChildWidths();
+        var inner = Math.Max(280, _flow.ClientSize.Width - _flow.Padding.Horizontal);
+        _heroTitle.MaximumSize = new Size(inner, 0);
+        _heroSubtitle.MaximumSize = new Size(inner, 0);
+        _demoHint.MaximumSize = new Size(inner, 0);
+        ResponsiveLayout.SyncFlowTopDownChildWidths(_flow, inner);
     }
 
     private void ClearFeedback() => _feedback.Clear();

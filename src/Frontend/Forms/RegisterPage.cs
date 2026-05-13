@@ -11,7 +11,14 @@ public sealed class RegisterPage : UserControl
     private readonly EmployeeRegistrationService _registration;
     private readonly MainShellForm _shell;
     private readonly Panel _rightHost = new() { Dock = DockStyle.Fill };
-    private readonly Panel _body = new();
+    private readonly ModernCenteredCardHost _body = new()
+    {
+        Dock = DockStyle.Fill,
+        HorizontalPadding = 24,
+        VerticalPadding = 16,
+        MaxContentWidth = 640,
+        MinContentWidth = 320
+    };
     private readonly ModernCardPanel _card = new() { Padding = new Padding(4) };
     private readonly FlowLayoutPanel _flow = new();
     private readonly TextBox _fullName = new();
@@ -124,9 +131,7 @@ public sealed class RegisterPage : UserControl
         _rightHost.BackColor = UiTheme.PageBackground;
         _rightHost.Paint += PaintBodyGradient;
 
-        _body.Dock = DockStyle.Fill;
         _body.BackColor = Color.Transparent;
-        _body.Resize += (_, _) => Relayout();
 
         _card.BackColor = Color.Transparent;
 
@@ -171,17 +176,21 @@ public sealed class RegisterPage : UserControl
         var buttonRow = new TableLayoutPanel
         {
             ColumnCount = 2,
-            Height = UiTheme.PrimaryButtonHeight + 12,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
             Margin = new Padding(0, 10, 0, 0)
         };
         buttonRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
         buttonRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+        buttonRow.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         buttonRow.Controls.Add(_save, 0, 0);
         buttonRow.Controls.Add(_cancel, 1, 0);
         _save.Dock = DockStyle.Fill;
         _cancel.Dock = DockStyle.Fill;
-        _save.Margin = new Padding(0, 0, 10, 0);
-        _cancel.Margin = new Padding(10, 0, 0, 0);
+        _save.Margin = new Padding(0, 0, 8, 0);
+        _cancel.Margin = new Padding(8, 0, 0, 0);
+        _save.Height = UiTheme.PrimaryButtonHeight;
+        _cancel.Height = UiTheme.PrimaryButtonHeight;
 
         var hint = new Label
         {
@@ -190,10 +199,11 @@ public sealed class RegisterPage : UserControl
                 "You will be able to sign in only after an administrator approves your registration and assigns your Employee ID.",
             ForeColor = UiTheme.TextMuted,
             Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point),
-            AutoSize = false,
-            Height = 56,
+            AutoSize = true,
             TextAlign = ContentAlignment.TopCenter,
-            Margin = new Padding(0, 14, 0, 0)
+            Margin = new Padding(0, 12, 0, 0),
+            Padding = new Padding(4, 4, 4, 4),
+            UseCompatibleTextRendering = false
         };
 
         _flow.Controls.Add(_heroTitle);
@@ -218,8 +228,7 @@ public sealed class RegisterPage : UserControl
         split.Controls.Add(_rightHost, 1, 0);
         Controls.Add(split);
 
-        Resize += (_, _) => Relayout();
-        Load += (_, _) => Relayout();
+        Load += (_, _) => SyncWidths();
     }
 
     private static void PaintBrandPanel(object? sender, PaintEventArgs e)
@@ -252,26 +261,10 @@ public sealed class RegisterPage : UserControl
 
     private void SyncWidths()
     {
-        var inner = Math.Max(320, _flow.ClientSize.Width - _flow.Padding.Horizontal);
-        foreach (Control c in _flow.Controls)
-        {
-            if (c is TableLayoutPanel row)
-            {
-                row.Width = inner;
-                continue;
-            }
-
-            if (c is Label { AutoSize: true } lbl && c != _heroTitle && c != _heroSubtitle)
-                continue;
-
-            c.Width = inner;
-        }
-    }
-
-    private void Relayout()
-    {
-        ResponsiveLayout.CenterCard(_body, _card, 40, 640, 36, 40);
-        SyncWidths();
+        var inner = Math.Max(300, _flow.ClientSize.Width - _flow.Padding.Horizontal);
+        _heroTitle.MaximumSize = new Size(inner, 0);
+        _heroSubtitle.MaximumSize = new Size(inner, 0);
+        ResponsiveLayout.SyncFlowTopDownChildWidths(_flow, inner);
     }
 
     private async Task SaveAsync()
