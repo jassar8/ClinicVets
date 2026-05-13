@@ -1,9 +1,9 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Color x:Key="CvPageBackground">#BFEFF7</Color>
+    <Color x:Key="CvPageBackground">#D4F4FC</Color>
     <SolidColorBrush x:Key="CvPageBackgroundBrush" Color="{StaticResource CvPageBackground}" />
 
-    <Color x:Key="CvShellBackground">#F3F6FB</Color>
+    <Color x:Key="CvShellBackground">#FFFFFF</Color>
     <SolidColorBrush x:Key="CvShellBackgroundBrush" Color="{StaticResource CvShellBackground}" />
 
     <Color x:Key="CvCardBorder">#69C5D8</Color>

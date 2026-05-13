@@ -1,7 +1,7 @@
 # TEMP_TEST_CHECKLIST — Internal pre-submission (not formal teacher tests)
 
 **Date:** 2026-05-14  
-**App:** ClinicVets v4 (Avalonia) — `run testapp/ClinicVetsAvalonia.csproj` → **`ClinicVets.exe`**  
+**App:** ClinicVets v10 (Avalonia) — `run testapp/ClinicVetsAvalonia.csproj` → **`ClinicVets.exe`**  
 **Scope:** Black-box (user-visible) checks where automation or live EXE smoke was possible; white-box (code, DB, services) via `dotnet test` + static review.
 
 ---
@@ -22,8 +22,8 @@
 |----|-------------|------|-------|----------|--------|--------|-------------|----------|
 | BB-01 | App opens (RunApp EXE) | Black-box | `dotnet build ClinicVets.sln -c Release`; publish; `Start-Process RunApp\ClinicVets.exe`; wait 4s | Process up; `MainWindowHandle != 0` | Process alive; handle non-zero | **Pass** | — | — |
 | BB-02 | App opens (published EXE) | Black-box | `Remove-Item run testapp\Publish -Recurse -Force`; `.\run testapp\Publish-Avalonia-WinX64.ps1`; start `Publish\ClinicVets.exe` | Same as BB-01 | Publish script exit 0; EXE path valid (same payload as RunApp after sync) | **Pass** | — | — |
-| BB-03 | Main window title shows v4 | Black-box | EXE smoke + `GetWindowText` on main handle | Title contains `ClinicVets v4` | Title string contained `ClinicVets v4` (Hebrew prefix may render mojibake in console only) | **Pass** | — | — |
-| BB-04 | EXE file version is v4 | Black-box | `(Get-Item RunApp\ClinicVets.exe).VersionInfo.FileVersion` | `4.0.0.0` | `4.0.0.0` | **Pass** | — | — |
+| BB-03 | Main window title shows v10 | Black-box | EXE smoke + `GetWindowText` on main handle | Title contains `ClinicVets v10` | Title contained `ClinicVets v10` (Hebrew mojibake in console OK) | **Pass** | — | — |
+| BB-04 | EXE file version is v10 | Black-box | `(Get-Item RunApp\ClinicVets.exe).VersionInfo.FileVersion` | `10.0.0.0` | `10.0.0.0` | **Pass** | — | — |
 | BB-05 | Login succeeds (valid user) | Black-box | Same credential match as login button (`admin` / `1234`) | Employee found | `AppDataIntegrationTests.Login_predicate_matches_valid_credentials` | **Pass (proxy)** | — | — |
 | BB-06 | Login fails (wrong password) | Black-box | Wrong password predicate | No employee | `Login_predicate_rejects_wrong_password` | **Pass (proxy)** | — | — |
 | BB-07 | Default users exist | Black-box | After fresh DB seed | `admin`, `vet` with roles | `Default_seed_creates_admin_and_vet_with_expected_passwords` | **Pass (proxy)** | — | — |
@@ -52,7 +52,7 @@
 | WB-03 | Avalonia unit suite | White-box | `dotnet test Tests\ClinicVets.Avalonia.Unit -c Release` | All pass | 42 passed | **Pass** | — | — |
 | WB-04 | App entry → MainWindow | White-box | Read `App.axaml.cs` | `desktop.MainWindow = new MainWindow()` | Matches | **Pass** (inspect) | — | — |
 | WB-05 | No WPF `StartupUri` misuse | White-box | Read `App.axaml` | Styles/resources only | Matches | **Pass** (inspect) | — | — |
-| WB-06 | Theme `avares://` paths | White-box | `App.axaml` → `avares://ClinicVets/Styles/...` | Match `<AssemblyName>ClinicVets</AssemblyName>` | Match | **Pass** (inspect) | — | — |
+| WB-06 | Theme `avares://` paths | White-box | `App.axaml` → `avares://ClinicVets/Assets/Styles/...` | Match `<AssemblyName>ClinicVets</AssemblyName>` | Match | **Pass** (inspect) | — | — |
 | WB-07 | Medicine filter logic single source | White-box | `MedicationsView` uses `MedicationSearchFilter.Matches` | One implementation | Refactored to `MedicationSearchFilter.cs` | **Pass** | Duplicated filter logic risk | Extracted `MedicationSearchFilter` + tests |
 | WB-08 | SQLite isolation for tests | White-box | `DbPaths.SetDatabaseFolderOverrideForTests` | Temp folder only | Implemented; integration tests use unique dirs | **Pass** | Tests would hit real `%AppData%` | Added override API |
 | WB-09 | Test parallelization safety | White-box | `AssemblyInfo.cs` | No races on static `AppData` / `DbPaths` | `[assembly: CollectionBehavior(DisableTestParallelization = true)]` | **Pass** | — | — |

@@ -15,7 +15,7 @@ The **only** supported end-user app is in **`run testapp/`**:
 | Run from source | `run testapp/Run.bat` or `dotnet run --project "run testapp/ClinicVetsAvalonia.csproj"` |
 | Publish EXE | `run testapp/Publish-Avalonia-WinX64.ps1` → **`run testapp/Publish/ClinicVets.exe`** (and **`RunApp/ClinicVets.exe`** after a full solution build, which syncs from this project) |
 
-See **`run testapp/README.md`** for the folder layout (Views, Repositories, `Styles/`, `Database/`, etc.).
+See **`run testapp/README.md`** for the folder layout (Views, Repositories, `Assets/Styles/`, `Database/`, etc.).
 
 ## Legacy (not the hand-in EXE)
 

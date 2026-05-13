@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <!-- Official v4 desktop app (Avalonia). Output EXE name: ClinicVets.exe — RunApp mirrors publish/build. -->
+  <!-- ClinicVets v10 (Avalonia): your app from v1/v2/v3 lineage on branch v10 — not updateapp. EXE: ClinicVets.exe → RunApp. -->
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0-windows</TargetFramework>
@@ -7,10 +7,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <AssemblyName>ClinicVets</AssemblyName>
-    <Version>4.0.0</Version>
-    <AssemblyVersion>4.0.0.0</AssemblyVersion>
-    <FileVersion>4.0.0.0</FileVersion>
-    <InformationalVersion>4.0.0</InformationalVersion>
+    <Version>10.0.0</Version>
+    <AssemblyVersion>10.0.0.0</AssemblyVersion>
+    <FileVersion>10.0.0.0</FileVersion>
+    <InformationalVersion>10.0.0</InformationalVersion>
     <ApplicationTitle>ClinicVets</ApplicationTitle>
     <Product>ClinicVets</Product>
     <DefaultItemExcludes>$(DefaultItemExcludes);Publish/**;../src/**;../Tests/**;../tests/**;../tooling/**;../Documentation/**;../database/**;../docs/**;../assets/app/**;../assets/branding/**;../RunApp/**;../PublishedApp/**;../PublishedApp-Avalonia/**;../ClinicManagementSystem.app/**</DefaultItemExcludes>
