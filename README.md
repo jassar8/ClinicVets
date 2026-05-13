@@ -13,7 +13,8 @@ Veterinary clinic management — **Windows desktop** app (.NET 9, WinForms).
 | **Shared assets** | `assets/` — branding (`branding/`), app icon (`app/`) |
 | **Persistence notes** | `database/README.md` — where JSON data is stored at runtime |
 | **Tooling** | `tooling/BuildIcon` — optional dev utility to rebuild the `.ico` |
-| **Published EXE** | `PublishedApp/ClinicVets.exe` (created by the publish script) |
+| **Quick run (after build/publish)** | `RunApp/ClinicVets.exe` — synced automatically from the latest build or publish output |
+| **Published EXE** | `PublishedApp/ClinicVets.exe` (created by `publish-win-x64.ps1`; also copied to `RunApp/`) |
 
 ## Run from source
 

@@ -35,4 +35,30 @@
     <ProjectReference Include="..\Backend\ClinicVets.Infrastructure\ClinicVets.Infrastructure.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <RunAppSyncScript>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\docs\Scripts\Sync-RunApp.ps1'))</RunAppSyncScript>
+    <RunAppDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\RunApp'))</RunAppDir>
+  </PropertyGroup>
+
+  <!-- Mirror build output to repo RunApp/ so ClinicVets.exe is always easy to find after build. -->
+  <Target Name="SyncRunAppAfterBuild" AfterTargets="Build">
+    <PropertyGroup>
+      <_TargetDirTrimmed>$([System.IO.Path]::GetFullPath('$(TargetDir.TrimEnd('\'))'))</_TargetDirTrimmed>
+    </PropertyGroup>
+    <Exec
+      Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(RunAppSyncScript)&quot; -Source &quot;$(_TargetDirTrimmed)&quot; -RunAppRoot &quot;$(RunAppDir)&quot;"
+      LogStandardErrorAsError="true" />
+  </Target>
+
+  <!-- After publish (including publish-win-x64.ps1), RunApp matches the published layout. -->
+  <Target Name="SyncRunAppAfterPublish" AfterTargets="Publish">
+    <PropertyGroup>
+      <_PublishDirTrimmed Condition="'$(PublishDir)' != ''">$([System.IO.Path]::GetFullPath('$(PublishDir.TrimEnd('\'))'))</_PublishDirTrimmed>
+    </PropertyGroup>
+    <Exec
+      Condition="'$(PublishDir)' != ''"
+      Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(RunAppSyncScript)&quot; -Source &quot;$(_PublishDirTrimmed)&quot; -RunAppRoot &quot;$(RunAppDir)&quot;"
+      LogStandardErrorAsError="true" />
+  </Target>
+
 </Project>

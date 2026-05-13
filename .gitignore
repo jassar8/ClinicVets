@@ -4,6 +4,10 @@
 publish/
 PublishedApp/
 
+# Runnable mirror at repo root (populated by build/publish; keep README only in Git)
+RunApp/**
+!RunApp/README.md
+
 # User-specific IDE settings
 .vs/
 .vscode/

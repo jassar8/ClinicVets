@@ -22,7 +22,17 @@ if ($LASTEXITCODE -ne 0) {
     throw "Publish failed. Close any running ClinicVets.exe, then run this script again."
 }
 
+# MSBuild AfterTargets=Publish also syncs RunApp; call again so RunApp matches this script's output folder if paths differ.
+$sync = Join-Path $PSScriptRoot "docs\Scripts\Sync-RunApp.ps1"
+$runApp = Join-Path $PSScriptRoot "RunApp"
+& powershell -NoProfile -ExecutionPolicy Bypass -File $sync -Source (Resolve-Path $publishPath).Path -RunAppRoot (Resolve-Path $runApp).Path
+
 Write-Host ""
 Write-Host "Publish complete." -ForegroundColor Green
 Write-Host "Run this file (keep the whole PublishedApp folder together):" -ForegroundColor Yellow
 Write-Host "$publishPath\ClinicVets.exe"
+Write-Host ""
+Write-Host "Same build is mirrored at the repo root for quick access:" -ForegroundColor Green
+Write-Host (Join-Path $PSScriptRoot "RunApp\ClinicVets.exe")
+Write-Host "Optional desktop shortcut:" -ForegroundColor Cyan
+Write-Host "  powershell -ExecutionPolicy Bypass -File .\docs\Scripts\Create-ClinicVets-DesktopShortcut.ps1"

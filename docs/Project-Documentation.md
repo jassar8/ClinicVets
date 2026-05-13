@@ -106,7 +106,8 @@ All business logic runs in **C#** (no Python, Node.js, or web-server backend). T
 | Tests | `Tests/ClinicVets.Tests/` (`Functional/`, `Integration/`, `GUI/`) | Automated tests (xUnit) |
 | Branding source | `assets/branding/` | Logo PNG; multi-size `.ico` is built to `assets/app/ClinicVets.ico` |
 | Persistence overview | `database/README.md` | Where runtime JSON files live |
-| Published app | `PublishedApp/` | Release output after `publish-win-x64.ps1` (run `ClinicVets.exe` here) |
+| Published app | `PublishedApp/` | Release output after `publish-win-x64.ps1` |
+| Quick launch copy | `RunApp/` | After each **build** or **publish** of the desktop project, outputs are mirrored here (`RunApp/ClinicVets.exe`). |
 
 ## Running As Standalone Windows EXE (Demo)
 
@@ -115,10 +116,11 @@ The course demo runs as a **WinForms desktop app** (no browser, no localhost web
 1. Open PowerShell in the project root.
 2. Run:
    `.\publish-win-x64.ps1`
-3. After publish completes, double-click:
-   `.\PublishedApp\ClinicVets.exe`
+3. After publish completes, double-click either:
+   - `.\RunApp\ClinicVets.exe` (recommended — always at repo root after build/publish), or
+   - `.\PublishedApp\ClinicVets.exe`
 
-Keep the entire `PublishedApp` folder together when copying to another PC.
+Keep the entire `RunApp` or `PublishedApp` folder together when copying to another PC (self-contained publish includes the runtime).
 
 Employee data is saved locally under:
 `%LocalAppData%\ClinicVets\employees.json`
