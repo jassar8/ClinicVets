@@ -1,3 +1,4 @@
+using ClinicVets.Application.Interfaces;
 using ClinicVets.Application.Services;
 using ClinicVets.Core.Entities;
 using ClinicVets.Desktop.UI;
@@ -11,12 +12,17 @@ public sealed class MainShellForm : Form
 {
     private readonly EmployeeAuthenticationService _auth;
     private readonly EmployeeRegistrationService _registration;
+    private readonly IEmployeeRepository _employees;
     private readonly Panel _host = new() { Dock = DockStyle.Fill };
 
-    public MainShellForm(EmployeeAuthenticationService auth, EmployeeRegistrationService registration)
+    public MainShellForm(
+        EmployeeAuthenticationService auth,
+        EmployeeRegistrationService registration,
+        IEmployeeRepository employees)
     {
         _auth = auth;
         _registration = registration;
+        _employees = employees;
 
         Text = "ClinicVets";
         Icon = AppBranding.CreateWindowIcon();
@@ -55,7 +61,7 @@ public sealed class MainShellForm : Form
     {
         AcceptButton = null;
         CancelButton = null;
-        var page = new DashboardPage(employee, this);
+        var page = new DashboardPage(employee, this, _registration, _employees);
         SwapContent(page);
     }
 

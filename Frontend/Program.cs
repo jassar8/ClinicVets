@@ -18,7 +18,7 @@ static class Program
             var repository = new JsonFileEmployeeRepository();
             var auth = new EmployeeAuthenticationService(repository);
             var registration = new EmployeeRegistrationService(repository);
-            global::System.Windows.Forms.Application.Run(new MainShellForm(auth, registration));
+            global::System.Windows.Forms.Application.Run(new MainShellForm(auth, registration, repository));
         }
         catch (Exception ex)
         {

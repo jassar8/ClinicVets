@@ -12,18 +12,17 @@ public class EmployeeAuthenticationService
         _employeeRepository = employeeRepository;
     }
 
-    public async Task<(bool IsSuccess, string Message, Employee? Employee)> LoginAsync(string email, string password)
+    public async Task<(bool IsSuccess, string Message, Employee? Employee)> LoginAsync(string loginIdentifier, string password)
     {
-        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        if (string.IsNullOrWhiteSpace(loginIdentifier) || string.IsNullOrWhiteSpace(password))
         {
-            return (false, "Email and password are required.", null);
+            return (false, "Sign-in name and password are required.", null);
         }
 
-        var normalizedEmail = email.Trim().ToLowerInvariant();
-        var employee = await _employeeRepository.GetByEmailAsync(normalizedEmail);
+        var employee = await _employeeRepository.GetByLoginIdentifierAsync(loginIdentifier);
         if (employee is null || !string.Equals(employee.Password, password.Trim(), StringComparison.Ordinal))
         {
-            return (false, "Invalid email or password.", null);
+            return (false, "Invalid sign-in name or password.", null);
         }
 
         return (true, "Login successful.", employee);

@@ -22,12 +22,23 @@ public class EmployeeRegistrationServiceTests
     {
         var repo = new FakeEmployeeRepository();
         var sut = new EmployeeRegistrationService(repo);
-        await sut.RegisterAsync("Alice", "dup@x.com", "Abcd1234!", "Administrator");
+        await sut.RegisterAsync("Alice", "dup@x.com", "Abcd1234!", "Secretary");
 
         var (ok, message) = await sut.RegisterAsync("Bob", "dup@x.com", "Efgh5678@", "Secretary");
 
         Assert.False(ok);
         Assert.Contains("already", message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task RegisterAsync_rejects_administrator_role_for_self_service()
+    {
+        var sut = new EmployeeRegistrationService(new FakeEmployeeRepository());
+
+        var (ok, message) = await sut.RegisterAsync("Eve", "eve@x.com", "Abcd1234!", "Admin");
+
+        Assert.False(ok);
+        Assert.Contains("self-registration", message, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -50,5 +61,25 @@ public class EmployeeRegistrationServiceTests
 
         Assert.False(ok);
         Assert.Contains("Password", message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task RegisterAsync_allows_admin_role_when_acting_admin()
+    {
+        var repo = new FakeEmployeeRepository();
+        var admin = new ClinicVets.Core.Entities.Employee
+        {
+            FullName = "Admin User",
+            Email = "admin@x.com",
+            Password = "Admin1!zz",
+            Role = "Admin"
+        };
+        await repo.AddAsync(admin);
+        var sut = new EmployeeRegistrationService(repo);
+
+        var (ok, message) = await sut.RegisterAsync("Neo", "neo@x.com", "Abcd1234!", "Admin", admin);
+
+        Assert.True(ok);
+        Assert.Contains("success", message, StringComparison.OrdinalIgnoreCase);
     }
 }

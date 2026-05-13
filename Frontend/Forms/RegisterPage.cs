@@ -67,9 +67,10 @@ public sealed class RegisterPage : UserControl
         _passwordHost = new RoundedInputHost(_password);
 
         _role.DropDownStyle = ComboBoxStyle.DropDownList;
-        _role.Items.AddRange(new object[] { "Veterinarian", "Secretary", "Administrator" });
+        _role.Items.AddRange(new object[] { "Secretary", "Veterinarian" });
         UiStyles.ApplyComboInner(_role);
         _roleHost = new RoundedComboHost(_role);
+        _role.SelectedIndex = 0;
 
         _feedback.Clear();
 

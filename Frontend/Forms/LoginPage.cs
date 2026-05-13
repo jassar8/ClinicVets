@@ -52,9 +52,9 @@ public sealed class LoginPage : UserControl
         _flow.SizeChanged += (_, _) => SyncFlowChildWidths();
 
         _heroTitle = UiStyles.CreateHeroTitle("Welcome back");
-        _heroSubtitle = UiStyles.CreateHeroSubtitle("Sign in with your clinic email and password");
+        _heroSubtitle = UiStyles.CreateHeroSubtitle("Sign in with your clinic email (or username) and password");
 
-        _email.PlaceholderText = "Work email (e.g. name@clinicvets.com)";
+        _email.PlaceholderText = "Email or username (e.g. admin or name@clinicvets.com)";
         _password.PlaceholderText = "Your password";
         _password.UseSystemPasswordChar = true;
 
@@ -72,18 +72,20 @@ public sealed class LoginPage : UserControl
         _register.Click += (_, _) => _shell.NavigateToRegister();
 
         var hint = _demoHint;
-        hint.Text = "Demo account: vet@clinicvets.com  ·  Vet12!ab";
+        hint.Text =
+            "Default administrator: admin  ·  Admin123!" + Environment.NewLine +
+            "Demo staff: vet@clinicvets.com  ·  Vet12!ab   |   secretary@clinicvets.com  ·  Sec12!ab";
         hint.ForeColor = UiTheme.SuccessText;
         hint.Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point);
         hint.AutoSize = false;
         hint.TextAlign = ContentAlignment.MiddleCenter;
         hint.Margin = new Padding(0, 20, 0, 0);
-        hint.Height = 44;
+        hint.Height = 56;
         hint.BackColor = Color.FromArgb(232, 246, 238);
 
         _flow.Controls.Add(_heroTitle);
         _flow.Controls.Add(_heroSubtitle);
-        _flow.Controls.Add(UiStyles.CreateFieldCaption("Email"));
+        _flow.Controls.Add(UiStyles.CreateFieldCaption("Email or username"));
         _flow.Controls.Add(_emailHost);
         _flow.Controls.Add(UiStyles.CreateFieldCaption("Password"));
         _flow.Controls.Add(_passwordHost);

@@ -1,4 +1,7 @@
 using System.Drawing.Drawing2D;
+using ClinicVets.Application.Interfaces;
+using ClinicVets.Application.Security;
+using ClinicVets.Application.Services;
 using ClinicVets.Core.Entities;
 using ClinicVets.Desktop.UI;
 
@@ -6,26 +9,48 @@ namespace ClinicVets.Desktop.Forms;
 
 public sealed class DashboardPage : UserControl
 {
+    private static readonly DashboardSection[] NavOrder =
+    [
+        DashboardSection.Home,
+        DashboardSection.Visits,
+        DashboardSection.Patients,
+        DashboardSection.Billing,
+        DashboardSection.Staff
+    ];
+
     private readonly Employee _employee;
     private readonly MainShellForm _shell;
+    private readonly EmployeeRegistrationService _registration;
+    private readonly IEmployeeRepository _repository;
     private readonly Panel _sidebar = new();
     private readonly Panel _contentHost = new();
     private readonly Panel _card = new();
-    private readonly Label _detailInfo;
-    private readonly Label _welcomeHeading;
-    private readonly Label _metaLine;
+    private readonly Panel _viewHost = new();
+    private readonly Dictionary<DashboardSection, Panel> _navPanels = new();
+    private readonly Dictionary<DashboardSection, Control> _viewCache = new();
+    private DashboardSection _activeSection = DashboardSection.Home;
 
-    public DashboardPage(Employee employee, MainShellForm shell)
+    public DashboardPage(
+        Employee employee,
+        MainShellForm shell,
+        EmployeeRegistrationService registration,
+        IEmployeeRepository repository)
     {
         _employee = employee;
         _shell = shell;
+        _registration = registration;
+        _repository = repository;
 
         SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
         UpdateStyles();
         BackColor = UiTheme.PageBackground;
         Font = shell.Font;
 
-        var header = UiHeaderBar.Create($"Signed in as {_employee.FullName}");
+        var roleLabel = EmployeeRoleNames.TryParse(_employee.Role, out var parsed)
+            ? EmployeeRoleNames.ToStoredString(parsed)
+            : _employee.Role;
+
+        var header = UiHeaderBar.Create($"Signed in as {_employee.FullName} — {roleLabel}");
 
         var split = new TableLayoutPanel
         {
@@ -72,7 +97,7 @@ public sealed class DashboardPage : UserControl
         });
         topBrand.Controls.Add(new Label
         {
-            Text = _employee.Role,
+            Text = roleLabel,
             Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point),
             ForeColor = UiTheme.PrimaryButton,
             AutoSize = true,
@@ -88,10 +113,16 @@ public sealed class DashboardPage : UserControl
             Padding = new Padding(12, 8, 12, 8),
             BackColor = Color.Transparent
         };
-        navFlow.Controls.Add(MakeNavPill("Home", active: true));
-        navFlow.Controls.Add(MakeNavGhost("Visits (coming soon)"));
-        navFlow.Controls.Add(MakeNavGhost("Patients (coming soon)"));
-        navFlow.Controls.Add(MakeNavGhost("Billing (coming soon)"));
+
+        foreach (var section in NavOrder)
+        {
+            if (!RolePermissions.CanAccessDashboardSection(_employee, section))
+                continue;
+
+            var nav = MakeNavEntry(section, SectionCaption(section), section == DashboardSection.Home);
+            _navPanels[section] = nav;
+            navFlow.Controls.Add(nav);
+        }
 
         var bottomBar = new Panel
         {
@@ -120,12 +151,123 @@ public sealed class DashboardPage : UserControl
         _card.BackColor = Color.Transparent;
         _card.Paint += (_, e) => UiChrome.PaintCardWithShadow(_card, e, UiTheme.CardCornerRadius);
 
+        _viewHost.Dock = DockStyle.Fill;
+        _viewHost.BackColor = Color.Transparent;
+        _viewHost.Padding = new Padding(40, 36, 40, 32);
+        _card.Controls.Add(_viewHost);
+
+        split.Controls.Add(_sidebar, 0, 0);
+        split.Controls.Add(_contentHost, 1, 0);
+        _contentHost.Controls.Add(_card);
+
+        var pageRoot = new Panel { Dock = DockStyle.Fill, BackColor = UiTheme.PageBackground };
+        pageRoot.Paint += PaintBodyGradient;
+        pageRoot.Controls.Add(split);
+        pageRoot.Controls.Add(header);
+
+        Controls.Add(pageRoot);
+
+        Resize += (_, _) => Relayout();
+        Load += (_, _) =>
+        {
+            Relayout();
+            SelectSection(DashboardSection.Home);
+        };
+    }
+
+    private Panel MakeNavEntry(DashboardSection section, string caption, bool active)
+    {
+        var p = new Panel
+        {
+            Width = UiTheme.SidebarWidth - 36,
+            Height = 46,
+            Margin = new Padding(8, 4, 8, 4),
+            BackColor = active ? UiTheme.SidebarItemActive : Color.Transparent,
+            Cursor = Cursors.Hand,
+            Tag = section
+        };
+
+        var lbl = new Label
+        {
+            Text = caption,
+            Font = new Font(
+                "Segoe UI",
+                active ? 12.5F : 11.5F,
+                active ? FontStyle.Bold : FontStyle.Regular,
+                GraphicsUnit.Point),
+            ForeColor = active ? UiTheme.PrimaryButton : UiTheme.SidebarMuted,
+            AutoSize = true,
+            Location = new Point(18, 12),
+            BackColor = Color.Transparent,
+            Cursor = Cursors.Hand
+        };
+
+        void OnSelect(object? sender, EventArgs args) => SelectSection(section);
+        p.Click += OnSelect;
+        lbl.Click += OnSelect;
+
+        p.Controls.Add(lbl);
+        return p;
+    }
+
+    private void SelectSection(DashboardSection section)
+    {
+        if (!RolePermissions.CanAccessDashboardSection(_employee, section))
+            return;
+
+        _activeSection = section;
+
+        foreach (var kv in _navPanels)
+        {
+            var key = kv.Key;
+            var panel = kv.Value;
+            var isActive = key == section;
+            panel.BackColor = isActive ? UiTheme.SidebarItemActive : Color.Transparent;
+            if (panel.Controls.Count > 0 && panel.Controls[0] is Label lbl)
+            {
+                lbl.Font = new Font(
+                    "Segoe UI",
+                    isActive ? 12.5F : 11.5F,
+                    isActive ? FontStyle.Bold : FontStyle.Regular,
+                    GraphicsUnit.Point);
+                lbl.ForeColor = isActive ? UiTheme.PrimaryButton : UiTheme.SidebarMuted;
+            }
+        }
+
+        while (_viewHost.Controls.Count > 0)
+        {
+            var old = _viewHost.Controls[0];
+            _viewHost.Controls.Remove(old);
+        }
+
+        var next = GetOrCreateView(section);
+        next.Dock = DockStyle.Fill;
+        _viewHost.Controls.Add(next);
+    }
+
+    private Control GetOrCreateView(DashboardSection section)
+    {
+        if (_viewCache.TryGetValue(section, out var cached))
+            return cached;
+
+        Control created = section switch
+        {
+            DashboardSection.Home => BuildHomeView(),
+            DashboardSection.Staff => new EmployeeStaffPanel(_employee, _repository, _registration),
+            _ => BuildPlaceholderView(section)
+        };
+
+        _viewCache[section] = created;
+        return created;
+    }
+
+    private Control BuildHomeView()
+    {
         var root = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
             ColumnCount = 1,
             RowCount = 3,
-            Padding = new Padding(40, 36, 40, 32),
             BackColor = Color.Transparent
         };
         root.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
@@ -135,7 +277,11 @@ public sealed class DashboardPage : UserControl
 
         var nameParts = _employee.FullName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var shortName = nameParts.Length > 0 ? nameParts[0] : "there";
-        _welcomeHeading = new Label
+        var loginLine = string.IsNullOrWhiteSpace(_employee.Username)
+            ? $"{_employee.Email}   ·   {_employee.Role}"
+            : $"{_employee.Username}   ·   {_employee.Email}   ·   {_employee.Role}";
+
+        var welcomeHeading = new Label
         {
             Text = $"Hello, {shortName}",
             Font = new Font("Segoe UI", 26F, FontStyle.Bold, GraphicsUnit.Point),
@@ -145,9 +291,9 @@ public sealed class DashboardPage : UserControl
             TextAlign = ContentAlignment.MiddleLeft,
             Margin = new Padding(0, 0, 0, 6)
         };
-        _metaLine = new Label
+        var metaLine = new Label
         {
-            Text = $"{_employee.Email}   ·   {_employee.Role}",
+            Text = loginLine,
             ForeColor = UiTheme.TextMuted,
             AutoSize = false,
             Height = 32,
@@ -164,8 +310,8 @@ public sealed class DashboardPage : UserControl
             Margin = new Padding(0, 0, 0, 8),
             BackColor = Color.Transparent
         };
-        introStack.Controls.Add(_welcomeHeading);
-        introStack.Controls.Add(_metaLine);
+        introStack.Controls.Add(welcomeHeading);
+        introStack.Controls.Add(metaLine);
 
         var metrics = new TableLayoutPanel
         {
@@ -180,7 +326,7 @@ public sealed class DashboardPage : UserControl
         metrics.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
         var sage = Color.FromArgb(64, 148, 112);
         var m0 = MakeMetricTile("Session", "Active", sage, new Padding(0, 0, 12, 0));
-        var m1 = MakeMetricTile("Workspace", "Employee", UiTheme.PrimaryButton, new Padding(6, 0, 6, 0));
+        var m1 = MakeMetricTile("Workspace", "ClinicVets", UiTheme.PrimaryButton, new Padding(6, 0, 6, 0));
         var m2 = MakeMetricTile("Build", "Course demo", UiTheme.TextMuted, new Padding(12, 0, 0, 0));
         metrics.Controls.Add(m0, 0, 0);
         metrics.Controls.Add(m1, 1, 0);
@@ -189,11 +335,11 @@ public sealed class DashboardPage : UserControl
         m1.Dock = DockStyle.Fill;
         m2.Dock = DockStyle.Fill;
 
-        _detailInfo = new Label
+        var detailInfo = new Label
         {
             Text =
-                "This dashboard uses a single-window layout with a sidebar for future modules " +
-                "(visits, patients, billing). Extend the content area while keeping the same modern shell.",
+                "This dashboard uses a single-window layout with a role-aware sidebar. " +
+                "Administrators see every module; other roles only see the areas that match their responsibilities.",
             ForeColor = UiTheme.TextMuted,
             Font = new Font("Segoe UI", 11.5F, FontStyle.Regular, GraphicsUnit.Point),
             AutoSize = true,
@@ -203,77 +349,65 @@ public sealed class DashboardPage : UserControl
 
         root.Controls.Add(introStack, 0, 0);
         root.Controls.Add(metrics, 0, 1);
-        root.Controls.Add(_detailInfo, 0, 2);
+        root.Controls.Add(detailInfo, 0, 2);
 
-        _card.Controls.Add(root);
-        _contentHost.Controls.Add(_card);
-
-        split.Controls.Add(_sidebar, 0, 0);
-        split.Controls.Add(_contentHost, 1, 0);
-
-        var pageRoot = new Panel { Dock = DockStyle.Fill, BackColor = UiTheme.PageBackground };
-        pageRoot.Paint += PaintBodyGradient;
-        pageRoot.Controls.Add(split);
-        pageRoot.Controls.Add(header);
-
-        Controls.Add(pageRoot);
-
-        Resize += (_, _) => Relayout();
-        Load += (_, _) => Relayout();
+        return root;
     }
 
-    private static Control MakeNavPill(string text, bool active)
+    private static Control BuildPlaceholderView(DashboardSection section)
     {
-        var p = new Panel
+        var title = SectionLongTitle(section);
+        var body = SectionPlaceholderBody(section);
+
+        var stack = new FlowLayoutPanel
         {
-            Width = UiTheme.SidebarWidth - 36,
-            Height = 46,
-            Margin = new Padding(8, 4, 8, 4),
-            BackColor = active ? UiTheme.SidebarItemActive : Color.Transparent,
-            Cursor = Cursors.Default
-        };
-        p.Controls.Add(new Label
-        {
-            Text = text,
-            Font = new Font("Segoe UI", 12.5F, FontStyle.Bold, GraphicsUnit.Point),
-            ForeColor = UiTheme.PrimaryButton,
-            AutoSize = true,
-            Location = new Point(18, 12),
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.TopDown,
+            WrapContents = false,
+            AutoScroll = true,
+            Padding = new Padding(4),
             BackColor = Color.Transparent
-        });
-        return p;
-    }
-
-    private static Control MakeNavGhost(string text)
-    {
-        var lbl = new Label
-        {
-            Text = text,
-            Font = new Font("Segoe UI", 11.5F, FontStyle.Regular, GraphicsUnit.Point),
-            ForeColor = UiTheme.SidebarMuted,
-            AutoSize = false,
-            Height = 40,
-            Width = UiTheme.SidebarWidth - 36,
-            Margin = new Padding(20, 2, 8, 2),
-            TextAlign = ContentAlignment.MiddleLeft,
-            Cursor = Cursors.Default
         };
-        return lbl;
+
+        var heading = UiStyles.CreateHeroTitle(title);
+        var subtitle = UiStyles.CreateHeroSubtitle(body);
+        stack.Controls.Add(heading);
+        stack.Controls.Add(subtitle);
+
+        return stack;
     }
 
-    private static void PaintBodyGradient(object? sender, PaintEventArgs e)
-    {
-        if (sender is not Control c)
-            return;
-        var g = e.Graphics;
-        g.SmoothingMode = SmoothingMode.AntiAlias;
-        using var brush = new LinearGradientBrush(
-            c.ClientRectangle,
-            UiTheme.PageBackground,
-            Color.FromArgb(232, 242, 238),
-            LinearGradientMode.Vertical);
-        g.FillRectangle(brush, c.ClientRectangle);
-    }
+    private static string SectionCaption(DashboardSection section) =>
+        section switch
+        {
+            DashboardSection.Home => "Home",
+            DashboardSection.Visits => "Visits",
+            DashboardSection.Patients => "Patients",
+            DashboardSection.Billing => "Billing",
+            DashboardSection.Staff => "Staff",
+            _ => "Home"
+        };
+
+    private static string SectionLongTitle(DashboardSection section) =>
+        section switch
+        {
+            DashboardSection.Visits => "Visits workspace",
+            DashboardSection.Patients => "Patients workspace",
+            DashboardSection.Billing => "Billing workspace",
+            _ => "Workspace"
+        };
+
+    private static string SectionPlaceholderBody(DashboardSection section) =>
+        section switch
+        {
+            DashboardSection.Visits =>
+                "Scheduling and visit notes will live here. This desktop build keeps the area as a focused placeholder for the course demo.",
+            DashboardSection.Patients =>
+                "Medical records and patient profiles will live here. Veterinarians (and administrators) can open this area once the module is implemented.",
+            DashboardSection.Billing =>
+                "Invoices and payments will live here. Secretaries (and administrators) can open this area once the module is implemented.",
+            _ => "This section is reserved for future functionality."
+        };
 
     private static Panel MakeMetricTile(string title, string value, Color accent, Padding margin)
     {
@@ -308,15 +442,70 @@ public sealed class DashboardPage : UserControl
         return p;
     }
 
+    private static void PaintBodyGradient(object? sender, PaintEventArgs e)
+    {
+        if (sender is not Control c)
+            return;
+        var g = e.Graphics;
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        using var brush = new LinearGradientBrush(
+            c.ClientRectangle,
+            UiTheme.PageBackground,
+            Color.FromArgb(232, 242, 238),
+            LinearGradientMode.Vertical);
+        g.FillRectangle(brush, c.ClientRectangle);
+    }
+
     private void Relayout()
     {
         ResponsiveLayout.CenterCard(_contentHost, _card, 8, 1040, 20, 24);
-        if (_card.ClientSize.Width > 0)
+        if (_card.ClientSize.Width > 0 && _viewHost.Controls.Count > 0)
         {
             var inner = Math.Max(320, _card.ClientSize.Width - 80);
-            _welcomeHeading.Width = inner;
-            _metaLine.Width = inner;
-            _detailInfo.MaximumSize = new Size(inner, 0);
+            foreach (Control child in _viewHost.Controls)
+                ApplyInnerWidth(child, inner);
+        }
+    }
+
+    private static void ApplyInnerWidth(Control view, int inner)
+    {
+        switch (view)
+        {
+            case TableLayoutPanel table:
+            {
+                foreach (Control c in table.Controls)
+                {
+                    if (c is Label lbl && lbl.Dock != DockStyle.Fill)
+                    {
+                        lbl.Width = inner;
+                        lbl.MaximumSize = new Size(inner, 0);
+                    }
+
+                    if (c is FlowLayoutPanel flow)
+                    {
+                        foreach (Control innerCtrl in flow.Controls)
+                        {
+                            if (innerCtrl is Label l)
+                            {
+                                l.MaximumSize = new Size(inner, 0);
+                                l.Width = inner;
+                            }
+                        }
+                    }
+                }
+
+                break;
+            }
+            case FlowLayoutPanel placeholderFlow:
+            {
+                foreach (Control c in placeholderFlow.Controls)
+                {
+                    c.MaximumSize = new Size(inner, 0);
+                    c.Width = inner;
+                }
+
+                break;
+            }
         }
     }
 }
