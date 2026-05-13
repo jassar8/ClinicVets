@@ -112,6 +112,7 @@
                     Height="40"
                     HorizontalAlignment="Center"
                     Margin="0,20,0,0"
+                    Classes="secondary"
                     Click="Back_Click"/>
         </StackPanel>
         </Border>
@@ -160,8 +161,7 @@
                                 Width="75"
                                 Height="36"
                                 Margin="5"
-                                Background="#476A88"
-                                BorderBrush="#476A88"
+                                Classes="secondary"
                                 Click="ClearMedicationSearch_Click"/>
                     </WrapPanel>
                 </StackPanel>

@@ -22,8 +22,7 @@
                     Width="150"
                     Height="36"
                     HorizontalAlignment="Left"
-                    Background="#476A88"
-                    BorderBrush="#476A88"
+                    Classes="secondary"
                     ToolTip.Tip="חזרה לתפריט הראשי"
                     Click="Back_Click"/>
 
@@ -177,8 +176,7 @@
                                 Width="75"
                                 Height="36"
                                 Margin="5"
-                                Background="#476A88"
-                                BorderBrush="#476A88"
+                                Classes="secondary"
                                 Click="ClearAnimalSearch_Click"/>
                     </WrapPanel>
                 </StackPanel>

@@ -98,6 +98,7 @@
                     Height="40"
                     HorizontalAlignment="Center"
                     Margin="0,20,0,0"
+                    Classes="secondary"
                     Click="Back_Click"/>
         </StackPanel>
         </Border>

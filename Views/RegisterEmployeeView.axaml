@@ -160,6 +160,7 @@
                 <Button Content="חזרה"
                         Width="120"
                         Height="40"
+                        Classes="secondary"
                         Click="Back_Click"/>
             </StackPanel>
 

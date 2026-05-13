@@ -125,9 +125,7 @@
             <Button Content="שכחתי סיסמה?"
                     Width="150"
                     Height="34"
-                    Background="Transparent"
-                    BorderBrush="Transparent"
-                    Foreground="#057DA7"
+                    Classes="link"
                     HorizontalAlignment="Center"
                     ToolTip.Tip="איפוס סיסמה לפי אימייל וקוד"
                     Click="ForgotPassword_Click"/>
