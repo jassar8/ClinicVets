@@ -41,7 +41,7 @@ public sealed class EmployeeStaffPanel : UserControl
         {
             Text = "Demo only - passwords are visible for testing.",
             AutoSize = true,
-            ForeColor = Color.FromArgb(180, 90, 0),
+            ForeColor = UiTheme.WarningText,
             Font = new Font("Segoe UI", 10.5F, FontStyle.Bold, GraphicsUnit.Point),
             Margin = new Padding(0, 0, 0, 12),
             BackColor = UiTheme.CardWhite
@@ -64,15 +64,15 @@ public sealed class EmployeeStaffPanel : UserControl
         _grid.EnableHeadersVisualStyles = false;
         _grid.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
         {
-            BackColor = UiTheme.ContentCanvas,
-            ForeColor = UiTheme.TextDark,
+            BackColor = UiTheme.GridHeaderBackground,
+            ForeColor = UiTheme.GridHeaderForeColor,
             Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point)
         };
         _grid.DefaultCellStyle = new DataGridViewCellStyle
         {
             BackColor = UiTheme.CardWhite,
             ForeColor = UiTheme.TextDark,
-            SelectionBackColor = UiTheme.SidebarItemActive,
+            SelectionBackColor = UiTheme.GridSelectionBackground,
             SelectionForeColor = UiTheme.TextDark,
             Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point),
             Padding = new Padding(10, 6, 10, 6)

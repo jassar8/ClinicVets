@@ -21,6 +21,7 @@ public sealed class LoginPage : UserControl
     private readonly FeedbackBannerPanel _feedback = new();
     private readonly ModernPrimaryButton _login = new();
     private readonly ModernOutlineButton _register = new();
+    private readonly ModernOutlineButton _demoMode = new();
     private readonly Label _heroTitle;
     private readonly Label _heroSubtitle;
     private readonly Label _demoHint = new();
@@ -156,6 +157,11 @@ public sealed class LoginPage : UserControl
         _register.Margin = new Padding(0, 4, 0, 0);
         _register.Click += (_, _) => _shell.NavigateToRegister();
 
+        _demoMode.Text = "Enter Demo Mode";
+        _demoMode.Margin = new Padding(0, 10, 0, 0);
+        _demoMode.Click += (_, _) => _shell.NavigateToDemo();
+        _demoMode.Visible = DesktopBuildOptions.EnableDemoMode;
+
         var hint = _demoHint;
         hint.Text =
             "Default administrator: admin  ·  Admin123!" + Environment.NewLine +
@@ -177,6 +183,8 @@ public sealed class LoginPage : UserControl
         _flow.Controls.Add(_feedback);
         _flow.Controls.Add(_login);
         _flow.Controls.Add(_register);
+        if (DesktopBuildOptions.EnableDemoMode)
+            _flow.Controls.Add(_demoMode);
         _flow.Controls.Add(hint);
 
         _card.Controls.Add(_flow);

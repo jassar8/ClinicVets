@@ -16,8 +16,9 @@ if (-not (Test-Path -LiteralPath $src)) {
 
 New-Item -ItemType Directory -Path $dest -Force | Out-Null
 
+# Keep any README*.md in RunApp (usage notes survive rebuild/publish sync).
 Get-ChildItem -LiteralPath $dest -Force -ErrorAction SilentlyContinue |
-    Where-Object { $_.Name -ne 'README.md' } |
+    Where-Object { $_.Name -notlike 'README*' } |
     Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
 
 Get-ChildItem -LiteralPath $src -Force |

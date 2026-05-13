@@ -32,7 +32,7 @@ public static class UiChrome
         var shadowRect = new Rectangle(shadow, shadow, card.Width - 1 - shadow, card.Height - 1 - shadow);
 
         using (var shadowPath = CreateRoundRectPath(shadowRect, cornerRadius))
-        using (var b = new SolidBrush(Color.FromArgb(14, 40, 72, 52)))
+        using (var b = new SolidBrush(UiTheme.CardShadowTint))
             g.FillPath(b, shadowPath);
 
         using (var path = CreateRoundRectPath(body, cornerRadius))
@@ -75,7 +75,7 @@ public static class UiChrome
         {
             UiFeedbackKind.Error => UiTheme.ErrorBackground,
             UiFeedbackKind.Success => UiTheme.SuccessBackground,
-            _ => Color.FromArgb(248, 252, 250)
+            _ => UiTheme.InfoBannerBackground
         };
         Color edge = kind switch
         {

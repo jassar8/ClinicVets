@@ -32,7 +32,7 @@ public sealed class AdminUsersManagementPanel : UserControl
     private readonly Panel _tabBar = new() { Dock = DockStyle.Fill, Height = 44, BackColor = UiTheme.CardWhite };
     private readonly DataGridView _grid = new() { Dock = DockStyle.Fill };
     private readonly Panel _actionStrip = new() { Dock = DockStyle.Fill, MinimumSize = new Size(0, 132), BackColor = UiTheme.AccentMintWash };
-    private readonly Panel _demoStrip = new() { Dock = DockStyle.Fill, Height = 52, BackColor = Color.FromArgb(236, 248, 252) };
+    private readonly Panel _demoStrip = new() { Dock = DockStyle.Fill, Height = 52, BackColor = UiTheme.DemoStripBackground };
 
     private readonly TextBox _search = new();
     private readonly ComboBox _filterStatus = new();
@@ -50,7 +50,7 @@ public sealed class AdminUsersManagementPanel : UserControl
     private readonly ModernDangerButton _reject = new();
     private readonly TableLayoutPanel _approvalRow = new();
 
-    private readonly Panel _overlay = new() { Visible = false, BackColor = Color.FromArgb(200, 236, 244, 240) };
+    private readonly Panel _overlay = new() { Visible = false, BackColor = UiTheme.OverlayScrim };
     private readonly AdminCreateEmployeePanel _createPanel;
     private Panel? _overlayCard;
 
@@ -176,9 +176,9 @@ public sealed class AdminUsersManagementPanel : UserControl
         }
 
         AddTile(0, "Total users", total.ToString("D0"), UiTheme.MetricAccentStripe, new Padding(0, 0, 12, 0));
-        AddTile(1, "Pending approvals", pending.ToString("D0"), Color.FromArgb(220, 140, 60), new Padding(0, 0, 12, 0));
-        AddTile(2, "Approved employees", approved.ToString("D0"), Color.FromArgb(52, 148, 108), new Padding(0, 0, 12, 0));
-        AddTile(3, "Rejected users", rejected.ToString("D0"), Color.FromArgb(200, 80, 80), new Padding(0, 0, 0, 0));
+        AddTile(1, "Pending approvals", pending.ToString("D0"), UiTheme.MetricAccentPending, new Padding(0, 0, 12, 0));
+        AddTile(2, "Approved employees", approved.ToString("D0"), UiTheme.MetricAccentSuccess, new Padding(0, 0, 12, 0));
+        AddTile(3, "Rejected users", rejected.ToString("D0"), UiTheme.MetricAccentDanger, new Padding(0, 0, 0, 0));
     }
 
     private static Panel CreateStatCard(string title, string value, Color accent, Padding margin)
@@ -352,11 +352,11 @@ public sealed class AdminUsersManagementPanel : UserControl
         _grid.EnableHeadersVisualStyles = false;
         _grid.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
         {
-            BackColor = Color.FromArgb(228, 244, 238),
-            ForeColor = UiTheme.HeaderPrimary,
+            BackColor = UiTheme.GridHeaderBackground,
+            ForeColor = UiTheme.GridHeaderForeColor,
             Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point),
-            SelectionBackColor = Color.FromArgb(228, 244, 238),
-            SelectionForeColor = UiTheme.HeaderPrimary
+            SelectionBackColor = UiTheme.GridHeaderBackground,
+            SelectionForeColor = UiTheme.GridHeaderForeColor
         };
         _grid.DefaultCellStyle = new DataGridViewCellStyle
         {
@@ -410,11 +410,11 @@ public sealed class AdminUsersManagementPanel : UserControl
         {
             e.CellStyle.ForeColor = UiTheme.TextDark;
             if (role.Contains("Secretary", StringComparison.OrdinalIgnoreCase))
-                e.CellStyle.BackColor = Color.FromArgb(232, 242, 255);
+                e.CellStyle.BackColor = UiTheme.GridRoleSecretaryTint;
             else if (role.Contains("Veterinarian", StringComparison.OrdinalIgnoreCase))
-                e.CellStyle.BackColor = Color.FromArgb(244, 236, 252);
+                e.CellStyle.BackColor = UiTheme.GridRoleVetTint;
             else if (role.Contains("Admin", StringComparison.OrdinalIgnoreCase))
-                e.CellStyle.BackColor = Color.FromArgb(255, 246, 230);
+                e.CellStyle.BackColor = UiTheme.GridRoleAdminTint;
         }
         else if (col == "Status")
         {
@@ -425,8 +425,8 @@ public sealed class AdminUsersManagementPanel : UserControl
             }
             else if (IsStatusLiteral(status, EmployeeAccountStatusNames.Pending))
             {
-                e.CellStyle.ForeColor = Color.FromArgb(180, 100, 20);
-                e.CellStyle.SelectionForeColor = Color.FromArgb(180, 100, 20);
+                e.CellStyle.ForeColor = UiTheme.WarningText;
+                e.CellStyle.SelectionForeColor = UiTheme.WarningText;
             }
             else if (IsStatusLiteral(status, EmployeeAccountStatusNames.Rejected))
             {
@@ -436,9 +436,9 @@ public sealed class AdminUsersManagementPanel : UserControl
         }
         else if (col == "Actions")
         {
-            var softDeleteFill = Color.FromArgb(233, 139, 139);
-            var reviewFill = Color.FromArgb(232, 248, 240);
-            var neutralFill = Color.FromArgb(244, 246, 245);
+            var softDeleteFill = UiTheme.ActionSoftDeleteFill;
+            var reviewFill = UiTheme.ActionReviewFill;
+            var neutralFill = UiTheme.GridNeutralFill;
 
             if (IsStatusLiteral(status, EmployeeAccountStatusNames.Pending))
             {
@@ -495,7 +495,7 @@ public sealed class AdminUsersManagementPanel : UserControl
 
         var radius = Math.Min(10, Math.Min(inset.Width, inset.Height) / 2);
         using var path = UiChrome.CreateRoundRectPath(inset, radius);
-        var fill = Color.FromArgb(233, 139, 139);
+        var fill = UiTheme.ActionSoftDeleteFill;
         using (var b = new SolidBrush(fill))
             g.FillPath(b, path);
 
@@ -668,7 +668,7 @@ public sealed class AdminUsersManagementPanel : UserControl
         const int approvalBtnW = 156;
         var actionFont = new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point);
 
-        _approve.AccentOverride = Color.FromArgb(32, 138, 118);
+        _approve.AccentOverride = UiTheme.SuccessGreen;
         _approve.Text = "Approve";
         _approve.Font = actionFont;
         _approve.AutoSize = false;
@@ -712,7 +712,7 @@ public sealed class AdminUsersManagementPanel : UserControl
             ForeColor = UiTheme.HeaderPrimary,
             Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point),
             TextAlign = ContentAlignment.MiddleLeft,
-            BackColor = Color.FromArgb(236, 248, 252)
+            BackColor = UiTheme.DemoStripBackground
         };
         _demoStrip.Controls.Add(info);
     }

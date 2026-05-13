@@ -1,6 +1,8 @@
 using ClinicVets.Application.Interfaces;
 using ClinicVets.Application.Services;
 using ClinicVets.Core.Entities;
+using ClinicVets.Desktop;
+using ClinicVets.Desktop.Demo;
 using ClinicVets.Desktop.UI;
 
 namespace ClinicVets.Desktop.Forms;
@@ -16,6 +18,11 @@ public sealed class MainShellForm : Form
     private readonly IEmployeeRepository _employees;
     private readonly CustomerDirectoryService _customerDirectory;
     private readonly Panel _host = new() { Dock = DockStyle.Fill };
+
+    private IEmployeeRepository _demoEmployees = null!;
+    private CustomerDirectoryService _demoCustomerDirectory = null!;
+    private EmployeeRegistrationService _demoRegistration = null!;
+    private EmployeeApprovalService _demoApprovals = null!;
 
     public MainShellForm(
         EmployeeAuthenticationService auth,
@@ -47,6 +54,8 @@ public sealed class MainShellForm : Form
 
     public void NavigateToLogin()
     {
+        DemoModeSession.Exit();
+        Text = "ClinicVets";
         AcceptButton = null;
         CancelButton = null;
         var page = new LoginPage(_auth, this);
@@ -63,11 +72,55 @@ public sealed class MainShellForm : Form
         SwapContent(page);
     }
 
-    public void NavigateToDashboard(Employee employee)
+    /// <summary>In-memory demo workspace for UI review; does not authenticate or touch JSON stores.</summary>
+    public void NavigateToDemo()
+    {
+#pragma warning disable CS0162 // False branch is used when EnableDemoMode is set to false for teacher builds.
+        if (!DesktopBuildOptions.EnableDemoMode)
+            return;
+#pragma warning restore CS0162
+
+        try
+        {
+            if (!DemoWorkspace.TryInitializeDemoData(out var emp, out var cust, out var admin, out var err))
+            {
+                MessageBox.Show(
+                    this,
+                    err,
+                    "ClinicVets — Demo Mode",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            _demoEmployees = emp;
+            _demoCustomerDirectory = cust;
+            _demoRegistration = new EmployeeRegistrationService(_demoEmployees);
+            _demoApprovals = new EmployeeApprovalService(_demoEmployees);
+            DemoModeSession.Enter();
+            Text = "ClinicVets — Demo Mode (not real login)";
+            NavigateToDashboard(admin, useQuickAccessData: true);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                this,
+                "Demo Mode failed unexpectedly." + Environment.NewLine + Environment.NewLine + ex.Message,
+                "ClinicVets — Demo Mode",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
+    }
+
+    public void NavigateToDashboard(Employee employee, bool useQuickAccessData = false)
     {
         AcceptButton = null;
         CancelButton = null;
-        var page = new DashboardPage(employee, this, _registration, _approvals, _employees, _customerDirectory);
+        var repository = useQuickAccessData ? _demoEmployees : _employees;
+        var customerDirectory = useQuickAccessData ? _demoCustomerDirectory : _customerDirectory;
+        var registration = useQuickAccessData ? _demoRegistration : _registration;
+        var approvals = useQuickAccessData ? _demoApprovals : _approvals;
+        var page = new DashboardPage(employee, this, registration, approvals, repository, customerDirectory, useQuickAccessData);
         SwapContent(page);
     }
 

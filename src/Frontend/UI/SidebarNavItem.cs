@@ -83,7 +83,7 @@ public sealed class SidebarNavItem : Panel
             g.DrawPath(edge, path);
         }
 
-        var textColor = IsActive ? UiTheme.SidebarNavTextActive : _hover ? UiTheme.PrimaryButton : UiTheme.SidebarNavText;
+        var textColor = IsActive ? UiTheme.SidebarNavTextActive : _hover ? UiTheme.SidebarNavTextHover : UiTheme.SidebarNavText;
         var font = IsActive ? UiStyles.SidebarNavFontActive : UiStyles.SidebarNavFont;
         var pad = new Rectangle(16, 0, Math.Max(0, Width - 20), Height);
         TextRenderer.DrawText(

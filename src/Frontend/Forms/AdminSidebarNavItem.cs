@@ -82,12 +82,13 @@ internal sealed class AdminSidebarNavItem : Panel
             g.FillPath(b, path);
 
         var textRect = new Rectangle(16, 0, Width - 56, Height);
+        var captionColor = IsActive ? UiTheme.SidebarNavTextActive : _hover ? UiTheme.SidebarNavTextHover : UiTheme.SidebarNavText;
         TextRenderer.DrawText(
             g,
             _caption,
             IsActive ? UiStyles.SidebarNavFontActive : UiStyles.SidebarNavFont,
             textRect,
-            Color.White,
+            captionColor,
             TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
 
         if (BadgeCount is > 0)
@@ -98,7 +99,7 @@ internal sealed class AdminSidebarNavItem : Panel
             var badgeW = Math.Max(22, sz.Width + 10);
             var badgeRect = new Rectangle(Width - badgeW - 12, (Height - 20) / 2, badgeW, 20);
             using var bp = UiChrome.CreateRoundRectPath(badgeRect, 10);
-            using (var bb = new SolidBrush(Color.FromArgb(230, 120, 50)))
+            using (var bb = new SolidBrush(UiTheme.WarningAmber))
                 g.FillPath(bb, bp);
             TextRenderer.DrawText(
                 g,

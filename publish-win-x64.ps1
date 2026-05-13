@@ -29,10 +29,9 @@ $runApp = Join-Path $PSScriptRoot "RunApp"
 
 Write-Host ""
 Write-Host "Publish complete." -ForegroundColor Green
-Write-Host "Run this file (keep the whole PublishedApp folder together):" -ForegroundColor Yellow
-Write-Host "$publishPath\ClinicVets.exe"
-Write-Host ""
-Write-Host "Same build is mirrored at the repo root for quick access:" -ForegroundColor Green
+Write-Host "Portable app (keep the whole folder together):" -ForegroundColor Yellow
 Write-Host (Join-Path $PSScriptRoot "RunApp\ClinicVets.exe")
+Write-Host ""
+Write-Host "The same files were synced to RunApp\ (see RunApp\README.md)." -ForegroundColor Green
 Write-Host "Optional desktop shortcut:" -ForegroundColor Cyan
 Write-Host "  powershell -ExecutionPolicy Bypass -File .\docs\Scripts\Create-ClinicVets-DesktopShortcut.ps1"

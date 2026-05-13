@@ -93,9 +93,9 @@ public sealed class StaffHomeDashboardPanel : UserControl
             grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
 
         grid.Controls.Add(HomeMetricCard("Today's appointments", "8", UiTheme.PrimaryButton, null), 0, 0);
-        grid.Controls.Add(HomeMetricCard("Active animals", "—", Color.FromArgb(220, 130, 60), _metricAnimals), 1, 0);
-        grid.Controls.Add(HomeMetricCard("Registered customers", "—", Color.FromArgb(120, 90, 200), _metricCustomers), 2, 0);
-        grid.Controls.Add(HomeMetricCard("Treatments given", "23", Color.FromArgb(52, 148, 108), null), 3, 0);
+        grid.Controls.Add(HomeMetricCard("Active animals", "—", UiTheme.MetricAccentPending, _metricAnimals), 1, 0);
+        grid.Controls.Add(HomeMetricCard("Registered customers", "—", UiTheme.AccentStrip, _metricCustomers), 2, 0);
+        grid.Controls.Add(HomeMetricCard("Treatments given", "23", UiTheme.MetricAccentSuccess, null), 3, 0);
 
         wrap.Controls.Add(grid);
         return wrap;
@@ -306,8 +306,8 @@ public sealed class StaffHomeDashboardPanel : UserControl
             AutoSize = true,
             Padding = new Padding(10, 4, 10, 4),
             Font = new Font("Segoe UI", 9.5F, FontStyle.Bold, GraphicsUnit.Point),
-            ForeColor = pending ? UiTheme.HeaderPrimary : UiTheme.SuccessText,
-            BackColor = pending ? Color.FromArgb(228, 244, 248) : UiTheme.SuccessBackground
+            ForeColor = pending ? UiTheme.TealMain : UiTheme.SuccessText,
+            BackColor = pending ? UiTheme.AccentMintWash : UiTheme.SuccessBackground
         };
         pill.Location = new Point(400, 18);
         row.Controls.Add(pill);
@@ -424,9 +424,9 @@ public sealed class StaffHomeDashboardPanel : UserControl
             grid.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
 
         grid.Controls.Add(QuickTile("Add customer", UiTheme.PrimaryButton, ClinicShellNavKind.Customers), 0, 0);
-        grid.Controls.Add(QuickTile("Add animal", Color.FromArgb(220, 130, 60), ClinicShellNavKind.Animals), 1, 0);
-        grid.Controls.Add(QuickTile("New visit", Color.FromArgb(120, 90, 200), ClinicShellNavKind.Visits), 0, 1);
-        grid.Controls.Add(QuickTile("New treatment", Color.FromArgb(52, 148, 108), ClinicShellNavKind.Treatments), 1, 1);
+        grid.Controls.Add(QuickTile("Add animal", UiTheme.AccentStrip, ClinicShellNavKind.Animals), 1, 0);
+        grid.Controls.Add(QuickTile("New visit", UiTheme.TealHover, ClinicShellNavKind.Visits), 0, 1);
+        grid.Controls.Add(QuickTile("New treatment", UiTheme.MetricAccentSuccess, ClinicShellNavKind.Treatments), 1, 1);
 
         card.Controls.Add(grid);
         card.Controls.Add(title);
@@ -465,16 +465,16 @@ public sealed class StaffHomeDashboardPanel : UserControl
             Dock = DockStyle.Fill,
             Height = 48,
             Padding = new Padding(14, 10, 14, 10),
-            BackColor = Color.FromArgb(236, 248, 252)
+            BackColor = UiTheme.DemoStripBackground
         };
         p.Controls.Add(new Label
         {
             Dock = DockStyle.Fill,
             Text = "Welcome to ClinicVets! If you need help, contact the administrator.",
-            ForeColor = UiTheme.HeaderPrimary,
+            ForeColor = UiTheme.TealSidebarDark,
             Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point),
             TextAlign = ContentAlignment.MiddleLeft,
-            BackColor = Color.FromArgb(236, 248, 252)
+            BackColor = UiTheme.DemoStripBackground
         });
         return p;
     }

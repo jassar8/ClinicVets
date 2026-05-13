@@ -5,7 +5,6 @@ using ClinicVets.Application.Security;
 using ClinicVets.Application.Services;
 using ClinicVets.Core;
 using ClinicVets.Core.Entities;
-using ClinicVets.Desktop;
 using ClinicVets.Desktop.UI;
 
 namespace ClinicVets.Desktop.Forms;
@@ -21,6 +20,7 @@ public sealed class ClinicShellView : UserControl
     private readonly EmployeeApprovalService _approvals;
     private readonly IEmployeeRepository _repository;
     private readonly CustomerDirectoryService _customerDirectory;
+    private readonly bool _isQuickAccessDemo;
 
     private readonly Dictionary<ClinicShellNavKind, AdminSidebarNavItem> _navItems = new();
     private readonly Dictionary<ClinicShellNavKind, Control> _lazyPages = new();
@@ -42,7 +42,8 @@ public sealed class ClinicShellView : UserControl
         EmployeeRegistrationService registration,
         EmployeeApprovalService approvals,
         IEmployeeRepository repository,
-        CustomerDirectoryService customerDirectory)
+        CustomerDirectoryService customerDirectory,
+        bool isQuickAccessDemo = false)
     {
         _employee = employee;
         _shell = shell;
@@ -50,6 +51,7 @@ public sealed class ClinicShellView : UserControl
         _approvals = approvals;
         _repository = repository;
         _customerDirectory = customerDirectory;
+        _isQuickAccessDemo = isQuickAccessDemo;
 
         SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
         UpdateStyles();
@@ -124,7 +126,7 @@ public sealed class ClinicShellView : UserControl
         {
             Text = "Veterinary clinic system",
             Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point),
-            ForeColor = Color.FromArgb(200, 228, 222),
+            ForeColor = UiTheme.SidebarTextMutedOnDark,
             AutoSize = true,
             Location = new Point(logo.Visible ? 68 : 20, 58),
             MaximumSize = new Size(240, 0),
@@ -186,9 +188,9 @@ public sealed class ClinicShellView : UserControl
             Cursor = Cursors.Hand,
             TabStop = true
         };
-        logout.FlatAppearance.BorderColor = Color.FromArgb(200, 230, 224);
+        logout.FlatAppearance.BorderColor = UiTheme.SidebarLogoutBorder;
         logout.FlatAppearance.BorderSize = 1;
-        logout.BackColor = Color.FromArgb(18, 88, 82);
+        logout.BackColor = UiTheme.SidebarLogoutBackground;
         logout.Click += (_, _) => _shell.NavigateToLogin();
         bottom.Controls.Add(logout);
 
@@ -203,12 +205,38 @@ public sealed class ClinicShellView : UserControl
         var col = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
-            RowCount = 2,
+            RowCount = _isQuickAccessDemo ? 3 : 2,
             ColumnCount = 1,
             BackColor = UiTheme.ContentCanvas
         };
+        if (_isQuickAccessDemo)
+            col.RowStyles.Add(new RowStyle(SizeType.Absolute, 36F));
         col.RowStyles.Add(new RowStyle(SizeType.Absolute, 104F));
         col.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+
+        var headerRow = _isQuickAccessDemo ? 1 : 0;
+        var workspaceRow = _isQuickAccessDemo ? 2 : 1;
+
+        if (_isQuickAccessDemo)
+        {
+            var demoStrip = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = UiTheme.WarningBackground,
+                Padding = new Padding(16, 0, 16, 0)
+            };
+            demoStrip.Controls.Add(new Label
+            {
+                Text = "Demo Mode — not real login · sample in-memory data only",
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleLeft,
+                ForeColor = UiTheme.WarningText,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point),
+                BackColor = UiTheme.WarningBackground,
+                AutoSize = false
+            });
+            col.Controls.Add(demoStrip, 0, 0);
+        }
 
         var header = new Panel
         {
@@ -258,8 +286,8 @@ public sealed class ClinicShellView : UserControl
         _workspaceCard.Paint += (_, e) => UiChrome.PaintCardWithShadow(_workspaceCard, e, UiTheme.CardCornerRadius);
         _workspace.Controls.Add(_workspaceCard);
 
-        col.Controls.Add(header, 0, 0);
-        col.Controls.Add(_workspace, 0, 1);
+        col.Controls.Add(header, 0, headerRow);
+        col.Controls.Add(_workspace, 0, workspaceRow);
         return col;
     }
 
@@ -398,6 +426,11 @@ public sealed class ClinicShellView : UserControl
                 return GetLazy(kind, new CustomerAnimalsPanel(_customerDirectory));
 
             case ClinicShellNavKind.Visits:
+                if (_isQuickAccessDemo)
+                {
+                    return GetLazy(kind, new DemoVisitsPanel());
+                }
+
                 return GetLazy(
                     kind,
                     new AdminPlaceholderPanel(

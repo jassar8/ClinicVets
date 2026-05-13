@@ -16,7 +16,8 @@ public sealed class DashboardPage : UserControl
         EmployeeRegistrationService registration,
         EmployeeApprovalService approvals,
         IEmployeeRepository repository,
-        CustomerDirectoryService customerDirectory)
+        CustomerDirectoryService customerDirectory,
+        bool isQuickAccessDemo = false)
     {
         SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
         UpdateStyles();
@@ -24,7 +25,7 @@ public sealed class DashboardPage : UserControl
         BackColor = UiTheme.PageBackground;
         Font = shell.Font;
 
-        var shellView = new ClinicShellView(employee, shell, registration, approvals, repository, customerDirectory);
+        var shellView = new ClinicShellView(employee, shell, registration, approvals, repository, customerDirectory, isQuickAccessDemo);
         shellView.Dock = DockStyle.Fill;
         Controls.Add(shellView);
     }
