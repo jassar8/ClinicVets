@@ -7,7 +7,7 @@ $root = $PSScriptRoot
 $publishPath = Join-Path $root "Publish"
 $project = Join-Path $root "ClinicVetsAvalonia.csproj"
 
-Write-Host "Publishing official ClinicVets v3 (Avalonia) for Windows x64..." -ForegroundColor Cyan
+Write-Host "Publishing official ClinicVets v4 (Avalonia) for Windows x64..." -ForegroundColor Cyan
 Write-Host "Output: ClinicVets.exe (synced to repo RunApp\ on build/publish)." -ForegroundColor Cyan
 
 Get-Process | Where-Object { $_.ProcessName -like '*ClinicVets*' } | Stop-Process -Force -ErrorAction SilentlyContinue
