@@ -5,7 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
-using ClinicVetsAvalonia.Data;
+using ClinicVetsAvalonia.Repositories;
 using ClinicVetsAvalonia.Helpers;
 using ClinicVetsAvalonia.Models;
 using ClinicVetsAvalonia.Services;

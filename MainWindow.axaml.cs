@@ -1,136 +1,137 @@
 using Avalonia.Controls;
-using ClinicVetsAvalonia.Data;
+using ClinicVetsAvalonia.Repositories;
 using ClinicVetsAvalonia.Models;
+using ClinicVetsAvalonia.ViewModels;
 using ClinicVetsAvalonia.Views.Animals;
 using ClinicVetsAvalonia.Views.Auth;
 using ClinicVetsAvalonia.Views.Clients;
 using ClinicVetsAvalonia.Views.Dashboard;
+using ClinicVetsAvalonia.Views.Employees;
 using ClinicVetsAvalonia.Views.Medicine;
 using ClinicVetsAvalonia.Views.Visits;
 
-namespace ClinicVetsAvalonia
+namespace ClinicVetsAvalonia;
+
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
+    private readonly AppSession _session = new();
+
+    public MainWindow()
     {
-        private Employee? currentEmployee;
+        InitializeComponent();
 
-        public MainWindow()
+        AppData.Initialize();
+
+        ShowLogin();
+    }
+
+    private void ShowLogin()
+    {
+        ShowLogin("");
+    }
+
+    private void ShowLogin(string statusMessage)
+    {
+        var loginView = string.IsNullOrWhiteSpace(statusMessage)
+            ? new LoginView()
+            : new LoginView(statusMessage);
+
+        loginView.LoginSucceeded += employee =>
         {
-            InitializeComponent();
+            _session.CurrentEmployee = employee;
+            ShowMainMenu();
+        };
 
-            AppData.Initialize();
+        loginView.RegisterRequested += ShowRegisterEmployee;
+        loginView.ForgotPasswordRequested += ShowForgotPassword;
 
+        ShowPage(loginView);
+    }
+
+    private void ShowRegisterEmployee()
+    {
+        var registerView = new RegisterEmployeeView();
+
+        registerView.BackToLogin += ShowLogin;
+        registerView.RegistrationCompleted += ShowLogin;
+
+        ShowPage(registerView);
+    }
+
+    private void ShowForgotPassword()
+    {
+        var forgotPasswordView = new ForgotPasswordView();
+
+        forgotPasswordView.BackToLogin += ShowLogin;
+        forgotPasswordView.PasswordResetCompleted += ShowLogin;
+
+        ShowPage(forgotPasswordView);
+    }
+
+    private void ShowMainMenu()
+    {
+        if (_session.CurrentEmployee == null)
+        {
             ShowLogin();
+            return;
         }
 
-        private void ShowLogin()
+        var mainMenuView = new MainMenuView(_session.CurrentEmployee);
+
+        mainMenuView.OpenClients += ShowClients;
+        mainMenuView.OpenAnimals += ShowAnimals;
+        mainMenuView.OpenVisits += ShowVisits;
+        mainMenuView.OpenMedicines += ShowMedications;
+
+        mainMenuView.Logout += () =>
         {
-            ShowLogin("");
-        }
+            _session.CurrentEmployee = null;
+            ShowLogin();
+        };
 
-        private void ShowLogin(string statusMessage)
-        {
-            var loginView = string.IsNullOrWhiteSpace(statusMessage)
-                ? new LoginView()
-                : new LoginView(statusMessage);
+        ShowPage(mainMenuView);
+    }
 
-            loginView.LoginSucceeded += employee =>
-            {
-                currentEmployee = employee;
-                ShowMainMenu();
-            };
+    private void ShowClients()
+    {
+        var clientsView = new ClientsView();
 
-            loginView.RegisterRequested += ShowRegisterEmployee;
-            loginView.ForgotPasswordRequested += ShowForgotPassword;
+        clientsView.BackToMainMenu += ShowMainMenu;
 
-            ShowPage(loginView);
-        }
+        ShowPage(clientsView);
+    }
 
-        private void ShowRegisterEmployee()
-        {
-            var registerView = new RegisterEmployeeView();
+    private void ShowAnimals()
+    {
+        var animalsView = new AnimalsView();
 
-            registerView.BackToLogin += ShowLogin;
-            registerView.RegistrationCompleted += ShowLogin;
+        animalsView.BackToMainMenu += ShowMainMenu;
 
-            ShowPage(registerView);
-        }
+        ShowPage(animalsView);
+    }
 
-        private void ShowForgotPassword()
-        {
-            var forgotPasswordView = new ForgotPasswordView();
+    private void ShowVisits()
+    {
+        var visitsView = new VisitsView();
 
-            forgotPasswordView.BackToLogin += ShowLogin;
-            forgotPasswordView.PasswordResetCompleted += ShowLogin;
+        visitsView.BackToMainMenu += ShowMainMenu;
 
-            ShowPage(forgotPasswordView);
-        }
+        ShowPage(visitsView);
+    }
 
-        private void ShowMainMenu()
-        {
-            if (currentEmployee == null)
-            {
-                ShowLogin();
-                return;
-            }
+    private void ShowMedications()
+    {
+        var medicationsView = new MedicationsView();
 
-            var mainMenuView = new MainMenuView(currentEmployee);
+        medicationsView.BackToMainMenu += ShowMainMenu;
 
-            mainMenuView.OpenClients += ShowClients;
-            mainMenuView.OpenAnimals += ShowAnimals;
-            mainMenuView.OpenVisits += ShowVisits;
-            mainMenuView.OpenMedicines += ShowMedications;
+        ShowPage(medicationsView);
+    }
 
-            mainMenuView.Logout += () =>
-            {
-                currentEmployee = null;
-                ShowLogin();
-            };
-
-            ShowPage(mainMenuView);
-        }
-
-        private void ShowClients()
-        {
-            var clientsView = new ClientsView();
-
-            clientsView.BackToMainMenu += ShowMainMenu;
-
-            ShowPage(clientsView);
-        }
-
-        private void ShowAnimals()
-        {
-            var animalsView = new AnimalsView();
-
-            animalsView.BackToMainMenu += ShowMainMenu;
-
-            ShowPage(animalsView);
-        }
-
-        private void ShowVisits()
-        {
-            var visitsView = new VisitsView();
-
-            visitsView.BackToMainMenu += ShowMainMenu;
-
-            ShowPage(visitsView);
-        }
-
-        private void ShowMedications()
-        {
-            var medicationsView = new MedicationsView();
-
-            medicationsView.BackToMainMenu += ShowMainMenu;
-
-            ShowPage(medicationsView);
-        }
-
-        private void ShowPage(Control page)
-        {
-            page.Opacity = 0.98;
-            MainContent.Child = page;
-            page.Focus();
-        }
+    private void ShowPage(Control page)
+    {
+        page.Opacity = 0.98;
+        MainContent.Child = page;
+        page.Focus();
     }
 }

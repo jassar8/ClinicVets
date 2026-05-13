@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using ClinicVetsAvalonia.Data;
+using ClinicVetsAvalonia.Repositories;
 using ClinicVetsAvalonia.Models;
 using ClinicVetsAvalonia.Services;
 

@@ -1,14 +1,14 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="ClinicVetsAvalonia.Views.Auth.RegisterEmployeeView"
+             x:Class="ClinicVetsAvalonia.Views.Employees.RegisterEmployeeView"
              FlowDirection="RightToLeft">
 
-    <Grid Width="900" Height="650" Background="#BFEFF7">
+    <Grid Width="900" Height="650" Background="{DynamicResource CvPageBackgroundBrush}">
         <Border Width="760"
                 Height="560"
                 Background="White"
                 CornerRadius="28"
-                BorderBrush="#69C5D8"
+                BorderBrush="{DynamicResource CvCardBorderBrush}"
                 BorderThickness="3"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
@@ -63,13 +63,13 @@
             <TextBlock Text="רישום עובד חדש"
                        FontSize="30"
                        FontWeight="Bold"
-                       Foreground="#2D3748"
+                       Foreground="{DynamicResource CvPrimaryTextBrush}"
                        TextAlignment="Center"
                        HorizontalAlignment="Center"
                        Margin="0,0,0,10"/>
 
             <TextBlock Text="שם משתמש"
-                       Foreground="#526172"
+                       Foreground="{DynamicResource CvSecondaryTextBrush}"
                        FontSize="13"
                        Margin="0,2,50,-8"/>
 
@@ -81,7 +81,7 @@
                      ToolTip.Tip="שם משתמש באנגלית, 6 עד 8 תווים"/>
 
             <TextBlock Text="סיסמה"
-                       Foreground="#526172"
+                       Foreground="{DynamicResource CvSecondaryTextBrush}"
                        FontSize="13"
                        Margin="0,2,50,-8"/>
 
@@ -103,7 +103,7 @@
                         Height="36"
                         Margin="4,0,0,0"
                         Background="#E9F8FC"
-                        BorderBrush="#69C5D8"
+                        BorderBrush="{DynamicResource CvCardBorderBrush}"
                         Foreground="#2F4E6B"
                         ToolTip.Tip="הצג או הסתר סיסמה"
                         Click="TogglePasswordVisibility"/>

@@ -1,54 +1,62 @@
 # ClinicVets
 
-Veterinary clinic management — **Windows desktop** app (.NET 9, WinForms). One main window; modern UI; optional **Demo Mode** for fast UI testing.
+Hebrew (RTL) **veterinary clinic desktop** application for Windows. This repository contains two UI stacks:
 
-## Fastest way to run (after build)
+| App | Technology | Entry |
+|-----|------------|--------|
+| **ClinicVetsAvalonia** (recommended for review) | Avalonia 12, .NET 9 | `ClinicVetsAvalonia.csproj` at repo root |
+| ClinicVets.Desktop | WinForms (larger solution) | `src/Frontend/ClinicVets.Desktop.csproj` in `ClinicVets.sln` |
 
-Double-click **`RunApp/ClinicVets.exe`** (entire `RunApp` folder must stay together). This copy is refreshed on every **`dotnet build`** or **`.\publish-win-x64.ps1`**.
+The Avalonia app is self-contained at the repository root with its own SQLite database, login, employee registration, password reset flow, and modules for clients, animals, visits, and medicine inventory.
 
-- **After `dotnet build`**: you need the [.NET 9 Desktop Runtime (x64)](https://dotnet.microsoft.com/download/dotnet/9.0) installed.
-- **After `.\publish-win-x64.ps1`**: self-contained Windows x64 app — good for zipping for a teacher PC without .NET installed.
+## Avalonia app — folder layout
 
-See **`RunApp/README.md`** for Demo Mode, disabling demo, and publish tips.
+| Folder | Role |
+|--------|------|
+| `AppUi/Styles/` | Shared colors (`ThemeColors.axaml`) and control styles (`AppTheme.axaml`) |
+| `ClinicDatabase/` | SQLite path helpers and `CREATE TABLE` schema bootstrap |
+| `Repositories/` | `AppData` — in-memory lists synchronized with SQLite (employees, clients, animals, medications, visits) |
+| `Models/` | Entity types used by the UI and persistence |
+| `Services/` | `ValidationService`, `PasswordResetService` (optional Gmail SMTP) |
+| `Helpers/` | `UIHelper` for dialogs |
+| `ViewModels/` | `AppSession` — current signed-in employee (expand here for MVVM) |
+| `Views/Auth/` | Login, forgot password |
+| `Views/Employees/` | New employee self-registration |
+| `Views/Dashboard/` | Main menu and navigation by role |
+| `Views/Clients/`, `Views/Animals/`, `Views/Visits/`, `Views/Medicine/` | Domain screens |
+| `Views/Shared/` | Shared layout constants (`UiDimensions`) |
 
-## Where everything lives
+Legacy WinForms + layered backend live under `src/`, `Tests/`, `assets/`, and `database/` (JSON runtime notes only — not the Avalonia SQLite code).
 
-Full map: **[Documentation/REPOSITORY-LAYOUT.md](Documentation/REPOSITORY-LAYOUT.md)**
-
-| Area | Folder |
-|------|--------|
-| **Frontend** (WinForms UI, Demo Mode) | `src/Frontend/` |
-| **Backend** | `src/Backend/` — Core, Application, Infrastructure |
-| **Models** | `src/Backend/ClinicVets.Core/Models/`, `Entities/` |
-| **Services** | `src/Backend/ClinicVets.Application/` |
-| **Data** (JSON + in-memory demo stores) | `src/Backend/ClinicVets.Infrastructure/Data/` |
-| **Tests** | `Tests/ClinicVets.Tests/` |
-| **Assets** | `assets/app/`, `assets/branding/` — icon and logo embedded in the desktop project |
-| **Documentation** | `Documentation/`, `docs/` |
-| **Runtime data (JSON)** | `%LocalAppData%\ClinicVets\` — see `database/README.md` |
-| **Runnable output** | `RunApp/` — **not** source; synced from build |
-
-## Disable Demo Mode (final hand-in)
-
-In **`src/Frontend/DesktopBuildOptions.cs`**, set `EnableDemoMode = false`, then rebuild.
-
-## Run from source / IDE
-
-Open `ClinicVets.sln`, set **ClinicVets.Desktop** as startup, or:
+## How to run (Avalonia)
 
 ```powershell
-dotnet run --project .\src\Frontend\ClinicVets.Desktop.csproj
+dotnet run --project .\ClinicVetsAvalonia.csproj
 ```
 
-## Portable publish (teacher machine)
+Or double-click **`Run-Avalonia.bat`**.
+
+## How to build a portable EXE
 
 ```powershell
-.\publish-win-x64.ps1
+.\Publish-Avalonia-WinX64.ps1
 ```
 
-Then zip the whole **`RunApp`** folder (or use `PublishedApp` — the script mirrors to `RunApp`).
+Output folder: **`PublishedApp-Avalonia/`** — keep all files next to `ClinicVetsAvalonia.exe`, or use single-file publish as configured in the script.
 
-## More detail
+Self-contained build does not require .NET on the target PC.
 
-- [docs/Project-Documentation.md](docs/Project-Documentation.md) — charter, architecture  
-- [Documentation/REPOSITORY-LAYOUT.md](Documentation/REPOSITORY-LAYOUT.md) — folder map and RunApp behavior
+## Default demo logins
+
+After a fresh database, two employees are created automatically:
+
+- **Secretary:** `admin` / `1234`
+- **Vet:** `vet` / `1234`
+
+## Password reset email (optional)
+
+To send real Gmail instead of demo on-screen code, set environment variables `CLINIC_GMAIL_ADDRESS` and `CLINIC_GMAIL_APP_PASSWORD` (app password), then use “שכחתי סיסמה”.
+
+## Full solution (WinForms + tests)
+
+Open **`ClinicVets.sln`**. See **`Documentation/REPOSITORY-LAYOUT.md`** for the WinForms and backend map.

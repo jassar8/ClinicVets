@@ -3,7 +3,7 @@
              x:Class="ClinicVetsAvalonia.Views.Visits.VisitsView"
              FlowDirection="RightToLeft">
 
-    <Grid Width="900" Height="650" Margin="20" Background="#BFEFF7">
+    <Grid Width="900" Height="650" Margin="20" Background="{DynamicResource CvPageBackgroundBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="360"/>
             <ColumnDefinition Width="*"/>
@@ -11,7 +11,7 @@
 
         <Border Grid.Column="0"
                 Background="White"
-                BorderBrush="#69C5D8"
+                BorderBrush="{DynamicResource CvCardBorderBrush}"
                 BorderThickness="3"
                 CornerRadius="18"
                 Padding="18"
@@ -146,7 +146,7 @@
 
         <Border Grid.Column="1"
                 BorderThickness="1"
-                BorderBrush="#69C5D8"
+                BorderBrush="{DynamicResource CvCardBorderBrush}"
                 Background="White"
                 CornerRadius="18"
                 Padding="16"

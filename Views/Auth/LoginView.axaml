@@ -3,12 +3,12 @@
              x:Class="ClinicVetsAvalonia.Views.Auth.LoginView"
              FlowDirection="RightToLeft">
 
-    <Grid Width="900" Height="650" Background="#BFEFF7">
+    <Grid Width="900" Height="650" Background="{DynamicResource CvPageBackgroundBrush}">
         <Border Width="760"
                 Height="540"
                 Background="White"
                 CornerRadius="28"
-                BorderBrush="#69C5D8"
+                BorderBrush="{DynamicResource CvCardBorderBrush}"
                 BorderThickness="3"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
@@ -71,18 +71,18 @@
             <TextBlock Text="ברוכים הבאים"
                        FontSize="34"
                        FontWeight="Bold"
-                       Foreground="#2D3748"
+                       Foreground="{DynamicResource CvPrimaryTextBrush}"
                        TextAlignment="Center"
                        HorizontalAlignment="Center"/>
 
             <TextBlock Text="התחברות לחשבון עובד"
                        FontSize="17"
                        TextAlignment="Center"
-                       Foreground="#526172"
+                       Foreground="{DynamicResource CvSecondaryTextBrush}"
                        HorizontalAlignment="Center"/>
 
             <TextBlock Text="שם משתמש"
-                       Foreground="#526172"
+                       Foreground="{DynamicResource CvSecondaryTextBrush}"
                        FontSize="13"
                        Margin="0,4,16,-8"/>
 
@@ -94,7 +94,7 @@
                      ToolTip.Tip="הכנס שם משתמש באנגלית"/>
 
             <TextBlock Text="סיסמה"
-                       Foreground="#526172"
+                       Foreground="{DynamicResource CvSecondaryTextBrush}"
                        FontSize="13"
                        Margin="0,4,16,-8"/>
 
@@ -116,7 +116,7 @@
                         Height="36"
                         Margin="4,0,0,0"
                         Background="#E9F8FC"
-                        BorderBrush="#69C5D8"
+                        BorderBrush="{DynamicResource CvCardBorderBrush}"
                         Foreground="#2F4E6B"
                         ToolTip.Tip="הצג או הסתר סיסמה"
                         Click="TogglePasswordVisibility"/>
@@ -162,21 +162,6 @@
                         Height="44"
                         Click="Register_Click"/>
             </StackPanel>
-
-            <TextBlock Text="משתמשים לבדיקה:"
-                       TextAlignment="Center"
-                       HorizontalAlignment="Center"
-                       Margin="0,25,0,0"/>
-
-            <TextBlock Text="מזכירה: admin / 1234"
-                       TextAlignment="Center"
-                       HorizontalAlignment="Center"
-                       FlowDirection="LeftToRight"/>
-
-            <TextBlock Text="וטרינר: vet / 1234"
-                       TextAlignment="Center"
-                       HorizontalAlignment="Center"
-                       FlowDirection="LeftToRight"/>
 
         </StackPanel>
         </Grid>

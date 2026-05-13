@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <DefaultItemExcludes>$(DefaultItemExcludes);src/**;Tests/**;tests/**;tooling/**;Documentation/**;database/**;docs/**;assets/**;RunApp/**;PublishedApp/**;PublishedApp-Avalonia/**;ClinicManagementSystem.app/**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);src/**;Tests/**;tests/**;tooling/**;Documentation/**;database/**;docs/**;assets/app/**;assets/branding/**;RunApp/**;PublishedApp/**;PublishedApp-Avalonia/**;ClinicManagementSystem.app/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

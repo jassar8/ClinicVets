@@ -3,7 +3,7 @@
              x:Class="ClinicVetsAvalonia.Views.Dashboard.MainMenuView"
              FlowDirection="RightToLeft">
 
-    <Grid Width="900" Height="650" Background="#BFEFF7">
+    <Grid Width="900" Height="650" Background="{DynamicResource CvPageBackgroundBrush}">
         <Grid ColumnDefinitions="220,*">
             <Border Grid.Column="0"
                     Background="#2F4E6B"
@@ -79,7 +79,7 @@
                   RowDefinitions="Auto,*">
                 <Border Background="White"
                         CornerRadius="20"
-                        BorderBrush="#69C5D8"
+                        BorderBrush="{DynamicResource CvCardBorderBrush}"
                         BorderThickness="3"
                         Padding="24"
                         Margin="0,0,0,18">
@@ -106,7 +106,7 @@
                             Grid.Row="0"
                             Grid.Column="0"
                             Background="#FFFFFF"
-                            BorderBrush="#69C5D8"
+                            BorderBrush="{DynamicResource CvCardBorderBrush}"
                             BorderThickness="3"
                             Foreground="#2D3748"
                             Click="Clients_Click">
@@ -126,7 +126,7 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Background="#FFFFFF"
-                            BorderBrush="#69C5D8"
+                            BorderBrush="{DynamicResource CvCardBorderBrush}"
                             BorderThickness="3"
                             Foreground="#2D3748"
                             Click="Animals_Click">
@@ -146,7 +146,7 @@
                             Grid.Row="1"
                             Grid.Column="0"
                             Background="#FFFFFF"
-                            BorderBrush="#69C5D8"
+                            BorderBrush="{DynamicResource CvCardBorderBrush}"
                             BorderThickness="3"
                             Foreground="#2D3748"
                             Click="Visits_Click">
@@ -166,7 +166,7 @@
                             Grid.Row="1"
                             Grid.Column="1"
                             Background="#FFFFFF"
-                            BorderBrush="#69C5D8"
+                            BorderBrush="{DynamicResource CvCardBorderBrush}"
                             BorderThickness="3"
                             Foreground="#2D3748"
                             Click="Medicines_Click">

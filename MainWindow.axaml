@@ -7,11 +7,11 @@
         MinWidth="900"
         MinHeight="650"
         WindowStartupLocation="CenterScreen"
-        Background="#F3F6FB">
+        Background="{DynamicResource CvShellBackgroundBrush}">
 
     <Border x:Name="MainContent"
             Width="900"
             Height="650"
-            Background="#F3F6FB"/>
+            Background="{DynamicResource CvShellBackgroundBrush}"/>
 
 </Window>

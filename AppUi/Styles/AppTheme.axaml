@@ -76,5 +76,6 @@
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="MinHeight" Value="36"/>
         <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="BorderBrush" Value="#B7D6E3"/>
     </Style>
 </Styles>
