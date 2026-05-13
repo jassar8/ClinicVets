@@ -1,62 +1,36 @@
 # ClinicVets
 
-Hebrew (RTL) **veterinary clinic desktop** application for Windows. This repository contains two UI stacks:
+Hebrew (RTL) **veterinary clinic desktop** application for Windows.
 
-| App | Technology | Entry |
-|-----|------------|--------|
-| **ClinicVetsAvalonia** (recommended for review) | Avalonia 12, .NET 9 | `ClinicVetsAvalonia.csproj` at repo root |
-| ClinicVets.Desktop | WinForms (larger solution) | `src/Frontend/ClinicVets.Desktop.csproj` in `ClinicVets.sln` |
+## Official app (use this)
 
-The Avalonia app is self-contained at the repository root with its own SQLite database, login, employee registration, password reset flow, and modules for clients, animals, visits, and medicine inventory.
+The **only** supported end-user app is in **`run testapp/`**:
 
-## Avalonia app — folder layout
+- Avalonia 12 UI (.NET 9)
+- SQLite database, models, services, navigation, and all clinic features in one project
 
-| Folder | Role |
-|--------|------|
-| `AppUi/Styles/` | Shared colors (`ThemeColors.axaml`) and control styles (`AppTheme.axaml`) |
-| `ClinicDatabase/` | SQLite path helpers and schema bootstrap (named to avoid the `database/**` compile exclude used for JSON docs) |
-| `Repositories/` | `AppData` — in-memory lists synchronized with SQLite (employees, clients, animals, medications, visits) |
-| `Models/` | Entity types used by the UI and persistence |
-| `Services/` | `ValidationService`, `PasswordResetService` (optional Gmail SMTP) |
-| `Helpers/` | `UIHelper` for dialogs |
-| `ViewModels/` | `AppSession` — current signed-in employee (expand here for MVVM) |
-| `Views/Auth/` | Login, forgot password |
-| `Views/Employees/` | New employee self-registration |
-| `Views/Dashboard/` | Main menu and navigation by role |
-| `Views/Clients/`, `Views/Animals/`, `Views/Visits/`, `Views/Medicine/` | Domain screens |
-| `Views/Shared/` | Shared layout constants (`UiDimensions`) |
+| Item | Location |
+|------|----------|
+| Project file | `run testapp/ClinicVetsAvalonia.csproj` |
+| Run from source | `run testapp/Run.bat` or `dotnet run --project "run testapp/ClinicVetsAvalonia.csproj"` |
+| Publish EXE | `run testapp/Publish-Avalonia-WinX64.ps1` → output **`run testapp/Publish/ClinicVetsAvalonia.exe`** |
 
-Legacy WinForms + layered backend live under `src/`, `Tests/`, `assets/`, and `database/` (JSON runtime notes only — not the Avalonia SQLite code).
+See **`run testapp/README.md`** for the folder layout (Views, Repositories, `AppUi/Styles`, etc.).
 
-## How to run (Avalonia)
+## Legacy (not the hand-in EXE)
 
-```powershell
-dotnet run --project .\ClinicVetsAvalonia.csproj
-```
+- **WinForms** stack: `src/Frontend/ClinicVets.Desktop.csproj` — optional; build output is synced to `RunApp/` by the WinForms project. To run from source: `src/Frontend/Run-WinForms.bat`.
+- **Removed root launchers** that only started another EXE or duplicated entry points: `Run-Windows.bat` (started `RunApp\ClinicVets.exe`), `Run-Avalonia.bat`, and root `Publish-Avalonia-WinX64.ps1` (replaced by scripts inside `run testapp/`).
 
-Or double-click **`Run-Avalonia.bat`**.
-
-## How to build a portable EXE
-
-```powershell
-.\Publish-Avalonia-WinX64.ps1
-```
-
-Output folder: **`PublishedApp-Avalonia/`** — keep all files next to `ClinicVetsAvalonia.exe`, or use single-file publish as configured in the script.
-
-Self-contained build does not require .NET on the target PC.
-
-## Default demo logins
-
-After a fresh database, two employees are created automatically:
+## Default demo logins (Avalonia)
 
 - **Secretary:** `admin` / `1234`
 - **Vet:** `vet` / `1234`
 
 ## Password reset email (optional)
 
-To send real Gmail instead of demo on-screen code, set environment variables `CLINIC_GMAIL_ADDRESS` and `CLINIC_GMAIL_APP_PASSWORD` (app password), then use “שכחתי סיסמה”.
+Set `CLINIC_GMAIL_ADDRESS` and `CLINIC_GMAIL_APP_PASSWORD` for real Gmail; otherwise the forgot-password flow shows a demo code.
 
-## Full solution (WinForms + tests)
+## Full solution
 
-Open **`ClinicVets.sln`**. See **`Documentation/REPOSITORY-LAYOUT.md`** for the WinForms and backend map.
+Open **`ClinicVets.sln`**. Set startup project to **ClinicVetsAvalonia** (loads from `run testapp\`). See **`Documentation/REPOSITORY-LAYOUT.md`** for the wider repo map.

@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ClinicVets (official — run testapp)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/run testapp/bin/Debug/net9.0-windows/ClinicVetsAvalonia.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/run testapp",
+            "stopAtEntry": false
+        },
+        {
+            "name": "ClinicVets Desktop (WinForms legacy)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/src/Frontend/bin/Debug/net9.0-windows/ClinicVets.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/Frontend",
+            "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach"
+        }
+    ]
+}

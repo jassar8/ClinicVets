@@ -1,10 +1,10 @@
 @echo off
 cd /d "%~dp0"
 
-echo Starting ClinicVets Avalonia (Hebrew UI at repo root)...
+echo Starting ClinicVets WinForms (v2 stack, layered backend)...
 echo.
 
-dotnet run --project "ClinicVetsAvalonia.csproj"
+dotnet run --project "ClinicVets.Desktop.csproj"
 
 if errorlevel 1 (
     echo.

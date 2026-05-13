@@ -42,7 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0AB3BF05
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicVets.Tests", "Tests\ClinicVets.Tests\ClinicVets.Tests.csproj", "{959BD9DC-FA6D-481C-ADFF-B8690A51BEBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicVetsAvalonia", "ClinicVetsAvalonia.csproj", "{41E4E251-E2E8-4478-8D5A-BF273EBAFB54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicVetsAvalonia", "run testapp\ClinicVetsAvalonia.csproj", "{41E4E251-E2E8-4478-8D5A-BF273EBAFB54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

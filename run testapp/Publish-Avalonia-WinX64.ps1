@@ -4,10 +4,10 @@ param(
 
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
-$publishPath = Join-Path $root "PublishedApp-Avalonia"
+$publishPath = Join-Path $root "Publish"
 $project = Join-Path $root "ClinicVetsAvalonia.csproj"
 
-Write-Host "Publishing ClinicVetsAvalonia (Avalonia) for Windows x64..." -ForegroundColor Cyan
+Write-Host "Publishing official ClinicVets app (run testapp) for Windows x64..." -ForegroundColor Cyan
 
 Get-Process | Where-Object { $_.ProcessName -like '*ClinicVets*' } | Stop-Process -Force -ErrorAction SilentlyContinue
 Stop-Process -Name "ClinicVetsAvalonia" -Force -ErrorAction SilentlyContinue
@@ -29,5 +29,5 @@ if ($LASTEXITCODE -ne 0) {
 $exe = Join-Path $publishPath "ClinicVetsAvalonia.exe"
 Write-Host ""
 Write-Host "Publish complete." -ForegroundColor Green
-Write-Host "Portable folder (keep all files together):" -ForegroundColor Yellow
+Write-Host "Final portable EXE (keep entire Publish folder together):" -ForegroundColor Yellow
 Write-Host $exe

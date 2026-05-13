@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 25.0.1706.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicVetsAvalonia", "ClinicVetsAvalonia.csproj", "{6D09A6E4-D2E4-428B-AF80-B386A7AC47DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicVetsAvalonia", "run testapp\ClinicVetsAvalonia.csproj", "{6D09A6E4-D2E4-428B-AF80-B386A7AC47DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
