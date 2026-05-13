@@ -14,7 +14,7 @@ The Avalonia app is self-contained at the repository root with its own SQLite da
 | Folder | Role |
 |--------|------|
 | `AppUi/Styles/` | Shared colors (`ThemeColors.axaml`) and control styles (`AppTheme.axaml`) |
-| `ClinicDatabase/` | SQLite path helpers and `CREATE TABLE` schema bootstrap |
+| `ClinicDatabase/` | SQLite path helpers and schema bootstrap (named to avoid the `database/**` compile exclude used for JSON docs) |
 | `Repositories/` | `AppData` — in-memory lists synchronized with SQLite (employees, clients, animals, medications, visits) |
 | `Models/` | Entity types used by the UI and persistence |
 | `Services/` | `ValidationService`, `PasswordResetService` (optional Gmail SMTP) |
