@@ -352,7 +352,7 @@ public sealed class DashboardPage : UserControl
             DashboardSection.Patients => "Patients",
             DashboardSection.Billing => "Billing",
             DashboardSection.Staff => "Staff",
-            DashboardSection.PendingEmployees => "Pending",
+            DashboardSection.PendingEmployees => "Pending Employees",
             _ => "Home"
         };
 

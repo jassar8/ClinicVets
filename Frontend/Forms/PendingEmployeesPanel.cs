@@ -30,11 +30,11 @@ public sealed class PendingEmployeesPanel : UserControl
         BackColor = UiTheme.CardWhite;
         Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
 
-        var title = UiStyles.CreateHeroTitle("Pending employees");
+        var title = UiStyles.CreateHeroTitle("Pending Employees");
         title.Margin = new Padding(0, 0, 0, 6);
 
         var subtitle = UiStyles.CreateHeroSubtitle(
-            "Review self-service registrations. Approve only after assigning a unique four-digit Employee ID.");
+            "Review self-service registrations. Enter a unique four-digit Employee ID, then approve or reject.");
         subtitle.Margin = new Padding(0, 0, 0, 12);
 
         var root = new TableLayoutPanel
@@ -110,14 +110,33 @@ public sealed class PendingEmployeesPanel : UserControl
 
     private Panel BuildRow(Employee emp)
     {
-        var row = new Panel
+        var wrap = new Panel
         {
-            Margin = new Padding(0, 0, 0, 12),
-            Height = 138,
+            Margin = new Padding(0, 0, 0, 14),
+            Height = 188,
             BackColor = UiTheme.MetricTileBackground,
-            Padding = new Padding(16, 14, 16, 14)
+            Padding = new Padding(0)
         };
-        row.Paint += (_, e) => UiChrome.PaintMetricTile(row, e, UiTheme.MetricAccentStripe);
+        wrap.Paint += (_, e) => UiChrome.PaintMetricTile(wrap, e, UiTheme.MetricAccentStripe);
+
+        var bottomBar = new Panel
+        {
+            Dock = DockStyle.Bottom,
+            Height = 58,
+            BackColor = Color.Transparent
+        };
+        var main = new Panel
+        {
+            Dock = DockStyle.Fill,
+            Padding = new Padding(16, 14, 16, 8),
+            BackColor = Color.Transparent
+        };
+
+        wrap.Controls.Add(bottomBar);
+        wrap.Controls.Add(main);
+
+        var usernameDisplay = string.IsNullOrWhiteSpace(emp.Username) ? "—" : emp.Username.Trim();
+        var statusText = string.IsNullOrWhiteSpace(emp.Status) ? EmployeeAccountStatusNames.Pending : emp.Status.Trim();
 
         var nameLbl = new Label
         {
@@ -125,21 +144,48 @@ public sealed class PendingEmployeesPanel : UserControl
             Font = new Font("Segoe UI", 12.5F, FontStyle.Bold, GraphicsUnit.Point),
             ForeColor = UiTheme.TextDark,
             AutoSize = true,
-            Location = new Point(16, 14),
-            BackColor = UiTheme.MetricTileBackground
+            Margin = new Padding(0, 0, 0, 4),
+            BackColor = Color.Transparent
         };
 
-        var usernameDisplay = string.IsNullOrWhiteSpace(emp.Username) ? "—" : emp.Username.Trim();
-        var meta = new Label
+        var detailsLbl = new Label
         {
             Text = $"Username: {usernameDisplay}   ·   Email: {emp.Email}   ·   Requested role: {emp.Role}",
             Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point),
             ForeColor = UiTheme.TextMuted,
-            AutoSize = false,
-            Location = new Point(16, 44),
-            Size = new Size(Math.Max(200, row.Width - 32), 44),
-            BackColor = UiTheme.MetricTileBackground
+            AutoSize = true,
+            MaximumSize = new Size(900, 0),
+            Margin = new Padding(0, 0, 0, 6),
+            BackColor = Color.Transparent
         };
+
+        var statusLbl = new Label
+        {
+            Text = $"Status: {statusText}",
+            Font = new Font("Segoe UI", 10.5F, FontStyle.Bold, GraphicsUnit.Point),
+            ForeColor = UiTheme.PrimaryButton,
+            AutoSize = true,
+            Margin = new Padding(0, 0, 0, 0),
+            BackColor = Color.Transparent
+        };
+
+        var infoGrid = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 3,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            BackColor = Color.Transparent
+        };
+        infoGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+        infoGrid.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        infoGrid.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        infoGrid.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        infoGrid.Controls.Add(nameLbl, 0, 0);
+        infoGrid.Controls.Add(detailsLbl, 0, 1);
+        infoGrid.Controls.Add(statusLbl, 0, 2);
+        main.Controls.Add(infoGrid);
 
         var idCaption = new Label
         {
@@ -147,34 +193,51 @@ public sealed class PendingEmployeesPanel : UserControl
             Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point),
             ForeColor = UiTheme.TextMuted,
             AutoSize = true,
-            Location = new Point(16, 92),
-            BackColor = UiTheme.MetricTileBackground
+            Margin = new Padding(0, 8, 8, 8),
+            Padding = new Padding(0, 10, 0, 0),
+            BackColor = Color.Transparent
         };
 
         var idBox = new TextBox
         {
             MaxLength = 4,
             Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point),
-            Location = new Point(110, 86),
-            Width = 88,
+            Width = 96,
+            Height = 36,
+            Margin = new Padding(0, 4, 12, 4),
             PlaceholderText = "0000"
         };
 
         var approve = new ModernPrimaryButton
         {
             Text = "Approve",
-            Location = new Point(212, 80),
-            Width = 118,
-            Height = UiTheme.PrimaryButtonHeight
+            Width = 120,
+            Height = UiTheme.PrimaryButtonHeight,
+            Margin = new Padding(0, 0, 10, 0)
         };
 
         var reject = new ModernDangerButton
         {
             Text = "Reject",
-            Location = new Point(338, 80),
-            Width = 118,
-            Height = UiTheme.PrimaryButtonHeight
+            Width = 120,
+            Height = UiTheme.PrimaryButtonHeight,
+            Margin = new Padding(0, 0, 0, 0)
         };
+
+        var actions = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = true,
+            AutoSize = true,
+            Padding = new Padding(12, 6, 12, 6),
+            BackColor = Color.Transparent
+        };
+        actions.Controls.Add(idCaption);
+        actions.Controls.Add(idBox);
+        actions.Controls.Add(approve);
+        actions.Controls.Add(reject);
+        bottomBar.Controls.Add(actions);
 
         var capturedId = emp.Id;
         approve.Click += async (_, _) =>
@@ -189,7 +252,7 @@ public sealed class PendingEmployeesPanel : UserControl
                     MessageBox.Show(
                         FindForm(),
                         message,
-                        "ClinicVets — approve employee",
+                        "ClinicVets — Pending Employees",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                     return;
@@ -213,7 +276,7 @@ public sealed class PendingEmployeesPanel : UserControl
                 var confirm = MessageBox.Show(
                     FindForm(),
                     $"Reject registration for {emp.FullName}?",
-                    "ClinicVets — confirm rejection",
+                    "ClinicVets — Pending Employees",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
                 if (confirm != DialogResult.Yes)
@@ -225,7 +288,7 @@ public sealed class PendingEmployeesPanel : UserControl
                     MessageBox.Show(
                         FindForm(),
                         message,
-                        "ClinicVets — reject employee",
+                        "ClinicVets — Pending Employees",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                     return;
@@ -240,18 +303,6 @@ public sealed class PendingEmployeesPanel : UserControl
             }
         };
 
-        row.Controls.Add(nameLbl);
-        row.Controls.Add(meta);
-        row.Controls.Add(idCaption);
-        row.Controls.Add(idBox);
-        row.Controls.Add(approve);
-        row.Controls.Add(reject);
-
-        row.Resize += (_, _) =>
-        {
-            meta.Width = Math.Max(200, row.ClientSize.Width - 32);
-        };
-
-        return row;
+        return wrap;
     }
 }

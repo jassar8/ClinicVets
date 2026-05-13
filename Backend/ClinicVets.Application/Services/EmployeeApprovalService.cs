@@ -1,6 +1,7 @@
 using ClinicVets.Application.Interfaces;
 using ClinicVets.Application.Security;
 using ClinicVets.Application.Validation;
+using ClinicVets.Core;
 using ClinicVets.Core.Entities;
 
 namespace ClinicVets.Application.Services;
@@ -28,7 +29,8 @@ public sealed class EmployeeApprovalService
         var all = await _repository.GetAllAsync();
         if (all.Any(e =>
                 e.Id != employeeId &&
-                string.Equals(e.EmployeeId?.Trim(), trimmedId, StringComparison.Ordinal)))
+                EmployeeIdValidation.IsFourDigitEmployeeId(e.EmployeeId) &&
+                string.Equals(e.EmployeeId.Trim(), trimmedId, StringComparison.Ordinal)))
             return (false, "That Employee ID is already in use.");
 
         var employee = await _repository.GetByIdAsync(employeeId);
@@ -37,6 +39,12 @@ public sealed class EmployeeApprovalService
 
         if (!string.Equals(employee.Status?.Trim(), EmployeeAccountStatusNames.Pending, StringComparison.OrdinalIgnoreCase))
             return (false, "Only pending registrations can be approved.");
+
+        if (!EmployeeRoleNames.TryParse(employee.Role, out var role) ||
+            role is not (EmployeeRole.Secretary or EmployeeRole.Veterinarian))
+        {
+            return (false, "Only secretary or veterinarian registrations can be approved from this queue.");
+        }
 
         employee.Status = EmployeeAccountStatusNames.Approved;
         employee.EmployeeId = trimmedId;

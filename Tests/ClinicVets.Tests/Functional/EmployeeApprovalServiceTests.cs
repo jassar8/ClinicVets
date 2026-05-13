@@ -122,4 +122,27 @@ public class EmployeeApprovalServiceTests
         Assert.Equal(EmployeeAccountStatusNames.Rejected, updated.Status);
         Assert.Equal(string.Empty, updated.EmployeeId);
     }
+
+    [Fact]
+    public async Task ApproveAsync_fails_when_pending_role_is_not_secretary_or_veterinarian()
+    {
+        var repo = new FakeEmployeeRepository();
+        var admin = new Employee { FullName = "A", Email = "a@x.com", Password = "x", Role = "Admin" };
+        await repo.AddAsync(admin);
+        var pending = new Employee
+        {
+            FullName = "Odd",
+            Email = "odd@x.com",
+            Password = "Abcd1234!",
+            Role = "Janitor",
+            Status = EmployeeAccountStatusNames.Pending
+        };
+        await repo.AddAsync(pending);
+        var sut = new EmployeeApprovalService(repo);
+
+        var (ok, message) = await sut.ApproveAsync(pending.Id, "4821", admin);
+
+        Assert.False(ok);
+        Assert.Contains("secretary", message, StringComparison.OrdinalIgnoreCase);
+    }
 }
