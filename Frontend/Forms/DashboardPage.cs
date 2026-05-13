@@ -56,6 +56,14 @@ public sealed class DashboardPage : UserControl
         BackColor = UiTheme.PageBackground;
         Font = shell.Font;
 
+        if (RolePermissions.IsAdministrator(_employee))
+        {
+            var admin = new AdminDashboardView(employee, shell, registration, approvals, repository, customerDirectory);
+            admin.Dock = DockStyle.Fill;
+            Controls.Add(admin);
+            return;
+        }
+
         var roleLabel = EmployeeRoleNames.TryParse(_employee.Role, out var parsed)
             ? EmployeeRoleNames.ToStoredString(parsed)
             : _employee.Role;

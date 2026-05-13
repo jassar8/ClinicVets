@@ -82,4 +82,10 @@ public static class UiTheme
     public static Color HeaderBlueDark => HeaderPrimaryDark;
 
     public static Color PrimaryButtonText => Color.White;
+
+    /// <summary>Administrator shell: deep teal sidebar (2026 dashboard).</summary>
+    public static Color AdminSidebarBackground => Color.FromArgb(14, 72, 78);
+
+    public static Color AdminSidebarNavActive => Color.FromArgb(28, 118, 110);
+    public static Color AdminSidebarNavHover => Color.FromArgb(22, 96, 90);
 }

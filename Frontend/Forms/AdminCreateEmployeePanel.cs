@@ -1,0 +1,180 @@
+using ClinicVets.Application.Security;
+using ClinicVets.Application.Services;
+using ClinicVets.Core.Entities;
+using ClinicVets.Desktop.UI;
+
+namespace ClinicVets.Desktop.Forms;
+
+/// <summary>Administrator-only create-account fields (embedded in the main window or dialog).</summary>
+public sealed class AdminCreateEmployeePanel : UserControl
+{
+    private readonly Employee _actingAdmin;
+    private readonly EmployeeRegistrationService _registration;
+    private readonly TextBox _fullName = new();
+    private readonly TextBox _email = new();
+    private readonly TextBox _password = new();
+    private readonly TextBox _username = new();
+    private readonly TextBox _employeeId = new();
+    private readonly ComboBox _role = new();
+    private readonly RoundedInputHost _fullNameHost;
+    private readonly RoundedInputHost _emailHost;
+    private readonly RoundedInputHost _passwordHost;
+    private readonly RoundedInputHost _usernameHost;
+    private readonly RoundedInputHost _employeeIdHost;
+    private readonly RoundedComboHost _roleHost;
+    private readonly FeedbackBannerPanel _feedback = new();
+    private readonly ModernPrimaryButton _save = new();
+    private readonly ModernOutlineButton _cancel = new();
+
+    public AdminCreateEmployeePanel(Employee actingAdmin, EmployeeRegistrationService registration)
+    {
+        _actingAdmin = actingAdmin;
+        _registration = registration;
+
+        Dock = DockStyle.Fill;
+        BackColor = UiTheme.CardWhite;
+        Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+        Padding = new Padding(4);
+
+        _fullName.PlaceholderText = "Full name";
+        _email.PlaceholderText = "Work email (sign-in)";
+        _password.PlaceholderText = "Temporary password (8–10 chars, letter, digit, special)";
+        _password.UseSystemPasswordChar = true;
+        _username.PlaceholderText = "Optional username (e.g. jdoe)";
+        _employeeId.PlaceholderText = "Four-digit Employee ID (e.g. 4521)";
+        _employeeId.MaxLength = 4;
+
+        _fullNameHost = new RoundedInputHost(_fullName);
+        _emailHost = new RoundedInputHost(_email);
+        _passwordHost = new RoundedInputHost(_password);
+        _usernameHost = new RoundedInputHost(_username);
+        _employeeIdHost = new RoundedInputHost(_employeeId);
+
+        _role.DropDownStyle = ComboBoxStyle.DropDownList;
+        _role.Items.AddRange(new object[] { EmployeeRoleNames.Admin, EmployeeRoleNames.Secretary, EmployeeRoleNames.Veterinarian });
+        _role.SelectedIndex = 1;
+        UiStyles.ApplyComboInner(_role);
+        _roleHost = new RoundedComboHost(_role);
+
+        _feedback.Clear();
+
+        _save.Text = "Create account";
+        _save.Margin = new Padding(0, 16, 12, 0);
+        _save.Click += async (_, _) => await SaveAsync();
+
+        _cancel.Text = "Cancel";
+        _cancel.Margin = new Padding(0, 16, 0, 0);
+        _cancel.Click += (_, _) => Cancelled?.Invoke(this, EventArgs.Empty);
+
+        var flow = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.TopDown,
+            WrapContents = false,
+            AutoScroll = true,
+            Padding = new Padding(4),
+            BackColor = UiTheme.CardWhite
+        };
+        flow.SizeChanged += (_, _) =>
+        {
+            var inner = Math.Max(320, flow.ClientSize.Width - flow.Padding.Horizontal);
+            foreach (Control c in flow.Controls)
+            {
+                if (c is FlowLayoutPanel row && row.FlowDirection == FlowDirection.LeftToRight)
+                {
+                    row.Width = inner;
+                    continue;
+                }
+
+                if (c is Label { AutoSize: true })
+                    continue;
+                c.Width = inner;
+            }
+        };
+
+        var title = UiStyles.CreateHeroTitle("New employee account");
+        var subtitle = UiStyles.CreateHeroSubtitle(
+            "Administrators can assign any role. Provide a unique four-digit Employee ID. Passwords must follow the same clinic rules as self-registration.");
+
+        var buttonRow = new FlowLayoutPanel
+        {
+            FlowDirection = FlowDirection.LeftToRight,
+            AutoSize = true,
+            WrapContents = false,
+            Margin = new Padding(0, 8, 0, 0),
+            BackColor = UiTheme.CardWhite
+        };
+        buttonRow.Controls.Add(_save);
+        buttonRow.Controls.Add(_cancel);
+
+        flow.Controls.Add(title);
+        flow.Controls.Add(subtitle);
+        flow.Controls.Add(UiStyles.CreateFieldCaption("Full name"));
+        flow.Controls.Add(_fullNameHost);
+        flow.Controls.Add(UiStyles.CreateFieldCaption("Email"));
+        flow.Controls.Add(_emailHost);
+        flow.Controls.Add(UiStyles.CreateFieldCaption("Password"));
+        flow.Controls.Add(_passwordHost);
+        flow.Controls.Add(UiStyles.CreateFieldCaption("Username (optional)"));
+        flow.Controls.Add(_usernameHost);
+        flow.Controls.Add(UiStyles.CreateFieldCaption("Role"));
+        flow.Controls.Add(_roleHost);
+        flow.Controls.Add(UiStyles.CreateFieldCaption("Employee ID (4 digits)"));
+        flow.Controls.Add(_employeeIdHost);
+        flow.Controls.Add(_feedback);
+        flow.Controls.Add(buttonRow);
+
+        Controls.Add(flow);
+
+        Load += (_, _) => ActiveControl = _fullName;
+    }
+
+    public event EventHandler? Saved;
+
+    public event EventHandler? Cancelled;
+
+    public void ResetForm()
+    {
+        _fullName.Clear();
+        _email.Clear();
+        _password.Clear();
+        _username.Clear();
+        _employeeId.Clear();
+        _role.SelectedIndex = 1;
+        _feedback.Clear();
+    }
+
+    private async Task SaveAsync()
+    {
+        _save.Enabled = false;
+        try
+        {
+            _feedback.Clear();
+            var roleText = _role.SelectedItem?.ToString() ?? string.Empty;
+            var username = string.IsNullOrWhiteSpace(_username.Text) ? null : _username.Text.Trim();
+            var result = await _registration.RegisterAsync(
+                _fullName.Text,
+                _email.Text,
+                _password.Text,
+                roleText,
+                _actingAdmin,
+                username,
+                _employeeId.Text.Trim());
+
+            if (!result.IsSuccess)
+            {
+                _feedback.ShowMessage(
+                    UiFeedbackKind.Error,
+                    "Unable to create the account" + Environment.NewLine + Environment.NewLine + result.Message);
+                return;
+            }
+
+            Saved?.Invoke(this, EventArgs.Empty);
+        }
+        finally
+        {
+            if (_save.IsHandleCreated)
+                _save.Enabled = true;
+        }
+    }
+}
