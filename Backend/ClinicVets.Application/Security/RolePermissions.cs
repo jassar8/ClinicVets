@@ -34,6 +34,8 @@ public static class RolePermissions
             DashboardSection.CustomerRegistration => role == EmployeeRole.Secretary,
             DashboardSection.CustomerSearch => role == EmployeeRole.Secretary,
             DashboardSection.CustomerAnimals => role == EmployeeRole.Secretary,
+            DashboardSection.Treatments => role is EmployeeRole.Secretary or EmployeeRole.Veterinarian or EmployeeRole.Admin,
+            DashboardSection.Settings => true,
             _ => false
         };
     }
@@ -52,5 +54,7 @@ public enum DashboardSection
     PendingEmployees,
     CustomerRegistration,
     CustomerSearch,
-    CustomerAnimals
+    CustomerAnimals,
+    Treatments,
+    Settings
 }

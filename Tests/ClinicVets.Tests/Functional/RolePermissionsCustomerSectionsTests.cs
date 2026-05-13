@@ -23,7 +23,10 @@ public class RolePermissionsCustomerSectionsTests
     [InlineData(EmployeeRole.Veterinarian, DashboardSection.CustomerRegistration, false)]
     [InlineData(EmployeeRole.Veterinarian, DashboardSection.CustomerSearch, false)]
     [InlineData(EmployeeRole.Veterinarian, DashboardSection.CustomerAnimals, false)]
-    public void Customer_sections_allowed_only_for_admin_and_secretary(EmployeeRole role, DashboardSection section, bool allowed)
+    [InlineData(EmployeeRole.Veterinarian, DashboardSection.Treatments, true)]
+    [InlineData(EmployeeRole.Veterinarian, DashboardSection.Settings, true)]
+    [InlineData(EmployeeRole.Secretary, DashboardSection.Treatments, true)]
+    public void Dashboard_sections_follow_role_rules(EmployeeRole role, DashboardSection section, bool allowed)
     {
         var e = Emp(role);
         Assert.Equal(allowed, RolePermissions.CanAccessDashboardSection(e, section));

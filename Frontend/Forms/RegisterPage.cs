@@ -1,5 +1,7 @@
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using ClinicVets.Application.Services;
+using ClinicVets.Desktop;
 using ClinicVets.Desktop.UI;
 
 namespace ClinicVets.Desktop.Forms;
@@ -8,6 +10,7 @@ public sealed class RegisterPage : UserControl
 {
     private readonly EmployeeRegistrationService _registration;
     private readonly MainShellForm _shell;
+    private readonly Panel _rightHost = new() { Dock = DockStyle.Fill };
     private readonly Panel _body = new();
     private readonly Panel _card = new();
     private readonly FlowLayoutPanel _flow = new();
@@ -37,21 +40,103 @@ public sealed class RegisterPage : UserControl
         BackColor = UiTheme.PageBackground;
         Font = shell.Font;
 
-        var header = UiHeaderBar.Create("Add a staff member to your clinic workspace");
+        var split = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 2,
+            RowCount = 1,
+            BackColor = UiTheme.PageBackground
+        };
+        split.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 36F));
+        split.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 64F));
+
+        var left = new Panel { Dock = DockStyle.Fill, BackColor = UiTheme.HeaderPrimary };
+        left.Paint += PaintBrandPanel;
+
+        var brandTable = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 3,
+            BackColor = UiTheme.HeaderPrimary,
+            Padding = new Padding(28, 0, 28, 0)
+        };
+        brandTable.RowStyles.Add(new RowStyle(SizeType.Percent, 38F));
+        brandTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        brandTable.RowStyles.Add(new RowStyle(SizeType.Percent, 62F));
+
+        var brandCell = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.TopDown,
+            WrapContents = false,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            BackColor = UiTheme.HeaderPrimary,
+            Padding = new Padding(8, 8, 8, 8)
+        };
+
+        var logo = new PictureBox
+        {
+            Size = new Size(72, 72),
+            SizeMode = PictureBoxSizeMode.Zoom,
+            BackColor = UiTheme.HeaderPrimary,
+            Margin = new Padding(0, 0, 0, 16)
+        };
+        try
+        {
+            logo.Image = AppBranding.GetHeaderImage();
+        }
+        catch
+        {
+            logo.Visible = false;
+        }
+
+        var clinic = new Label
+        {
+            Text = "ClinicVets",
+            Font = new Font("Segoe UI", 28F, FontStyle.Bold, GraphicsUnit.Point),
+            ForeColor = Color.White,
+            AutoSize = true,
+            Margin = new Padding(0, 0, 0, 8),
+            BackColor = UiTheme.HeaderPrimary
+        };
+        var tag = new Label
+        {
+            Text = "Join the clinic team",
+            Font = new Font("Segoe UI", 12.5F, FontStyle.Regular, GraphicsUnit.Point),
+            ForeColor = UiTheme.SubtitleOnHeader,
+            AutoSize = true,
+            MaximumSize = new Size(320, 0),
+            BackColor = UiTheme.HeaderPrimary
+        };
+
+        if (logo.Visible)
+            brandCell.Controls.Add(logo);
+        brandCell.Controls.Add(clinic);
+        brandCell.Controls.Add(tag);
+
+        brandTable.Controls.Add(new Panel { Dock = DockStyle.Fill, BackColor = UiTheme.HeaderPrimary }, 0, 0);
+        brandTable.Controls.Add(brandCell, 0, 1);
+        brandTable.Controls.Add(new Panel { Dock = DockStyle.Fill, BackColor = UiTheme.HeaderPrimary }, 0, 2);
+        left.Controls.Add(brandTable);
+
+        _rightHost.BackColor = UiTheme.PageBackground;
+        _rightHost.Paint += PaintBodyGradient;
 
         _body.Dock = DockStyle.Fill;
-        _body.BackColor = UiTheme.PageBackground;
+        _body.BackColor = Color.Transparent;
         _body.Resize += (_, _) => Relayout();
 
-        _card.BackColor = UiTheme.PageBackground;
+        _card.BackColor = UiTheme.CardWhite;
         _card.Paint += (_, e) => UiChrome.PaintCardWithShadow(_card, e, UiTheme.CardCornerRadius);
 
         _flow.Dock = DockStyle.Fill;
         _flow.FlowDirection = FlowDirection.TopDown;
         _flow.WrapContents = false;
         _flow.AutoScroll = true;
-        _flow.Padding = new Padding(52, 44, 52, 44);
-        _flow.BackColor = UiTheme.PageBackground;
+        _flow.Padding = new Padding(44, 36, 44, 36);
+        _flow.BackColor = UiTheme.CardWhite;
         _flow.SizeChanged += (_, _) => SyncWidths();
 
         _heroTitle = UiStyles.CreateHeroTitle("New employee");
@@ -128,16 +213,28 @@ public sealed class RegisterPage : UserControl
 
         _card.Controls.Add(_flow);
         _body.Controls.Add(_card);
+        _rightHost.Controls.Add(_body);
 
-        var root = new Panel { Dock = DockStyle.Fill, BackColor = UiTheme.PageBackground };
-        root.Paint += PaintBodyGradient;
-        root.Controls.Add(_body);
-        root.Controls.Add(header);
-
-        Controls.Add(root);
+        split.Controls.Add(left, 0, 0);
+        split.Controls.Add(_rightHost, 1, 0);
+        Controls.Add(split);
 
         Resize += (_, _) => Relayout();
         Load += (_, _) => Relayout();
+    }
+
+    private static void PaintBrandPanel(object? sender, PaintEventArgs e)
+    {
+        if (sender is not Panel p)
+            return;
+        var g = e.Graphics;
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        using var brush = new LinearGradientBrush(
+            p.ClientRectangle,
+            UiTheme.HeaderPrimaryDark,
+            UiTheme.HeaderPrimary,
+            LinearGradientMode.Vertical);
+        g.FillRectangle(brush, p.ClientRectangle);
     }
 
     private static void PaintBodyGradient(object? sender, PaintEventArgs e)
@@ -174,7 +271,7 @@ public sealed class RegisterPage : UserControl
 
     private void Relayout()
     {
-        ResponsiveLayout.CenterCard(_body, _card, 56, 640, 48, 56);
+        ResponsiveLayout.CenterCard(_body, _card, 40, 640, 36, 40);
         SyncWidths();
     }
 

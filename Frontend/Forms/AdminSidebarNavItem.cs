@@ -11,7 +11,7 @@ internal sealed class AdminSidebarNavItem : Panel
     private readonly string _caption;
     private bool _hover;
 
-    public AdminSidebarNavItem(string caption, AdminNavKind kind)
+    public AdminSidebarNavItem(string caption, ClinicShellNavKind kind)
     {
         _caption = caption;
         Kind = kind;
@@ -38,7 +38,7 @@ internal sealed class AdminSidebarNavItem : Panel
         };
     }
 
-    public AdminNavKind Kind { get; }
+    public ClinicShellNavKind Kind { get; }
 
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

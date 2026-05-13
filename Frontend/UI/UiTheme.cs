@@ -7,8 +7,8 @@ public static class UiTheme
     public static Color PageGradientBottom => Color.FromArgb(228, 240, 235);
     public static Color ContentCanvas => Color.FromArgb(236, 244, 240);
 
-    public static Color HeaderPrimary => Color.FromArgb(16, 96, 102);
-    public static Color HeaderPrimaryDark => Color.FromArgb(12, 72, 78);
+    public static Color HeaderPrimary => Color.FromArgb(0, 95, 95);
+    public static Color HeaderPrimaryDark => Color.FromArgb(0, 72, 72);
     public static Color AccentStrip => Color.FromArgb(120, 210, 188);
     public static Color AccentMintSoft => Color.FromArgb(210, 244, 232);
     public static Color AccentMintWash => Color.FromArgb(232, 248, 242);
