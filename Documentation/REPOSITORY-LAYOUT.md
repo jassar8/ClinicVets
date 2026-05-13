@@ -10,7 +10,7 @@ This table maps the folders you care about for coursework and demos to where the
 | **Services** | Application services, security, validation | `src/Backend/ClinicVets.Application/` |
 | **Data** | JSON persistence, in-memory demo stores | `src/Backend/ClinicVets.Infrastructure/Data/` |
 | **Tests** | xUnit tests | `Tests/ClinicVets.Tests/` |
-| **Assets** | Icons, logos (embedded in the desktop project) | `assets/` |
+| **Assets** | App icon and branding (embedded by the desktop project) | `assets/app/`, `assets/branding/` |
 | **Documentation** | Project docs and layout guides | `Documentation/`, `docs/` |
 | **RunApp** | **Runnable output** — copy of the last build/publish (not source) | `RunApp/` |
 
@@ -24,6 +24,8 @@ After **`dotnet build`** (any configuration) or **`.\publish-win-x64.ps1`**, ope
 - **Self-contained publish** (`publish-win-x64.ps1`): `RunApp/` contains a **portable** Windows x64 app (larger, no separate runtime install).
 
 Do not commit large publish artifacts unless your course requires it; `RunApp/` is normally refreshed locally by the build.
+
+`bin/` and `obj/` under each project are **gitignored** and safe to delete anytime (`dotnet clean`).
 
 ## Disable Demo Mode (final build)
 

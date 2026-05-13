@@ -23,7 +23,7 @@ Full map: **[Documentation/REPOSITORY-LAYOUT.md](Documentation/REPOSITORY-LAYOUT
 | **Services** | `src/Backend/ClinicVets.Application/` |
 | **Data** (JSON + in-memory demo stores) | `src/Backend/ClinicVets.Infrastructure/Data/` |
 | **Tests** | `Tests/ClinicVets.Tests/` |
-| **Assets** | `assets/` — icon, logo (embedded in desktop project) |
+| **Assets** | `assets/app/`, `assets/branding/` — icon and logo embedded in the desktop project |
 | **Documentation** | `Documentation/`, `docs/` |
 | **Runtime data (JSON)** | `%LocalAppData%\ClinicVets\` — see `database/README.md` |
 | **Runnable output** | `RunApp/` — **not** source; synced from build |
