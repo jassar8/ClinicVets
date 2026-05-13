@@ -2,17 +2,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="ClinicVetsAvalonia.App"
              RequestedThemeVariant="Default">
+    <!-- Main window: App.axaml.cs OnFrameworkInitializationCompleted → MainWindow (v4). Avalonia has no WPF StartupUri. -->
 
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://ClinicVets/AppUi/Styles/ThemeColors.axaml" />
+                <ResourceInclude Source="avares://ClinicVets/Styles/ThemeColors.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 
     <Application.Styles>
         <FluentTheme />
-        <StyleInclude Source="avares://ClinicVets/AppUi/Styles/AppTheme.axaml" />
+        <StyleInclude Source="avares://ClinicVets/Styles/AppTheme.axaml" />
     </Application.Styles>
 </Application>

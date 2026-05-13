@@ -26,8 +26,8 @@ After `dotnet build` on **`ClinicVets.sln`**, **`RunApp\ClinicVets.exe`** is ref
 
 | Area | Path |
 |------|------|
-| Styles / colors | `AppUi/Styles/` |
-| SQLite schema + paths | `ClinicDatabase/` |
+| Styles / colors | `Styles/` |
+| SQLite schema + paths | `Database/` |
 | Data access | `Repositories/AppData.cs` |
 | Models | `Models/` |
 | Services | `Services/` |

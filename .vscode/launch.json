@@ -16,7 +16,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Frontend/bin/Debug/net9.0-windows/ClinicVets.dll",
+            "program": "${workspaceFolder}/src/Frontend/bin/Debug/net9.0-windows/ClinicVetsWinForms.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/Frontend",
             "stopAtEntry": false
