@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using ClinicVets.Application.Interfaces;
 using ClinicVets.Application.Security;
+using ClinicVets.Application.Validation;
 using ClinicVets.Core.Entities;
 
 namespace ClinicVets.Infrastructure.Data;
@@ -84,6 +85,15 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
         }
     }
 
+    public Task<Employee?> GetByIdAsync(Guid id)
+    {
+        lock (_sync)
+        {
+            var match = _employees.FirstOrDefault(e => e.Id == id);
+            return Task.FromResult(match);
+        }
+    }
+
     public Task<IReadOnlyList<Employee>> GetAllAsync()
     {
         lock (_sync)
@@ -95,12 +105,57 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
         }
     }
 
+    public Task<IReadOnlyList<Employee>> GetPendingRegistrationsAsync()
+    {
+        lock (_sync)
+        {
+            var list = _employees
+                .Where(e => string.Equals(e.Status?.Trim(), EmployeeAccountStatusNames.Pending, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(e => e.FullName, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<Employee>>(list);
+        }
+    }
+
     public Task AddAsync(Employee employee)
     {
         lock (_sync)
         {
             _employees.Add(employee);
             SaveUnlocked();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public Task UpdateAsync(Employee employee)
+    {
+        lock (_sync)
+        {
+            var idx = _employees.FindIndex(e => e.Id == employee.Id);
+            if (idx >= 0)
+            {
+                _employees[idx] = employee;
+                SaveUnlocked();
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public Task RemoveRejectedApplicationsForEmailAsync(string normalizedEmail)
+    {
+        var key = normalizedEmail.Trim();
+        if (key.Length == 0)
+            return Task.CompletedTask;
+
+        lock (_sync)
+        {
+            var removed = _employees.RemoveAll(e =>
+                string.Equals(e.Email?.Trim(), key, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(e.Status?.Trim(), EmployeeAccountStatusNames.Rejected, StringComparison.OrdinalIgnoreCase));
+            if (removed > 0)
+                SaveUnlocked();
         }
 
         return Task.CompletedTask;
@@ -120,6 +175,7 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
                     {
                         _employees = list;
                         ApplyCanonicalBootstrapAdministratorUnlocked();
+                        NormalizeLegacyEmployeeRecordsUnlocked();
                         SaveUnlocked();
                         return _employees;
                     }
@@ -133,14 +189,57 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
             var seed = CreateDefaultEmployees();
             _employees = seed;
             ApplyCanonicalBootstrapAdministratorUnlocked();
+            NormalizeLegacyEmployeeRecordsUnlocked();
             SaveUnlocked();
             return _employees;
         }
     }
 
+    private void NormalizeLegacyEmployeeRecordsUnlocked()
+    {
+        foreach (var e in _employees)
+        {
+            if (string.IsNullOrWhiteSpace(e.Status))
+                e.Status = EmployeeAccountStatusNames.Approved;
+        }
+
+        foreach (var e in _employees.Where(x => RolePermissions.IsAdministrator(x)))
+        {
+            e.Status = EmployeeAccountStatusNames.Approved;
+            if (!EmployeeIdValidation.IsFourDigitEmployeeId(e.EmployeeId))
+                e.EmployeeId = "9000";
+        }
+
+        var used = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var e in _employees)
+        {
+            if (EmployeeIdValidation.IsFourDigitEmployeeId(e.EmployeeId))
+                used.Add(e.EmployeeId.Trim());
+        }
+
+        foreach (var e in _employees)
+        {
+            if (!string.Equals(e.Status?.Trim(), EmployeeAccountStatusNames.Approved, StringComparison.OrdinalIgnoreCase))
+                continue;
+            if (RolePermissions.IsAdministrator(e))
+                continue;
+            if (EmployeeIdValidation.IsFourDigitEmployeeId(e.EmployeeId))
+                continue;
+
+            for (var n = 3001; n <= 9999; n++)
+            {
+                var id = n.ToString("D4");
+                if (used.Add(id))
+                {
+                    e.EmployeeId = id;
+                    break;
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// Guarantees exactly one bootstrap row for <see cref="SystemAccounts.DefaultAdminEmail"/> with published demo credentials.
-    /// Removes any stale/duplicate rows for that mailbox so username "admin" always resolves to a working account.
     /// </summary>
     private void ApplyCanonicalBootstrapAdministratorUnlocked()
     {
@@ -158,14 +257,18 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
             FullName = "Dr. Amir Levi",
             Email = "vet@clinicvets.com",
             Password = "Vet12!ab",
-            Role = EmployeeRoleNames.Veterinarian
+            Role = EmployeeRoleNames.Veterinarian,
+            Status = EmployeeAccountStatusNames.Approved,
+            EmployeeId = "2001"
         },
         new Employee
         {
             FullName = "Maya Cohen",
             Email = "secretary@clinicvets.com",
             Password = "Sec12!ab",
-            Role = EmployeeRoleNames.Secretary
+            Role = EmployeeRoleNames.Secretary,
+            Status = EmployeeAccountStatusNames.Approved,
+            EmployeeId = "2002"
         }
     ];
 
@@ -175,7 +278,9 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
         Username = SystemAccounts.DefaultAdminUsername,
         Email = SystemAccounts.DefaultAdminEmail,
         Password = SystemAccounts.DefaultAdminPassword,
-        Role = SystemAccounts.DefaultAdminRole
+        Role = SystemAccounts.DefaultAdminRole,
+        Status = EmployeeAccountStatusNames.Approved,
+        EmployeeId = "9000"
     };
 
     private void SaveUnlocked()

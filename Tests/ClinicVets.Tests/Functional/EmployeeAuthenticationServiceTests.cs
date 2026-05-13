@@ -45,11 +45,32 @@ public class EmployeeAuthenticationServiceTests
     }
 
     [Fact]
-    public async Task LoginAsync_succeeds_after_registration_with_normalized_email()
+    public async Task LoginAsync_blocks_pending_self_registered_employee()
     {
         var repo = new FakeEmployeeRepository();
         var registration = new EmployeeRegistrationService(repo);
         await registration.RegisterAsync("Jane", "Jane@X.COM", "Valid1!ab", "Secretary");
+        var sut = new EmployeeAuthenticationService(repo);
+
+        var (ok, message, employee) = await sut.LoginAsync("  jane@x.com  ", "Valid1!ab");
+
+        Assert.False(ok);
+        Assert.Null(employee);
+        Assert.Contains("waiting for admin approval", message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task LoginAsync_succeeds_after_registration_is_approved_with_employee_id()
+    {
+        var repo = new FakeEmployeeRepository();
+        var registration = new EmployeeRegistrationService(repo);
+        await registration.RegisterAsync("Jane", "Jane@X.COM", "Valid1!ab", "Secretary");
+        var pending = await repo.GetByEmailAsync("jane@x.com");
+        Assert.NotNull(pending);
+        pending.Status = EmployeeAccountStatusNames.Approved;
+        pending.EmployeeId = "4521";
+        await repo.UpdateAsync(pending);
+
         var sut = new EmployeeAuthenticationService(repo);
 
         var (ok, _, employee) = await sut.LoginAsync("  jane@x.com  ", "Valid1!ab");
@@ -59,19 +80,44 @@ public class EmployeeAuthenticationServiceTests
         Assert.Equal("jane@x.com", employee.Email);
         Assert.Equal("Jane", employee.FullName);
         Assert.Equal("Secretary", employee.Role);
+        Assert.Equal("4521", employee.EmployeeId);
     }
 
     [Fact]
-    public async Task LoginAsync_succeeds_with_username_when_configured()
+    public async Task LoginAsync_blocks_rejected_employee()
     {
         var repo = new FakeEmployeeRepository();
-        await repo.AddAsync(new ClinicVets.Core.Entities.Employee
+        await repo.AddAsync(new Employee
+        {
+            FullName = "Rejected User",
+            Email = "rej@x.com",
+            Password = "Valid1!ab",
+            Role = "Secretary",
+            Status = EmployeeAccountStatusNames.Rejected,
+            EmployeeId = string.Empty
+        });
+        var sut = new EmployeeAuthenticationService(repo);
+
+        var (ok, message, employee) = await sut.LoginAsync("rej@x.com", "Valid1!ab");
+
+        Assert.False(ok);
+        Assert.Null(employee);
+        Assert.Contains("rejected", message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task LoginAsync_succeeds_with_username_when_approved()
+    {
+        var repo = new FakeEmployeeRepository();
+        await repo.AddAsync(new Employee
         {
             FullName = "Root",
             Username = "rootuser",
             Email = "root@x.com",
             Password = "Valid1!a",
-            Role = "Veterinarian"
+            Role = "Veterinarian",
+            Status = EmployeeAccountStatusNames.Approved,
+            EmployeeId = "3311"
         });
         var sut = new EmployeeAuthenticationService(repo);
 

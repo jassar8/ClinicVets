@@ -16,11 +16,13 @@ public sealed class AdminCreateEmployeeForm : Form
     private readonly TextBox _email = new();
     private readonly TextBox _password = new();
     private readonly TextBox _username = new();
+    private readonly TextBox _employeeId = new();
     private readonly ComboBox _role = new();
     private readonly RoundedInputHost _fullNameHost;
     private readonly RoundedInputHost _emailHost;
     private readonly RoundedInputHost _passwordHost;
     private readonly RoundedInputHost _usernameHost;
+    private readonly RoundedInputHost _employeeIdHost;
     private readonly RoundedComboHost _roleHost;
     private readonly FeedbackBannerPanel _feedback = new();
     private readonly ModernPrimaryButton _save = new();
@@ -39,7 +41,7 @@ public sealed class AdminCreateEmployeeForm : Form
         AutoScaleMode = AutoScaleMode.Font;
         Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
         BackColor = UiTheme.PageBackground;
-        ClientSize = new Size(540, 620);
+        ClientSize = new Size(540, 700);
         Padding = new Padding(28);
 
         _fullName.PlaceholderText = "Full name";
@@ -47,11 +49,14 @@ public sealed class AdminCreateEmployeeForm : Form
         _password.PlaceholderText = "Temporary password (8–10 chars, letter, digit, special)";
         _password.UseSystemPasswordChar = true;
         _username.PlaceholderText = "Optional username (e.g. jdoe)";
+        _employeeId.PlaceholderText = "Four-digit Employee ID (e.g. 4521)";
+        _employeeId.MaxLength = 4;
 
         _fullNameHost = new RoundedInputHost(_fullName);
         _emailHost = new RoundedInputHost(_email);
         _passwordHost = new RoundedInputHost(_password);
         _usernameHost = new RoundedInputHost(_username);
+        _employeeIdHost = new RoundedInputHost(_employeeId);
 
         _role.DropDownStyle = ComboBoxStyle.DropDownList;
         _role.Items.AddRange(new object[] { EmployeeRoleNames.Admin, EmployeeRoleNames.Secretary, EmployeeRoleNames.Veterinarian });
@@ -101,7 +106,7 @@ public sealed class AdminCreateEmployeeForm : Form
 
         var title = UiStyles.CreateHeroTitle("New employee account");
         var subtitle = UiStyles.CreateHeroSubtitle(
-            "Administrators can assign any role. Passwords must follow the same clinic rules as self-registration.");
+            "Administrators can assign any role. Provide a unique four-digit Employee ID. Passwords must follow the same clinic rules as self-registration.");
 
         var buttonRow = new FlowLayoutPanel
         {
@@ -126,6 +131,8 @@ public sealed class AdminCreateEmployeeForm : Form
         flow.Controls.Add(_usernameHost);
         flow.Controls.Add(UiStyles.CreateFieldCaption("Role"));
         flow.Controls.Add(_roleHost);
+        flow.Controls.Add(UiStyles.CreateFieldCaption("Employee ID (4 digits)"));
+        flow.Controls.Add(_employeeIdHost);
         flow.Controls.Add(_feedback);
         flow.Controls.Add(buttonRow);
 
@@ -148,7 +155,8 @@ public sealed class AdminCreateEmployeeForm : Form
                 _password.Text,
                 roleText,
                 _actingAdmin,
-                username);
+                username,
+                _employeeId.Text.Trim());
 
             if (!result.IsSuccess)
             {

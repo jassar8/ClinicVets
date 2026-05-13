@@ -136,11 +136,15 @@ public sealed class EmployeeStaffPanel : UserControl
             _grid.Columns.Add("Email", "Email");
             _grid.Columns.Add("Username", "Username");
             _grid.Columns.Add("Role", "Role");
+            _grid.Columns.Add("Status", "Status");
+            _grid.Columns.Add("EmployeeId", "Employee ID");
 
             foreach (var e in rows)
             {
                 var username = string.IsNullOrWhiteSpace(e.Username) ? "—" : e.Username;
-                _grid.Rows.Add(e.FullName, e.Email, username, e.Role);
+                var empId = string.IsNullOrWhiteSpace(e.EmployeeId) ? "—" : e.EmployeeId;
+                var status = string.IsNullOrWhiteSpace(e.Status) ? "—" : e.Status;
+                _grid.Rows.Add(e.FullName, e.Email, username, e.Role, status, empId);
             }
         }
         finally

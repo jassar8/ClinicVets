@@ -16,8 +16,8 @@ public class EmployeeRegistrationService
     }
 
     /// <param name="actingEmployee">
-    /// When null, only self-service roles (secretary / veterinarian) may be created.
-    /// When set, must be an administrator to create any role including additional admins.
+    /// When null, only self-service roles (secretary / veterinarian) may be created; accounts start as <see cref="EmployeeAccountStatusNames.Pending"/>.
+    /// When set, must be an administrator; accounts are created as <see cref="EmployeeAccountStatusNames.Approved"/> with a unique four-digit <paramref name="fourDigitEmployeeId"/>.
     /// </param>
     public async Task<(bool IsSuccess, string Message)> RegisterAsync(
         string fullName,
@@ -25,9 +25,9 @@ public class EmployeeRegistrationService
         string password,
         string role,
         Employee? actingEmployee = null,
-        string? username = null)
+        string? username = null,
+        string? fourDigitEmployeeId = null)
     {
-        // Basic validation kept in the service for clear demo flow and backend safety.
         if (string.IsNullOrWhiteSpace(fullName) ||
             string.IsNullOrWhiteSpace(email) ||
             string.IsNullOrWhiteSpace(password) ||
@@ -74,10 +74,41 @@ public class EmployeeRegistrationService
         }
 
         var normalizedEmail = email.Trim().ToLowerInvariant();
-        var existingEmployee = await _employeeRepository.GetByEmailAsync(normalizedEmail);
-        if (existingEmployee is not null)
+
+        if (actingEmployee is not null)
         {
-            return (false, "An employee with this email already exists.");
+            if (!EmployeeIdValidation.IsFourDigitEmployeeId(fourDigitEmployeeId))
+            {
+                return (false, "Employee ID must be exactly four digits.");
+            }
+
+            var trimmedEmpId = fourDigitEmployeeId!.Trim();
+            var allForId = await _employeeRepository.GetAllAsync();
+            if (allForId.Any(e => string.Equals(e.EmployeeId?.Trim(), trimmedEmpId, StringComparison.Ordinal)))
+                return (false, "That Employee ID is already in use.");
+        }
+
+        var existingByEmail = await _employeeRepository.GetByEmailAsync(normalizedEmail);
+        if (existingByEmail is not null)
+        {
+            if (string.Equals(
+                    existingByEmail.Status?.Trim(),
+                    EmployeeAccountStatusNames.Rejected,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                await _employeeRepository.RemoveRejectedApplicationsForEmailAsync(normalizedEmail);
+            }
+            else if (string.Equals(
+                         existingByEmail.Status?.Trim(),
+                         EmployeeAccountStatusNames.Pending,
+                         StringComparison.OrdinalIgnoreCase))
+            {
+                return (false, "A registration with this email is already waiting for administrator approval.");
+            }
+            else
+            {
+                return (false, "An employee with this email already exists.");
+            }
         }
 
         var normalizedUsername = (username ?? string.Empty).Trim();
@@ -92,16 +123,36 @@ public class EmployeeRegistrationService
             }
         }
 
+        string status;
+        string assignedEmployeeId;
+        string successMessage;
+
+        if (actingEmployee is null)
+        {
+            status = EmployeeAccountStatusNames.Pending;
+            assignedEmployeeId = string.Empty;
+            successMessage =
+                "Registration submitted. An administrator must approve your account and assign an Employee ID before you can sign in.";
+        }
+        else
+        {
+            status = EmployeeAccountStatusNames.Approved;
+            assignedEmployeeId = fourDigitEmployeeId!.Trim();
+            successMessage = "Employee registered successfully.";
+        }
+
         var employee = new Employee
         {
             FullName = fullName.Trim(),
             Username = normalizedUsername,
             Email = normalizedEmail,
             Password = password.Trim(),
-            Role = EmployeeRoleNames.ToStoredString(parsedRole)
+            Role = EmployeeRoleNames.ToStoredString(parsedRole),
+            Status = status,
+            EmployeeId = assignedEmployeeId
         };
 
         await _employeeRepository.AddAsync(employee);
-        return (true, "Employee registered successfully.");
+        return (true, successMessage);
     }
 }

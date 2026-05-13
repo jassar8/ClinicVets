@@ -28,6 +28,12 @@ public sealed class FakeEmployeeRepository : IEmployeeRepository
         return Task.FromResult(EmployeeLoginLookup.FindEmployee(_employees, raw));
     }
 
+    public Task<Employee?> GetByIdAsync(Guid id)
+    {
+        var match = _employees.FirstOrDefault(e => e.Id == id);
+        return Task.FromResult(match);
+    }
+
     public Task<IReadOnlyList<Employee>> GetAllAsync()
     {
         var copy = _employees
@@ -36,9 +42,39 @@ public sealed class FakeEmployeeRepository : IEmployeeRepository
         return Task.FromResult<IReadOnlyList<Employee>>(copy);
     }
 
+    public Task<IReadOnlyList<Employee>> GetPendingRegistrationsAsync()
+    {
+        var list = _employees
+            .Where(e =>
+                string.Equals(e.Status?.Trim(), EmployeeAccountStatusNames.Pending, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(e => e.FullName, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        return Task.FromResult<IReadOnlyList<Employee>>(list);
+    }
+
     public Task AddAsync(Employee employee)
     {
         _employees.Add(employee);
+        return Task.CompletedTask;
+    }
+
+    public Task UpdateAsync(Employee employee)
+    {
+        var idx = _employees.FindIndex(e => e.Id == employee.Id);
+        if (idx >= 0)
+            _employees[idx] = employee;
+        return Task.CompletedTask;
+    }
+
+    public Task RemoveRejectedApplicationsForEmailAsync(string normalizedEmail)
+    {
+        var key = normalizedEmail.Trim();
+        if (key.Length == 0)
+            return Task.CompletedTask;
+
+        _employees.RemoveAll(e =>
+            string.Equals(e.Email?.Trim(), key, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(e.Status?.Trim(), EmployeeAccountStatusNames.Rejected, StringComparison.OrdinalIgnoreCase));
         return Task.CompletedTask;
     }
 }

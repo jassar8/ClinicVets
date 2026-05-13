@@ -15,12 +15,14 @@ public sealed class DashboardPage : UserControl
         DashboardSection.Visits,
         DashboardSection.Patients,
         DashboardSection.Billing,
-        DashboardSection.Staff
+        DashboardSection.Staff,
+        DashboardSection.PendingEmployees
     ];
 
     private readonly Employee _employee;
     private readonly MainShellForm _shell;
     private readonly EmployeeRegistrationService _registration;
+    private readonly EmployeeApprovalService _approvals;
     private readonly IEmployeeRepository _repository;
     private readonly Panel _sidebar = new();
     private readonly Panel _contentHost = new();
@@ -34,11 +36,13 @@ public sealed class DashboardPage : UserControl
         Employee employee,
         MainShellForm shell,
         EmployeeRegistrationService registration,
+        EmployeeApprovalService approvals,
         IEmployeeRepository repository)
     {
         _employee = employee;
         _shell = shell;
         _registration = registration;
+        _approvals = approvals;
         _repository = repository;
 
         SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
@@ -255,6 +259,7 @@ public sealed class DashboardPage : UserControl
         {
             DashboardSection.Home => BuildHomeView(),
             DashboardSection.Staff => new EmployeeStaffPanel(_employee, _repository, _registration),
+            DashboardSection.PendingEmployees => new PendingEmployeesPanel(_employee, _approvals),
             _ => BuildPlaceholderView(section)
         };
 
@@ -387,6 +392,7 @@ public sealed class DashboardPage : UserControl
             DashboardSection.Patients => "Patients",
             DashboardSection.Billing => "Billing",
             DashboardSection.Staff => "Staff",
+            DashboardSection.PendingEmployees => "Pending",
             _ => "Home"
         };
 

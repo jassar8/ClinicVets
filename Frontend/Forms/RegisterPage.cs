@@ -55,7 +55,9 @@ public sealed class RegisterPage : UserControl
         _flow.SizeChanged += (_, _) => SyncWidths();
 
         _heroTitle = UiStyles.CreateHeroTitle("New employee");
-        _heroSubtitle = UiStyles.CreateHeroSubtitle("All fields are required. Passwords must meet clinic security rules.");
+        _heroSubtitle = UiStyles.CreateHeroSubtitle(
+            "All fields are required. Passwords must meet clinic security rules. " +
+            "An administrator must approve your account before you can sign in.");
 
         _fullName.PlaceholderText = "Full name (e.g. Dr. Jane Doe)";
         _email.PlaceholderText = "Work email (used to sign in)";
@@ -101,7 +103,7 @@ public sealed class RegisterPage : UserControl
         {
             Text =
                 "Tip: choose a memorable password that still meets the rules above. " +
-                "The new employee can sign in immediately after registration.",
+                "You will be able to sign in only after an administrator approves your registration and assigns your Employee ID.",
             ForeColor = UiTheme.TextMuted,
             Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point),
             AutoSize = false,
@@ -195,7 +197,7 @@ public sealed class RegisterPage : UserControl
             var owner = FindForm();
             MessageBox.Show(
                 owner,
-                result.Message + Environment.NewLine + Environment.NewLine + "They can now sign in from the login screen.",
+                result.Message + Environment.NewLine + Environment.NewLine + "Return to the sign-in screen once an administrator has approved the account.",
                 "Success — ClinicVets",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);

@@ -27,6 +27,7 @@ public static class RolePermissions
             DashboardSection.Patients => role is EmployeeRole.Admin or EmployeeRole.Veterinarian,
             DashboardSection.Billing => role is EmployeeRole.Admin or EmployeeRole.Secretary,
             DashboardSection.Staff => role == EmployeeRole.Admin,
+            DashboardSection.PendingEmployees => role == EmployeeRole.Admin,
             _ => false
         };
     }
@@ -41,5 +42,6 @@ public enum DashboardSection
     Visits,
     Patients,
     Billing,
-    Staff
+    Staff,
+    PendingEmployees
 }
