@@ -368,18 +368,7 @@ namespace ClinicVetsAvalonia.Views.Medicine
         {
             string searchText = MedicationSearchInput?.Text?.Trim() ?? "";
             string filter = GetSelectedMedicationFilter();
-
-            bool matchesSearch = string.IsNullOrWhiteSpace(searchText) ||
-                                 medication.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase);
-
-            bool matchesFilter = filter switch
-            {
-                "מלאי נמוך" => medication.IsLowStock,
-                "תוקף קרוב" => medication.IsExpiringSoon,
-                _ => true
-            };
-
-            return matchesSearch && matchesFilter;
+            return MedicationSearchFilter.Matches(medication, searchText, filter);
         }
 
         private string GetSelectedMedicationFilter()

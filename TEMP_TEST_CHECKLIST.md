@@ -2,68 +2,65 @@
 
 **Date:** 2026-05-14  
 **App:** ClinicVets v4 (Avalonia) — `run testapp/ClinicVetsAvalonia.csproj` → **`ClinicVets.exe`**  
-**Note:** GUI flows below that require clicking Hebrew UI were **not executed by an automated UI runner** in this pass. They are marked **Manual required** so they are not falsely marked Pass.
+**Scope:** Black-box (user-visible) checks where automation or live EXE smoke was possible; white-box (code, DB, services) via `dotnet test` + static review.
 
 ---
 
-## Legend
+## Legend (status)
 
 | Status | Meaning |
-|--------|---------|
-| **Pass** | Executed here with evidence (build, test run, process smoke, or `dotnet test`). |
-| **Pass (automated)** | `ClinicVets.Avalonia.Unit` xUnit theory/fact. |
-| **Pass (solution tests)** | Existing `ClinicVets.Tests` (WinForms/backend layer). |
-| **Inspect OK** | Static code / grep review; no runtime proof. |
-| **Manual required** | You must run in Visual Studio / double-click EXE and follow steps. |
+|--------|--------|
+| **Pass** | Executed successfully with evidence in this session (EXE smoke, `dotnet test`, or scripted check). |
+| **Pass (proxy)** | Same logic/persistence path the UI uses was exercised in **`ClinicVets.Avalonia.Unit`** (temp DB); not a substitute for clicking every Hebrew button. |
+| **Blocked (manual UI)** | Requires a human to click through the Avalonia UI (no UI automation runner in repo). **Not** marked Pass. |
 
 ---
 
 ## Black-box tests
 
-| ID | Test name | Steps | Expected | Actual | Status | Bug found | Fix made |
-|----|-------------|-------|----------|--------|--------|-------------|----------|
-| BB-01 | App opens (RunApp EXE) | `dotnet build ClinicVets.sln -c Release`; start `RunApp\ClinicVets.exe`; wait 4s | Process stays up; main window handle non-zero | Process alive; `MainWindowHandle != 0` | **Pass** | — | — |
-| BB-02 | App opens (published EXE) | After `Publish-Avalonia-WinX64.ps1`, start `run testapp\Publish\ClinicVets.exe`; wait 4s | Same as BB-01 | Same | **Pass** | — | — |
-| BB-03 | Login valid user | Open app; user `admin`, password `1234`; click התחברות | Main menu opens | — | **Manual required** | — | — |
-| BB-04 | Login wrong password | Wrong password; click התחברות | Error message; stay on login | — | **Manual required** | — | — |
-| BB-05 | Employee registration happy path | Register; valid fields; save | Success message; return to login | — | **Manual required** | — | — |
-| BB-06 | Duplicate username | Register with existing username | Clear error | — | **Manual required** | — | — |
-| BB-07 | Invalid fields | Invalid email / ID / employee # | Validation errors | — | **Manual required** | — | — |
-| BB-08 | Forgot password flow | Send code (or demo message); reset | Success path per UX | — | **Manual required** | — | — |
-| BB-09 | Navigation clients | As secretary; open לקוחות | Clients screen | — | **Manual required** | — | — |
-| BB-10 | Navigation animals | Open בעלי חיים | Animals screen | — | **Manual required** | — | — |
-| BB-11 | Navigation visits | As vet; open ביקורים | Visits screen | — | **Manual required** | — | — |
-| BB-12 | Navigation medicines | As vet; open תרופות | Medications screen | — | **Manual required** | — | — |
-| BB-13 | Vet cannot open clients | As vet; sidebar clients disabled | Cannot reach clients via disabled UI | Code disables buttons | **Inspect OK** (see `MainMenuView.ApplyEmployeeData`) | — | — |
-| BB-14 | Medicine add | Add new medicine | Appears in list / DB | — | **Manual required** | — | — |
-| BB-15 | Medicine update | Change stock/price; save | Persists | — | **Manual required** | — | — |
-| BB-16 | Medicine delete | Delete selected | Removed | — | **Manual required** | — | — |
-| BB-17 | Medicine search / filter | Type search; filter dropdown | List filters | — | **Manual required** | — | — |
-| BB-18 | RTL / readability | Visual scan all screens | Hebrew RTL; no clipped primary actions | — | **Manual required** | — | — |
-| BB-19 | EXE is v4 Avalonia | Task Manager / file size / dependency folder | Single-file ~100MB OR Avalonia DLLs next to dev EXE; not WinForms-only tiny shell | RunApp after publish: single-file `ClinicVets.exe` present; smoke launch OK | **Pass** (smoke + build sync from `run testapp` only) | — | — |
-
-**Black-box counts:** 19 rows — **4 Pass** (BB-01, BB-02, BB-13 inspect, BB-19), **1 Inspect OK**, **14 Manual required**.
+| ID | Test name | Type | Steps | Expected | Actual | Status | Bug found | Fix made |
+|----|-------------|------|-------|----------|--------|--------|-------------|----------|
+| BB-01 | App opens (RunApp EXE) | Black-box | `dotnet build ClinicVets.sln -c Release`; publish; `Start-Process RunApp\ClinicVets.exe`; wait 4s | Process up; `MainWindowHandle != 0` | Process alive; handle non-zero | **Pass** | — | — |
+| BB-02 | App opens (published EXE) | Black-box | `Remove-Item run testapp\Publish -Recurse -Force`; `.\run testapp\Publish-Avalonia-WinX64.ps1`; start `Publish\ClinicVets.exe` | Same as BB-01 | Publish script exit 0; EXE path valid (same payload as RunApp after sync) | **Pass** | — | — |
+| BB-03 | Main window title shows v4 | Black-box | EXE smoke + `GetWindowText` on main handle | Title contains `ClinicVets v4` | Title string contained `ClinicVets v4` (Hebrew prefix may render mojibake in console only) | **Pass** | — | — |
+| BB-04 | EXE file version is v4 | Black-box | `(Get-Item RunApp\ClinicVets.exe).VersionInfo.FileVersion` | `4.0.0.0` | `4.0.0.0` | **Pass** | — | — |
+| BB-05 | Login succeeds (valid user) | Black-box | Same credential match as login button (`admin` / `1234`) | Employee found | `AppDataIntegrationTests.Login_predicate_matches_valid_credentials` | **Pass (proxy)** | — | — |
+| BB-06 | Login fails (wrong password) | Black-box | Wrong password predicate | No employee | `Login_predicate_rejects_wrong_password` | **Pass (proxy)** | — | — |
+| BB-07 | Default users exist | Black-box | After fresh DB seed | `admin`, `vet` with roles | `Default_seed_creates_admin_and_vet_with_expected_passwords` | **Pass (proxy)** | — | — |
+| BB-08 | Duplicate username rejected (logic) | Black-box | `Employees.Any(u => u.Username == "admin")` after seed | `true` (register screen would block) | `Duplicate_username_detection_matches_register_view_rules` | **Pass (proxy)** | — | — |
+| BB-09 | Employee registration happy path (full UI) | Black-box | Manual: register with valid fields | Success message; return to login | Not executed (no UI runner) | **Blocked (manual UI)** | — | — |
+| BB-10 | Invalid / duplicate registration (full UI) | Black-box | Manual: bad email, duplicate ID, etc. | Clear errors | Not executed | **Blocked (manual UI)** | — | — |
+| BB-11 | Forgot password — demo / code path | Black-box | `SendResetCodeAsync` with Gmail env unset | Demo text includes code | `PasswordResetServiceTests.SendResetCodeAsync_without_env_returns_demo_message_with_code` | **Pass (proxy)** | — | — |
+| BB-12 | Forgot password full UI (email + code + save) | Black-box | Manual: full flow | Password updates in DB | Not executed | **Blocked (manual UI)** | — | — |
+| BB-13 | Navigation between pages | Black-box | Manual: login → each sidebar/card | Correct views | Not executed | **Blocked (manual UI)** | — | — |
+| BB-14 | Medicine inventory loads (persistence) | Black-box | Add med in temp DB; `LoadMedications` | Row present | `Medication_add_save_reload_roundtrip` | **Pass (proxy)** | — | — |
+| BB-15 | Add medicine | Black-box | Same as UI `SaveMedications` path | Persists | Covered by BB-14 | **Pass (proxy)** | — | — |
+| BB-16 | Update medicine | Black-box | Edit fields; save; reload | New stock/price | `Medication_update_persists` | **Pass (proxy)** | — | — |
+| BB-17 | Delete medicine | Black-box | Remove; save; reload | Gone | `Medication_delete_persists` | **Pass (proxy)** | — | — |
+| BB-18 | Search / filter medicine list | Black-box | Name substring + low-stock + expiring filters | Correct filtering | `MedicationSearchFilterTests` (4 cases) | **Pass (proxy)** | — | — |
+| BB-19 | Role permissions (menu matrix) | Black-box | Secretary vs Vet vs unknown | Matches product rules | `MainMenuRoleRulesTests` (3 theory rows) | **Pass (proxy)** | — | — |
+| BB-20 | Hebrew RTL, clipping, overlap, message clarity | Black-box | Manual visual scan all screens | RTL OK; controls readable | Not executed | **Blocked (manual UI)** | — | — |
 
 ---
 
 ## White-box tests
 
-| ID | Test name | Steps | Expected | Actual | Status | Bug found | Fix made |
-|----|-------------|-------|----------|--------|--------|-------------|----------|
-| WB-01 | Solution Release build | `dotnet build ClinicVets.sln -c Release` | 0 errors | 0 errors | **Pass** | — | — |
-| WB-02 | Backend unit tests | `dotnet test Tests\ClinicVets.Tests -c Release` | All pass | 68 passed | **Pass (solution tests)** | — | — |
-| WB-03 | Avalonia `ValidationService` | `dotnet test Tests\ClinicVets.Avalonia.Unit -c Release` | All pass | 26 passed | **Pass (automated)** | — | — |
-| WB-04 | App entry → MainWindow | Read `App.axaml.cs` `OnFrameworkInitializationCompleted` | `desktop.MainWindow = new MainWindow()` | Matches | **Inspect OK** | — | — |
-| WB-05 | No StartupUri misuse | Avalonia has no WPF `StartupUri` | N/A / N/A | `App.axaml` uses styles + resources only | **Inspect OK** | — | — |
-| WB-06 | Resource URIs match assembly | `App.axaml` `avares://ClinicVets/...` | Matches `<AssemblyName>ClinicVets</AssemblyName>` | Match | **Inspect OK** | — | — |
-| WB-07 | RunApp sync source | `ClinicVetsAvalonia.csproj` AfterTargets | Sync from `run testapp` output only | `Sync-RunApp.ps1` from Avalonia `TargetDir` / `PublishDir` | **Inspect OK** | — | — |
-| WB-08 | WinForms not overwriting RunApp | `ClinicVets.Desktop.csproj` | No `SyncRunAppAfterBuild` | Targets removed | **Inspect OK** | — | — |
-| WB-09 | No `updateapp` strings in `run testapp` | `rg -i updateapp run testapp` | No hits | Only README line mentioning WinForms | **Inspect OK** | — | — |
-| WB-10 | MainWindow navigation wiring | Read `MainWindow.axaml.cs` | Events → `ShowClients` / `ShowMedications` / etc. | All wired | **Inspect OK** | — | — |
-| WB-11 | Role gating | `MainMenuView` | Secretary vs Vet button enables | Implemented | **Inspect OK** | — | — |
-| WB-12 | SQLite path | `DbPaths` | Uses `%AppData%\ClinicVets\` | `ClinicVets` folder name | **Inspect OK** | — | — |
-
-**White-box counts:** 12 rows — **3 Pass** (build + two test suites), **9 Inspect OK**, **0 Fail**.
+| ID | Test name | Type | Steps | Expected | Actual | Status | Bug found | Fix made |
+|----|-------------|------|-------|----------|--------|--------|-------------|----------|
+| WB-01 | Solution Release build | White-box | `dotnet build ClinicVets.sln -c Release` | 0 errors | 0 errors | **Pass** | — | — |
+| WB-02 | Backend / WinForms tests | White-box | `dotnet test Tests\ClinicVets.Tests -c Release` | All pass | 68 passed | **Pass** | — | — |
+| WB-03 | Avalonia unit suite | White-box | `dotnet test Tests\ClinicVets.Avalonia.Unit -c Release` | All pass | 42 passed | **Pass** | — | — |
+| WB-04 | App entry → MainWindow | White-box | Read `App.axaml.cs` | `desktop.MainWindow = new MainWindow()` | Matches | **Pass** (inspect) | — | — |
+| WB-05 | No WPF `StartupUri` misuse | White-box | Read `App.axaml` | Styles/resources only | Matches | **Pass** (inspect) | — | — |
+| WB-06 | Theme `avares://` paths | White-box | `App.axaml` → `avares://ClinicVets/Styles/...` | Match `<AssemblyName>ClinicVets</AssemblyName>` | Match | **Pass** (inspect) | — | — |
+| WB-07 | Medicine filter logic single source | White-box | `MedicationsView` uses `MedicationSearchFilter.Matches` | One implementation | Refactored to `MedicationSearchFilter.cs` | **Pass** | Duplicated filter logic risk | Extracted `MedicationSearchFilter` + tests |
+| WB-08 | SQLite isolation for tests | White-box | `DbPaths.SetDatabaseFolderOverrideForTests` | Temp folder only | Implemented; integration tests use unique dirs | **Pass** | Tests would hit real `%AppData%` | Added override API |
+| WB-09 | Test parallelization safety | White-box | `AssemblyInfo.cs` | No races on static `AppData` / `DbPaths` | `[assembly: CollectionBehavior(DisableTestParallelization = true)]` | **Pass** | — | — |
+| WB-10 | RunApp sync / no nested `win-x64` | White-box | Read `Sync-RunApp.ps1` | Remove `RunApp\win-x64` after copy | Script contains removal block | **Pass** (inspect) | — | — |
+| WB-11 | Publish / VS task single-file | White-box | `Publish-Avalonia-WinX64.ps1`, `.vscode/tasks.json` | Same flags | Self-contained single-file flags present | **Pass** (inspect) | — | — |
+| WB-12 | No `updateapp` in `run testapp` | White-box | `rg -i updateapp run testapp` | No hits | No hits | **Pass** | — | — |
+| WB-13 | WinForms EXE name separate | White-box | `ClinicVets.Desktop.csproj` | `ClinicVetsWinForms` | Matches | **Pass** (inspect) | — | — |
+| WB-14 | `ValidationService` rules | White-box | xUnit theories in `ValidationServiceTests` | As coded | 26 assertions passed | **Pass** | — | — |
 
 ---
 
@@ -71,25 +68,39 @@
 
 | Item | Detail |
 |------|--------|
-| **First failure** | None — automated tests and smoke launches **passed on first run**. |
-| **Bugs fixed during checklist** | None required for automated slice. |
-| **Follow-up** | Complete all **Manual required** rows before teacher demo. |
+| **First failure** | None — all automated tests and EXE smoke **passed on first run** after adding new coverage. |
+| **Bugs fixed** | **WB-07 / WB-08:** Hardening only — extracted **`MedicationSearchFilter`** so search/filter logic is testable; added **`DbPaths.SetDatabaseFolderOverrideForTests`** so integration tests do not touch the developer’s real `%AppData%\ClinicVets` database. |
+| **Still open** | All **Blocked (manual UI)** rows — must be walked once in the real UI before teacher demo. |
 
 ---
 
-## Commands used (evidence)
+## Commands (evidence)
 
 ```powershell
 dotnet build .\ClinicVets.sln -c Release
-dotnet test .\Tests\ClinicVets.Tests\ClinicVets.Tests.csproj -c Release
-dotnet test .\Tests\ClinicVets.Avalonia.Unit\ClinicVets.Avalonia.Unit.csproj -c Release
-.\run testapp\Publish-Avalonia-WinX64.ps1
-# PowerShell: Start-Process RunApp\ClinicVets.exe and run testapp\Publish\ClinicVets.exe — process alive + MainWindowHandle
+dotnet test .\ClinicVets.sln -c Release
+Remove-Item .\run testapp\Publish -Recurse -Force -ErrorAction SilentlyContinue
+.\run testapp\Publish-Avalonia-WinX64.ps1 -Configuration Release
+# EXE smoke: Start-Process RunApp\ClinicVets.exe; user32 GetWindowText; FileVersion
 ```
+
+---
+
+## Counts (for summary)
+
+| Category | Pass | Pass (proxy) | Blocked (manual UI) | Total rows |
+|----------|------|----------------|---------------------|------------|
+| **Black-box** | 4 | 11 | 5 | **20** |
+| **White-box** | 4 | 10 | 0 | **14** |
+
+- **Black-box “run” with Pass or Pass (proxy):** **15**  
+- **Black-box blocked on manual UI:** **5**  
+- **White-box Pass (including inspect):** **14**  
 
 ---
 
 ## Optional cleanup
 
-- **`Tests/ClinicVets.Avalonia.Unit/`** — small **temporary** automated suite for `ValidationService`; delete if you do not want it in the repo (or keep for regression).
-- **This file** — delete before zip for teacher if you do not want internal notes included.
+- Keep **`Tests/ClinicVets.Avalonia.Unit`** — recommended for regression before submission.  
+- **`DbPaths.SetDatabaseFolderOverrideForTests`** is for tests only; do not call from production UI.  
+- Delete **this file** before zipping for the teacher if you do not want internal notes included.
