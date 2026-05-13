@@ -18,33 +18,8 @@ public sealed class DemoVisitsPanel : UserControl
             "These rows are for presentation only. A full visits module will connect to stored appointments later.");
         subtitle.Margin = new Padding(0, 0, 0, 16);
 
-        var grid = new DataGridView
-        {
-            Dock = DockStyle.Fill,
-            ReadOnly = true,
-            AllowUserToAddRows = false,
-            AllowUserToDeleteRows = false,
-            RowHeadersVisible = false,
-            AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-            BackgroundColor = UiTheme.CardWhite,
-            BorderStyle = BorderStyle.None,
-            CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal,
-            EnableHeadersVisualStyles = false,
-            ColumnHeadersHeight = 40
-        };
-        grid.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
-        {
-            BackColor = UiTheme.GridHeaderBackground,
-            ForeColor = UiTheme.GridHeaderForeColor,
-            Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point)
-        };
-        grid.DefaultCellStyle = new DataGridViewCellStyle
-        {
-            BackColor = UiTheme.CardWhite,
-            ForeColor = UiTheme.TextDark,
-            Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point),
-            Padding = new Padding(10, 8, 10, 8)
-        };
+        var grid = new DataGridView { Dock = DockStyle.Fill };
+        ModernDataGridViewStyle.Apply(grid);
         grid.Columns.Add("When", "Date & time");
         grid.Columns.Add("Pet", "Pet");
         grid.Columns.Add("Customer", "Customer");

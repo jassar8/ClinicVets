@@ -8,9 +8,9 @@ public sealed class CustomerSearchPanel : UserControl
 {
     private readonly CustomerDirectoryService _customers;
     private readonly TextBox _query = new();
-    private readonly RoundedInputHost _queryHost;
-    private readonly ModernPrimaryButton _search = new();
-    private readonly FeedbackBannerPanel _feedback = new();
+    private readonly ModernTextField _queryHost;
+    private readonly ModernButton _search = new();
+    private readonly ModernAlertBanner _feedback = new();
     private readonly DataGridView _grid = new();
     private readonly Label _heroTitle;
     private readonly Label _heroSubtitle;
@@ -27,7 +27,7 @@ public sealed class CustomerSearchPanel : UserControl
             "Search by name, national ID, email, or phone. Leave the box empty and search to list every customer.");
 
         _query.PlaceholderText = "Type to filter…";
-        _queryHost = new RoundedInputHost(_query);
+        _queryHost = new ModernTextField(_query);
 
         _search.Text = "Search";
         _search.Margin = new Padding(0, 12, 0, 0);
@@ -35,34 +35,8 @@ public sealed class CustomerSearchPanel : UserControl
 
         _feedback.Clear();
 
-        _grid.ReadOnly = true;
-        _grid.AllowUserToAddRows = false;
-        _grid.AllowUserToDeleteRows = false;
-        _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-        _grid.BackgroundColor = UiTheme.CardWhite;
-        _grid.BorderStyle = BorderStyle.None;
-        _grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-        _grid.ColumnHeadersHeight = 40;
-        _grid.RowHeadersVisible = false;
-        _grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        _grid.MultiSelect = false;
-        _grid.GridColor = UiTheme.CardBorder;
-        _grid.EnableHeadersVisualStyles = false;
-        _grid.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
-        {
-            BackColor = UiTheme.ContentCanvas,
-            ForeColor = UiTheme.TextDark,
-            Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point)
-        };
-        _grid.DefaultCellStyle = new DataGridViewCellStyle
-        {
-            BackColor = UiTheme.CardWhite,
-            ForeColor = UiTheme.TextDark,
-            SelectionBackColor = UiTheme.SidebarNavActive,
-            SelectionForeColor = UiTheme.TextDark,
-            Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point),
-            Padding = new Padding(10, 6, 10, 6)
-        };
+        ModernDataGridViewStyle.Apply(_grid);
+        _grid.Dock = DockStyle.Fill;
 
         var top = new FlowLayoutPanel
         {
@@ -79,8 +53,6 @@ public sealed class CustomerSearchPanel : UserControl
         top.Controls.Add(_queryHost);
         top.Controls.Add(_search);
         top.Controls.Add(_feedback);
-
-        _grid.Dock = DockStyle.Fill;
 
         var root = new Panel { Dock = DockStyle.Fill, BackColor = UiTheme.CardWhite };
         root.Controls.Add(top);
@@ -100,6 +72,7 @@ public sealed class CustomerSearchPanel : UserControl
             var rows = await _customers.SearchCustomersAsync(_query.Text);
             _grid.Rows.Clear();
             _grid.Columns.Clear();
+            ModernDataGridViewStyle.Apply(_grid);
             _grid.Columns.Add("FullName", "Full name");
             _grid.Columns.Add("NationalId", "National ID");
             _grid.Columns.Add("Email", "Email");

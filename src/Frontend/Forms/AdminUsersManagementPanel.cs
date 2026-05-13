@@ -336,37 +336,8 @@ public sealed class AdminUsersManagementPanel : UserControl
 
     private void BuildGrid()
     {
-        _grid.ReadOnly = true;
-        _grid.AllowUserToAddRows = false;
-        _grid.AllowUserToDeleteRows = false;
-        _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-        _grid.BackgroundColor = UiTheme.CardWhite;
-        _grid.BorderStyle = BorderStyle.None;
-        _grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+        ModernDataGridViewStyle.Apply(_grid);
         _grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-        _grid.ColumnHeadersHeight = 42;
-        _grid.RowHeadersVisible = false;
-        _grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        _grid.MultiSelect = false;
-        _grid.GridColor = UiTheme.CardBorder;
-        _grid.EnableHeadersVisualStyles = false;
-        _grid.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
-        {
-            BackColor = UiTheme.GridHeaderBackground,
-            ForeColor = UiTheme.GridHeaderForeColor,
-            Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point),
-            SelectionBackColor = UiTheme.GridHeaderBackground,
-            SelectionForeColor = UiTheme.GridHeaderForeColor
-        };
-        _grid.DefaultCellStyle = new DataGridViewCellStyle
-        {
-            BackColor = UiTheme.CardWhite,
-            ForeColor = UiTheme.TextDark,
-            SelectionBackColor = UiTheme.AccentMintSoft,
-            SelectionForeColor = UiTheme.TextDark,
-            Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point),
-            Padding = new Padding(10, 8, 10, 8)
-        };
         _grid.RowTemplate.Height = 44;
         _grid.SelectionChanged += (_, _) => SyncActionStripFromSelection();
         _grid.CellFormatting += GridOnCellFormatting;

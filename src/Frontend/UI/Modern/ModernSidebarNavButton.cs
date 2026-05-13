@@ -2,21 +2,20 @@ using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using ClinicVets.Application.Shell;
-using ClinicVets.Desktop.UI;
 
-namespace ClinicVets.Desktop.Forms;
+namespace ClinicVets.Desktop.UI;
 
-/// <summary>Dark-sidebar navigation row with optional numeric badge.</summary>
-internal sealed class AdminSidebarNavItem : Panel
+/// <summary>Dark-sidebar navigation row with optional numeric badge (v2 reusable component).</summary>
+public sealed class ModernSidebarNavButton : Panel
 {
     private readonly string _caption;
     private bool _hover;
 
-    public AdminSidebarNavItem(string caption, ClinicShellNavKind kind)
+    public ModernSidebarNavButton(string caption, ClinicShellNavKind kind)
     {
         _caption = caption;
         Kind = kind;
-        Height = 44;
+        Height = 46;
         Cursor = Cursors.Hand;
         TabStop = false;
         BackColor = UiTheme.AdminSidebarBackground;
@@ -68,7 +67,7 @@ internal sealed class AdminSidebarNavItem : Panel
         g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
         var rect = new Rectangle(0, 0, Width - 1, Height - 1);
-        const int r = 10;
+        const int r = 12;
         using var path = UiChrome.CreateRoundRectPath(rect, r);
 
         Color fill;

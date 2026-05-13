@@ -1,7 +1,7 @@
 namespace ClinicVets.Desktop.UI;
 
 /// <summary>Rounded banner for inline success / error messaging.</summary>
-public sealed class FeedbackBannerPanel : Panel
+public class FeedbackBannerPanel : Panel
 {
     public readonly Label Message = new()
     {

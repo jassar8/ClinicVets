@@ -23,17 +23,17 @@ public sealed class ClinicShellView : UserControl
     private readonly CustomerDirectoryService _customerDirectory;
     private readonly bool _isQuickAccessDemo;
 
-    private readonly Dictionary<ClinicShellNavKind, AdminSidebarNavItem> _navItems = new();
+    private readonly Dictionary<ClinicShellNavKind, ModernSidebarNavButton> _navItems = new();
     private readonly Dictionary<ClinicShellNavKind, Control> _lazyPages = new();
 
     private readonly Label _headerTitle = new();
     private readonly Label _headerSubtitle = new();
     private readonly Label _clock = new();
     private readonly Panel _workspace = new() { Dock = DockStyle.Fill, BackColor = UiTheme.ContentCanvas, Padding = new Padding(24, 20, 24, 24) };
-    private readonly Panel _workspaceCard = new() { Dock = DockStyle.Fill, BackColor = UiTheme.CardWhite, Padding = new Padding(4) };
+    private readonly ModernCardPanel _workspaceCard = new() { Dock = DockStyle.Fill, Padding = new Padding(4) };
 
     private AdminUsersManagementPanel? _usersHub;
-    private AdminSidebarNavItem? _navPending;
+    private ModernSidebarNavButton? _navPending;
     private StaffHomeDashboardPanel? _homePanel;
     private readonly System.Windows.Forms.Timer _clockTimer = new() { Interval = 30_000 };
 
@@ -158,7 +158,7 @@ public sealed class ClinicShellView : UserControl
         {
             if (!ShellNavPermissions.CanAccess(_employee, kind))
                 return;
-            var row = new AdminSidebarNavItem(caption, kind)
+            var row = new ModernSidebarNavButton(caption, kind)
             {
                 Width = 248,
                 Margin = new Padding(6, 2, 6, 2)
@@ -336,7 +336,6 @@ public sealed class ClinicShellView : UserControl
         header.Controls.Add(_clock);
         header.Controls.Add(profile);
 
-        _workspaceCard.Paint += (_, e) => UiChrome.PaintCardWithShadow(_workspaceCard, e, UiTheme.CardCornerRadius);
         _workspace.Controls.Add(_workspaceCard);
 
         col.Controls.Add(header, 0, headerRow);

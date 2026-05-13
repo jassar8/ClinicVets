@@ -47,36 +47,9 @@ public sealed class EmployeeStaffPanel : UserControl
             BackColor = UiTheme.CardWhite
         };
 
-        _grid.ReadOnly = true;
-        _grid.AllowUserToAddRows = false;
-        _grid.AllowUserToDeleteRows = false;
-        _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-        _grid.BackgroundColor = UiTheme.CardWhite;
-        _grid.BorderStyle = BorderStyle.None;
-        _grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+        ModernDataGridViewStyle.Apply(_grid);
         _grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-        _grid.ColumnHeadersHeight = 40;
-        _grid.RowHeadersVisible = false;
-        _grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        _grid.MultiSelect = false;
-        _grid.GridColor = UiTheme.CardBorder;
         _grid.Dock = DockStyle.Fill;
-        _grid.EnableHeadersVisualStyles = false;
-        _grid.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
-        {
-            BackColor = UiTheme.GridHeaderBackground,
-            ForeColor = UiTheme.GridHeaderForeColor,
-            Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point)
-        };
-        _grid.DefaultCellStyle = new DataGridViewCellStyle
-        {
-            BackColor = UiTheme.CardWhite,
-            ForeColor = UiTheme.TextDark,
-            SelectionBackColor = UiTheme.GridSelectionBackground,
-            SelectionForeColor = UiTheme.TextDark,
-            Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point),
-            Padding = new Padding(10, 6, 10, 6)
-        };
 
         _add.Text = "Add employee";
         _add.Margin = new Padding(0, 0, 12, 0);

@@ -22,7 +22,7 @@ public sealed class AdminCreateEmployeePanel : UserControl
     private readonly RoundedInputHost _usernameHost;
     private readonly RoundedInputHost _employeeIdHost;
     private readonly RoundedComboHost _roleHost;
-    private readonly FeedbackBannerPanel _feedback = new();
+    private readonly ModernAlertBanner _feedback = new();
     private readonly ModernPrimaryButton _save = new();
     private readonly ModernOutlineButton _cancel = new();
 

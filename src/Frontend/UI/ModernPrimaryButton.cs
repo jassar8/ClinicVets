@@ -5,7 +5,7 @@ using System.Drawing.Drawing2D;
 namespace ClinicVets.Desktop.UI;
 
 /// <summary>Owner-drawn primary action: deep teal, white label, rounded corners, hover/press/disabled states.</summary>
-public sealed class ModernPrimaryButton : Button
+public class ModernPrimaryButton : Button
 {
     private bool _hover;
     private bool _pressed;

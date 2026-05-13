@@ -3,7 +3,7 @@ using System.Drawing.Drawing2D;
 namespace ClinicVets.Desktop.UI;
 
 /// <summary>Rounded field chrome around a borderless <see cref="TextBox"/>.</summary>
-public sealed class RoundedInputHost : Panel
+public class RoundedInputHost : Panel
 {
     private bool _focused;
     private readonly PasswordRevealToggle? _revealToggle;

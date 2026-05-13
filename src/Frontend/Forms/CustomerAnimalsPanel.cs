@@ -29,35 +29,8 @@ public sealed class CustomerAnimalsPanel : UserControl
         _customerHost = new RoundedComboHost(_customerCombo);
         _customerCombo.SelectedIndexChanged += async (_, _) => await ReloadAnimalsAsync();
 
-        _grid.ReadOnly = true;
-        _grid.AllowUserToAddRows = false;
-        _grid.AllowUserToDeleteRows = false;
-        _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-        _grid.BackgroundColor = UiTheme.CardWhite;
-        _grid.BorderStyle = BorderStyle.None;
-        _grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-        _grid.ColumnHeadersHeight = 40;
-        _grid.RowHeadersVisible = false;
-        _grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        _grid.MultiSelect = false;
-        _grid.GridColor = UiTheme.CardBorder;
+        ModernDataGridViewStyle.Apply(_grid);
         _grid.Dock = DockStyle.Fill;
-        _grid.EnableHeadersVisualStyles = false;
-        _grid.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
-        {
-            BackColor = UiTheme.ContentCanvas,
-            ForeColor = UiTheme.TextDark,
-            Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point)
-        };
-        _grid.DefaultCellStyle = new DataGridViewCellStyle
-        {
-            BackColor = UiTheme.CardWhite,
-            ForeColor = UiTheme.TextDark,
-            SelectionBackColor = UiTheme.SidebarNavActive,
-            SelectionForeColor = UiTheme.TextDark,
-            Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point),
-            Padding = new Padding(10, 6, 10, 6)
-        };
 
         var top = new FlowLayoutPanel
         {
@@ -101,12 +74,14 @@ public sealed class CustomerAnimalsPanel : UserControl
         {
             _grid.Rows.Clear();
             _grid.Columns.Clear();
+            ModernDataGridViewStyle.Apply(_grid);
             return;
         }
 
         var animals = await _customers.GetAnimalsForCustomerAsync(c.Id);
         _grid.Rows.Clear();
         _grid.Columns.Clear();
+        ModernDataGridViewStyle.Apply(_grid);
         _grid.Columns.Add("Name", "Animal name");
         _grid.Columns.Add("Species", "Species");
 

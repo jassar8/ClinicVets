@@ -12,18 +12,18 @@ public sealed class RegisterPage : UserControl
     private readonly MainShellForm _shell;
     private readonly Panel _rightHost = new() { Dock = DockStyle.Fill };
     private readonly Panel _body = new();
-    private readonly Panel _card = new();
+    private readonly ModernCardPanel _card = new() { Padding = new Padding(4) };
     private readonly FlowLayoutPanel _flow = new();
     private readonly TextBox _fullName = new();
     private readonly TextBox _email = new();
     private readonly TextBox _password = new();
     private readonly ComboBox _role = new();
-    private readonly RoundedInputHost _fullNameHost;
-    private readonly RoundedInputHost _emailHost;
-    private readonly RoundedInputHost _passwordHost;
+    private readonly ModernTextField _fullNameHost;
+    private readonly ModernTextField _emailHost;
+    private readonly ModernTextField _passwordHost;
     private readonly RoundedComboHost _roleHost;
-    private readonly FeedbackBannerPanel _feedback = new();
-    private readonly ModernPrimaryButton _save = new();
+    private readonly ModernAlertBanner _feedback = new();
+    private readonly ModernButton _save = new();
     private readonly ModernOutlineButton _cancel = new();
     private readonly Label _heroTitle;
     private readonly Label _heroSubtitle;
@@ -128,8 +128,7 @@ public sealed class RegisterPage : UserControl
         _body.BackColor = Color.Transparent;
         _body.Resize += (_, _) => Relayout();
 
-        _card.BackColor = UiTheme.CardWhite;
-        _card.Paint += (_, e) => UiChrome.PaintCardWithShadow(_card, e, UiTheme.CardCornerRadius);
+        _card.BackColor = Color.Transparent;
 
         _flow.Dock = DockStyle.Fill;
         _flow.FlowDirection = FlowDirection.TopDown;
@@ -149,9 +148,9 @@ public sealed class RegisterPage : UserControl
         _password.PlaceholderText = "8–10 characters: letter, digit, and special character";
         _password.UseSystemPasswordChar = true;
 
-        _fullNameHost = new RoundedInputHost(_fullName);
-        _emailHost = new RoundedInputHost(_email);
-        _passwordHost = new RoundedInputHost(_password, showPasswordRevealToggle: true);
+        _fullNameHost = new ModernTextField(_fullName);
+        _emailHost = new ModernTextField(_email);
+        _passwordHost = new ModernTextField(_password, showPasswordRevealToggle: true);
 
         _role.DropDownStyle = ComboBoxStyle.DropDownList;
         _role.Items.AddRange(new object[] { "Secretary", "Veterinarian" });
