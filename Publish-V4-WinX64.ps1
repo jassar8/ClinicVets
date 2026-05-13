@@ -15,5 +15,5 @@ Write-Host ""
 
 Write-Host ""
 Write-Host "v4 publish summary:" -ForegroundColor Green
-Write-Host "  WinForms (legacy):   RunApp\ClinicVets.exe  (and PublishedApp\)" -ForegroundColor Yellow
-Write-Host "  Official Avalonia:   run testapp\Publish\ClinicVetsAvalonia.exe" -ForegroundColor Yellow
+Write-Host "  WinForms legacy:     PublishedApp\ClinicVetsWinForms.exe" -ForegroundColor Yellow
+Write-Host "  Official v3 (main):  run testapp\Publish\ClinicVets.exe  (and RunApp\ after Avalonia sync)" -ForegroundColor Yellow

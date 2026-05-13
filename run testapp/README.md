@@ -18,7 +18,9 @@ cd "run testapp"
 .\Publish-Avalonia-WinX64.ps1
 ```
 
-Output: **`Publish\ClinicVetsAvalonia.exe`** (self-contained). Distribute the whole **`Publish`** directory.
+Output: **`Publish\ClinicVets.exe`** (self-contained). Distribute the whole **`Publish`** directory.
+
+After `dotnet build` on **`ClinicVets.sln`**, **`RunApp\ClinicVets.exe`** is refreshed from this project (not from WinForms).
 
 ## Contents
 

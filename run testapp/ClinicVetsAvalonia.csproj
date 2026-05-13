@@ -1,11 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <!-- Official desktop app: all UI, services, SQLite, and models live under this folder. -->
+  <!-- Official v3 desktop app (Avalonia). Output EXE name: ClinicVets.exe — this is what RunApp mirrors. -->
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <AssemblyName>ClinicVets</AssemblyName>
+    <ApplicationTitle>ClinicVets</ApplicationTitle>
+    <Product>ClinicVets</Product>
     <DefaultItemExcludes>$(DefaultItemExcludes);Publish/**;../src/**;../Tests/**;../tests/**;../tooling/**;../Documentation/**;../database/**;../docs/**;../assets/app/**;../assets/branding/**;../RunApp/**;../PublishedApp/**;../PublishedApp-Avalonia/**;../ClinicManagementSystem.app/**</DefaultItemExcludes>
   </PropertyGroup>
 
@@ -20,4 +23,28 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <RunAppSyncScript>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\docs\Scripts\Sync-RunApp.ps1'))</RunAppSyncScript>
+    <RunAppDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\RunApp'))</RunAppDir>
+  </PropertyGroup>
+
+  <Target Name="SyncRunAppAfterBuild" AfterTargets="Build">
+    <PropertyGroup>
+      <_TargetDirTrimmed>$([System.IO.Path]::GetFullPath('$(TargetDir.TrimEnd('\'))'))</_TargetDirTrimmed>
+    </PropertyGroup>
+    <Exec
+      Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(RunAppSyncScript)&quot; -Source &quot;$(_TargetDirTrimmed)&quot; -RunAppRoot &quot;$(RunAppDir)&quot;"
+      LogStandardErrorAsError="true" />
+  </Target>
+
+  <Target Name="SyncRunAppAfterPublish" AfterTargets="Publish">
+    <PropertyGroup>
+      <_PublishDirTrimmed Condition="'$(PublishDir)' != ''">$([System.IO.Path]::GetFullPath('$(PublishDir.TrimEnd('\'))'))</_PublishDirTrimmed>
+    </PropertyGroup>
+    <Exec
+      Condition="'$(PublishDir)' != ''"
+      Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(RunAppSyncScript)&quot; -Source &quot;$(_PublishDirTrimmed)&quot; -RunAppRoot &quot;$(RunAppDir)&quot;"
+      LogStandardErrorAsError="true" />
+  </Target>
 </Project>

@@ -5,7 +5,9 @@ param(
 $ErrorActionPreference = "Stop"
 $publishPath = ".\PublishedApp"
 
-Write-Host "Publishing ClinicVets (WinForms desktop v2) for Windows x64..." -ForegroundColor Cyan
+Write-Host "Publishing legacy WinForms (ClinicVetsWinForms.exe) for Windows x64..." -ForegroundColor Cyan
+Write-Host "NOTE: Official RunApp\ClinicVets.exe comes from run testapp\Publish-Avalonia-WinX64.ps1 (v3 Avalonia)." -ForegroundColor Yellow
+Write-Host ""
 
 Get-Process | Where-Object { $_.ProcessName -like '*ClinicVets*' } | Stop-Process -Force -ErrorAction SilentlyContinue
 
@@ -19,19 +21,13 @@ dotnet publish .\src\Frontend\ClinicVets.Desktop.csproj `
     -o $publishPath
 
 if ($LASTEXITCODE -ne 0) {
-    throw "Publish failed. Close any running ClinicVets.exe, then run this script again."
+    throw "Publish failed. Close any running ClinicVetsWinForms.exe or ClinicVets.exe, then try again."
 }
 
-# MSBuild AfterTargets=Publish also syncs RunApp; call again so RunApp matches this script's output folder if paths differ.
-$sync = Join-Path $PSScriptRoot "docs\Scripts\Sync-RunApp.ps1"
-$runApp = Join-Path $PSScriptRoot "RunApp"
-& powershell -NoProfile -ExecutionPolicy Bypass -File $sync -Source (Resolve-Path $publishPath).Path -RunAppRoot (Resolve-Path $runApp).Path
-
 Write-Host ""
-Write-Host "Publish complete." -ForegroundColor Green
-Write-Host "Portable app (keep the whole folder together):" -ForegroundColor Yellow
-Write-Host (Join-Path $PSScriptRoot "RunApp\ClinicVets.exe")
+Write-Host "Publish complete (WinForms legacy)." -ForegroundColor Green
+Write-Host "Portable WinForms EXE (keep the whole PublishedApp folder together):" -ForegroundColor Yellow
+Write-Host (Join-Path $PSScriptRoot "PublishedApp\ClinicVetsWinForms.exe")
 Write-Host ""
-Write-Host "The same files were synced to RunApp\ (see RunApp\README.md)." -ForegroundColor Green
-Write-Host "Optional desktop shortcut:" -ForegroundColor Cyan
-Write-Host "  powershell -ExecutionPolicy Bypass -File .\docs\Scripts\Create-ClinicVets-DesktopShortcut.ps1"
+Write-Host "For the official Hebrew v3 app and RunApp mirror, run:" -ForegroundColor Cyan
+Write-Host "  .\run testapp\Publish-Avalonia-WinX64.ps1"

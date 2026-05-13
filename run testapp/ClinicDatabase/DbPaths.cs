@@ -11,7 +11,7 @@ public static class DbPaths
     public static string DatabaseFolder =>
         Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "ClinicVetsAvalonia");
+            "ClinicVets");
 
     public static string DatabasePath => Path.Combine(DatabaseFolder, "clinic.db");
 

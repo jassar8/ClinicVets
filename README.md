@@ -13,13 +13,13 @@ The **only** supported end-user app is in **`run testapp/`**:
 |------|----------|
 | Project file | `run testapp/ClinicVetsAvalonia.csproj` |
 | Run from source | `run testapp/Run.bat` or `dotnet run --project "run testapp/ClinicVetsAvalonia.csproj"` |
-| Publish EXE | `run testapp/Publish-Avalonia-WinX64.ps1` → output **`run testapp/Publish/ClinicVetsAvalonia.exe`** |
+| Publish EXE | `run testapp/Publish-Avalonia-WinX64.ps1` → **`run testapp/Publish/ClinicVets.exe`** (and **`RunApp/ClinicVets.exe`** after a full solution build, which syncs from this project) |
 
 See **`run testapp/README.md`** for the folder layout (Views, Repositories, `AppUi/Styles`, etc.).
 
 ## Legacy (not the hand-in EXE)
 
-- **WinForms** stack: `src/Frontend/ClinicVets.Desktop.csproj` — optional; build output is synced to `RunApp/` by the WinForms project. To run from source: `src/Frontend/Run-WinForms.bat`.
+- **WinForms** stack: `src/Frontend/ClinicVets.Desktop.csproj` — optional legacy; outputs **`ClinicVetsWinForms.exe`** (not synced to `RunApp/`). Run from source: `src/Frontend/Run-WinForms.bat`.
 - **Removed root launchers** that only started another EXE or duplicated entry points: `Run-Windows.bat` (started `RunApp\ClinicVets.exe`), `Run-Avalonia.bat`, and root `Publish-Avalonia-WinX64.ps1` (replaced by scripts inside `run testapp/`).
 
 ## Default demo logins (Avalonia)

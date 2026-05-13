@@ -1,42 +1,36 @@
-# ClinicVets — RunApp (ready-to-run build)
+# ClinicVets — RunApp (official v3 build mirror)
 
-This folder is **filled automatically** when you build or publish the desktop project. It is **not** where source code lives.
+This folder is **filled automatically** when you **build** or **publish** the **official Avalonia app** in **`run testapp/`** (`ClinicVetsAvalonia.csproj` → output **`ClinicVets.exe`**).
 
-## Quick start (development / UI demo)
+It is **not** source code. Anything here except `README*.md` is replaced on the next sync.
 
-1. From the repository root, build once:
+## What EXE this is
+
+- **`ClinicVets.exe` here = your Hebrew v3 Avalonia app** (login, SQLite, clients, animals, visits, medicines).
+- Legacy WinForms builds **`ClinicVetsWinForms.exe`** and does **not** sync to this folder anymore.
+
+## Quick start
+
+1. From repo root:
    ```powershell
    dotnet build .\ClinicVets.sln -c Release
    ```
 2. Double-click **`ClinicVets.exe`** in this folder.
-3. **Demo Mode (fast UI testing)**  
-   On the login screen, click **Enter Demo Mode** (if shown). You skip sign-in and get an in-memory **Demo Admin** workspace with sample customers, animals, visits, and pending employees.  
-   **Sign out** returns you to normal login. Demo data does **not** touch your real JSON files under `%LocalAppData%\ClinicVets`.
 
-> **Requires .NET 9** Windows desktop runtime for a normal `dotnet build` output. If the EXE does not start, install [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0) (x64), or use the self-contained publish below.
-
-## Disable Demo Mode (hand-in / teacher build)
-
-1. Open **`src/Frontend/DesktopBuildOptions.cs`** in the repo.
-2. Change:
-   ```csharp
-   public const bool EnableDemoMode = false;
-   ```
-3. Rebuild (`dotnet build` or publish). The Demo Mode button disappears and demo navigation is disabled.
-
-## Publish a portable folder for the teacher (no runtime install)
-
-From the repository root:
+For a **self-contained** folder (teacher PC without .NET):
 
 ```powershell
-.\publish-win-x64.ps1
+.\run testapp\Publish-Avalonia-WinX64.ps1
 ```
 
-That produces a **self-contained** `ClinicVets.exe` (and supporting files) and syncs them here. Zip the **entire `RunApp` folder** so paths stay intact.
+Then use **`run testapp\Publish\ClinicVets.exe`** (and the rest of that folder), or build the solution so **`RunApp`** is refreshed again.
+
+## Data folder
+
+SQLite and app data: **`%AppData%\ClinicVets\`** (v3 official path).  
+If you used an older build that stored data under `ClinicVetsAvalonia`, copy `clinic.db` into `%AppData%\ClinicVets\` if you need to migrate.
 
 ## What not to do
 
-- Do not add **source code** only under `RunApp/` — it will be deleted on the next sync.
-- Keep **everything** in this folder together when you copy or zip it; the EXE loads DLLs next to it.
-
-For the full map of folders (Frontend, Backend, Models, Services, Data, Tests, Assets), see **`Documentation/REPOSITORY-LAYOUT.md`**.
+- Do not put source-only files here — they are deleted on sync.
+- Zip the **entire** `RunApp` folder when sharing so DLLs stay next to the EXE.

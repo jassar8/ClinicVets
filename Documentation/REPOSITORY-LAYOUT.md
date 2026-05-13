@@ -18,7 +18,7 @@ This table maps the folders you care about for coursework and demos to where the
 
 After **`dotnet build`** (any configuration) or **`.\publish-win-x64.ps1`**, open:
 
-`RunApp/ClinicVets.exe`
+`RunApp/ClinicVets.exe` — **official v3 Avalonia** app, synced from `run testapp/` on build/publish (not WinForms).
 
 - **Framework-dependent build** (`dotnet build`): the machine needs the **.NET 9** desktop runtime installed. All DLLs sit next to the EXE in `RunApp/`.
 - **Self-contained publish** (`publish-win-x64.ps1`): `RunApp/` contains a **portable** Windows x64 app (larger, no separate runtime install).

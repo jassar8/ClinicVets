@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/run testapp/bin/Debug/net9.0-windows/ClinicVetsAvalonia.dll",
+            "program": "${workspaceFolder}/run testapp/bin/Debug/net9.0-windows/ClinicVets.dll",
             "args": [],
             "cwd": "${workspaceFolder}/run testapp",
             "stopAtEntry": false
