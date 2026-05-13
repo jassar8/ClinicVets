@@ -4,13 +4,14 @@ param(
 
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
-$publishPath = Join-Path $root "PublishedApp"
+$publishPath = Join-Path $root "PublishedApp-Avalonia"
 $project = Join-Path $root "ClinicVetsAvalonia.csproj"
 
 Write-Host "Publishing ClinicVetsAvalonia (Avalonia) for Windows x64..." -ForegroundColor Cyan
 
 Get-Process | Where-Object { $_.ProcessName -like '*ClinicVets*' } | Stop-Process -Force -ErrorAction SilentlyContinue
-Start-Sleep -Milliseconds 400
+Stop-Process -Name "ClinicVetsAvalonia" -Force -ErrorAction SilentlyContinue
+Start-Sleep -Milliseconds 800
 
 dotnet publish $project `
     -c $Configuration `
