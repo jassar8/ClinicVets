@@ -12,7 +12,7 @@ public sealed class RoundedComboHost : Panel
         Inner = inner;
         Height = UiTheme.InputHeight;
         Margin = new Padding(0, 0, 0, 6);
-        BackColor = Color.Transparent;
+        BackColor = UiTheme.InputBackground;
         inner.FlatStyle = FlatStyle.Flat;
         inner.Font = UiStyles.InputFont;
         inner.BackColor = UiTheme.InputBackground;

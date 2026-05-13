@@ -13,7 +13,7 @@ public sealed class ModernOutlineButton : Button
         FlatAppearance.BorderSize = 0;
         ForeColor = UiTheme.TextDark;
         Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-        BackColor = Color.Transparent;
+        BackColor = UiTheme.SecondaryButtonBackground;
         Cursor = Cursors.Hand;
         Height = UiTheme.SecondaryButtonHeight;
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);

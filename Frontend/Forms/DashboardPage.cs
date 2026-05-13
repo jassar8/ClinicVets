@@ -57,7 +57,7 @@ public sealed class DashboardPage : UserControl
             Dock = DockStyle.Fill,
             ColumnCount = 2,
             RowCount = 1,
-            BackColor = Color.Transparent
+            BackColor = UiTheme.PageBackground
         };
         split.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, UiTheme.SidebarWidth));
         split.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
@@ -75,7 +75,7 @@ public sealed class DashboardPage : UserControl
         {
             Height = 132,
             Dock = DockStyle.Top,
-            BackColor = Color.Transparent,
+            BackColor = UiTheme.SidebarBackground,
             Padding = new Padding(20, 28, 20, 12)
         };
         topBrand.Controls.Add(new Label
@@ -111,7 +111,7 @@ public sealed class DashboardPage : UserControl
             WrapContents = false,
             AutoScroll = true,
             Padding = new Padding(12, 8, 12, 8),
-            BackColor = Color.Transparent
+            BackColor = UiTheme.SidebarBackground
         };
 
         foreach (var section in NavOrder)
@@ -128,7 +128,7 @@ public sealed class DashboardPage : UserControl
         {
             Height = 96,
             Dock = DockStyle.Bottom,
-            BackColor = Color.Transparent,
+            BackColor = UiTheme.SidebarBackground,
             Padding = new Padding(16, 12, 16, 20)
         };
         var signOut = new ModernOutlineButton
@@ -148,11 +148,11 @@ public sealed class DashboardPage : UserControl
         _contentHost.BackColor = UiTheme.ContentCanvas;
         _contentHost.Padding = new Padding(28, 24, 28, 28);
 
-        _card.BackColor = Color.Transparent;
+        _card.BackColor = UiTheme.ContentCanvas;
         _card.Paint += (_, e) => UiChrome.PaintCardWithShadow(_card, e, UiTheme.CardCornerRadius);
 
         _viewHost.Dock = DockStyle.Fill;
-        _viewHost.BackColor = Color.Transparent;
+        _viewHost.BackColor = UiTheme.CardWhite;
         _viewHost.Padding = new Padding(40, 36, 40, 32);
         _card.Controls.Add(_viewHost);
 
@@ -182,7 +182,7 @@ public sealed class DashboardPage : UserControl
             Width = UiTheme.SidebarWidth - 36,
             Height = 46,
             Margin = new Padding(8, 4, 8, 4),
-            BackColor = active ? UiTheme.SidebarItemActive : Color.Transparent,
+            BackColor = active ? UiTheme.SidebarItemActive : UiTheme.SidebarBackground,
             Cursor = Cursors.Hand,
             Tag = section
         };
@@ -198,7 +198,7 @@ public sealed class DashboardPage : UserControl
             ForeColor = active ? UiTheme.PrimaryButton : UiTheme.SidebarMuted,
             AutoSize = true,
             Location = new Point(18, 12),
-            BackColor = Color.Transparent,
+            BackColor = active ? UiTheme.SidebarItemActive : UiTheme.SidebarBackground,
             Cursor = Cursors.Hand
         };
 
@@ -222,7 +222,7 @@ public sealed class DashboardPage : UserControl
             var key = kv.Key;
             var panel = kv.Value;
             var isActive = key == section;
-            panel.BackColor = isActive ? UiTheme.SidebarItemActive : Color.Transparent;
+            panel.BackColor = isActive ? UiTheme.SidebarItemActive : UiTheme.SidebarBackground;
             if (panel.Controls.Count > 0 && panel.Controls[0] is Label lbl)
             {
                 lbl.Font = new Font(
@@ -231,6 +231,7 @@ public sealed class DashboardPage : UserControl
                     isActive ? FontStyle.Bold : FontStyle.Regular,
                     GraphicsUnit.Point);
                 lbl.ForeColor = isActive ? UiTheme.PrimaryButton : UiTheme.SidebarMuted;
+                lbl.BackColor = isActive ? UiTheme.SidebarItemActive : UiTheme.SidebarBackground;
             }
         }
 
@@ -268,7 +269,7 @@ public sealed class DashboardPage : UserControl
             Dock = DockStyle.Fill,
             ColumnCount = 1,
             RowCount = 3,
-            BackColor = Color.Transparent
+            BackColor = UiTheme.CardWhite
         };
         root.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
         root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
@@ -308,7 +309,7 @@ public sealed class DashboardPage : UserControl
             AutoSize = true,
             WrapContents = false,
             Margin = new Padding(0, 0, 0, 8),
-            BackColor = Color.Transparent
+            BackColor = UiTheme.CardWhite
         };
         introStack.Controls.Add(welcomeHeading);
         introStack.Controls.Add(metaLine);
@@ -318,7 +319,8 @@ public sealed class DashboardPage : UserControl
             Dock = DockStyle.Fill,
             ColumnCount = 3,
             RowCount = 1,
-            Margin = new Padding(0, 4, 0, 16)
+            Margin = new Padding(0, 4, 0, 16),
+            BackColor = UiTheme.CardWhite
         };
         metrics.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
         metrics.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.34F));
@@ -366,7 +368,7 @@ public sealed class DashboardPage : UserControl
             WrapContents = false,
             AutoScroll = true,
             Padding = new Padding(4),
-            BackColor = Color.Transparent
+            BackColor = UiTheme.CardWhite
         };
 
         var heading = UiStyles.CreateHeroTitle(title);
@@ -414,7 +416,7 @@ public sealed class DashboardPage : UserControl
         var p = new Panel
         {
             Margin = margin,
-            BackColor = Color.Transparent,
+            BackColor = UiTheme.MetricTileBackground,
             Padding = new Padding(22, 20, 20, 20)
         };
         p.Paint += (_, e) => UiChrome.PaintMetricTile(p, e, accent);
@@ -426,7 +428,7 @@ public sealed class DashboardPage : UserControl
             Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point),
             AutoSize = true,
             Location = new Point(22, 18),
-            BackColor = Color.Transparent
+            BackColor = UiTheme.MetricTileBackground
         };
         var v = new Label
         {
@@ -435,7 +437,7 @@ public sealed class DashboardPage : UserControl
             Font = new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point),
             AutoSize = true,
             Location = new Point(22, 44),
-            BackColor = Color.Transparent
+            BackColor = UiTheme.MetricTileBackground
         };
         p.Controls.Add(t);
         p.Controls.Add(v);

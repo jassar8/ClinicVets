@@ -80,7 +80,7 @@ public sealed class AdminCreateEmployeeForm : Form
             WrapContents = false,
             AutoScroll = true,
             Padding = new Padding(4),
-            BackColor = Color.Transparent
+            BackColor = UiTheme.PageBackground
         };
         flow.SizeChanged += (_, _) =>
         {
@@ -109,7 +109,7 @@ public sealed class AdminCreateEmployeeForm : Form
             AutoSize = true,
             WrapContents = false,
             Margin = new Padding(0, 8, 0, 0),
-            BackColor = Color.Transparent
+            BackColor = UiTheme.PageBackground
         };
         buttonRow.Controls.Add(_save);
         buttonRow.Controls.Add(_cancel);

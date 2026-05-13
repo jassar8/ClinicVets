@@ -40,10 +40,10 @@ public sealed class RegisterPage : UserControl
         var header = UiHeaderBar.Create("Add a staff member to your clinic workspace");
 
         _body.Dock = DockStyle.Fill;
-        _body.BackColor = Color.Transparent;
+        _body.BackColor = UiTheme.PageBackground;
         _body.Resize += (_, _) => Relayout();
 
-        _card.BackColor = Color.Transparent;
+        _card.BackColor = UiTheme.PageBackground;
         _card.Paint += (_, e) => UiChrome.PaintCardWithShadow(_card, e, UiTheme.CardCornerRadius);
 
         _flow.Dock = DockStyle.Fill;
@@ -51,7 +51,7 @@ public sealed class RegisterPage : UserControl
         _flow.WrapContents = false;
         _flow.AutoScroll = true;
         _flow.Padding = new Padding(52, 44, 52, 44);
-        _flow.BackColor = Color.Transparent;
+        _flow.BackColor = UiTheme.PageBackground;
         _flow.SizeChanged += (_, _) => SyncWidths();
 
         _heroTitle = UiStyles.CreateHeroTitle("New employee");

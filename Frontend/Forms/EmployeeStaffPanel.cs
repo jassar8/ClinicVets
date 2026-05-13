@@ -26,7 +26,7 @@ public sealed class EmployeeStaffPanel : UserControl
         _registration = registration;
 
         Dock = DockStyle.Fill;
-        BackColor = Color.Transparent;
+        BackColor = UiTheme.CardWhite;
         Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
 
         _title = UiStyles.CreateHeroTitle("Staff directory");
@@ -80,7 +80,7 @@ public sealed class EmployeeStaffPanel : UserControl
             AutoSize = true,
             WrapContents = false,
             Margin = new Padding(0, 12, 0, 0),
-            BackColor = Color.Transparent
+            BackColor = UiTheme.CardWhite
         };
         buttons.Controls.Add(_add);
         buttons.Controls.Add(_refresh);
@@ -90,7 +90,7 @@ public sealed class EmployeeStaffPanel : UserControl
             Dock = DockStyle.Fill,
             ColumnCount = 1,
             RowCount = 4,
-            BackColor = Color.Transparent
+            BackColor = UiTheme.CardWhite
         };
         root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         root.RowStyles.Add(new RowStyle(SizeType.AutoSize));

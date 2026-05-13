@@ -37,10 +37,10 @@ public sealed class LoginPage : UserControl
         var header = UiHeaderBar.Create("Veterinary clinic management — employee sign in");
 
         _body.Dock = DockStyle.Fill;
-        _body.BackColor = Color.Transparent;
+        _body.BackColor = UiTheme.PageBackground;
         _body.Resize += (_, _) => Relayout();
 
-        _card.BackColor = Color.Transparent;
+        _card.BackColor = UiTheme.PageBackground;
         _card.Paint += (_, e) => UiChrome.PaintCardWithShadow(_card, e, UiTheme.CardCornerRadius);
 
         _flow.Dock = DockStyle.Fill;
@@ -48,7 +48,7 @@ public sealed class LoginPage : UserControl
         _flow.WrapContents = false;
         _flow.AutoScroll = true;
         _flow.Padding = new Padding(52, 48, 52, 48);
-        _flow.BackColor = Color.Transparent;
+        _flow.BackColor = UiTheme.PageBackground;
         _flow.SizeChanged += (_, _) => SyncFlowChildWidths();
 
         _heroTitle = UiStyles.CreateHeroTitle("Welcome back");

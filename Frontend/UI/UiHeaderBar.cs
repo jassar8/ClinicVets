@@ -24,7 +24,7 @@ public static class UiHeaderBar
         var inner = new Panel
         {
             Dock = DockStyle.Fill,
-            BackColor = Color.Transparent,
+            BackColor = UiTheme.HeaderPrimary,
             Padding = new Padding(32, 0, 32, 0)
         };
 
@@ -33,7 +33,7 @@ public static class UiHeaderBar
             Size = new Size(46, 46),
             SizeMode = PictureBoxSizeMode.Zoom,
             Location = new Point(0, 18),
-            BackColor = Color.Transparent
+            BackColor = UiTheme.HeaderPrimary
         };
         try
         {

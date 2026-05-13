@@ -9,7 +9,7 @@ public sealed class FeedbackBannerPanel : Panel
         Padding = new Padding(18, 14, 18, 14),
         AutoSize = false,
         TextAlign = ContentAlignment.MiddleLeft,
-        BackColor = Color.Transparent
+        BackColor = UiTheme.PageBackground
     };
 
     private UiFeedbackKind _kind = UiFeedbackKind.None;
@@ -18,7 +18,7 @@ public sealed class FeedbackBannerPanel : Panel
     {
         Height = 4;
         Margin = new Padding(0, 10, 0, 4);
-        BackColor = Color.Transparent;
+        BackColor = UiTheme.PageBackground;
         Controls.Add(Message);
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
         UpdateStyles();

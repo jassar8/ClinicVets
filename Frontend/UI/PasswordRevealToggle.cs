@@ -16,7 +16,7 @@ public sealed class PasswordRevealToggle : Control
         _password = password;
         TabStop = true;
         Cursor = Cursors.Hand;
-        BackColor = Color.Transparent;
+        BackColor = UiTheme.InputBackground;
         Size = new Size(44, UiTheme.InputHeight);
         SetStyle(
             ControlStyles.AllPaintingInWmPaint |
