@@ -44,7 +44,7 @@ public sealed class AdminUsersManagementPanel : UserControl
     private readonly Label _tabRejected = new();
 
     private readonly Label _stripTitle = new();
-    private readonly TextBox _approveId = new();
+    private readonly Label _autoIdNotice = new();
     private readonly ComboBox _finalRole = new();
     private readonly ModernPrimaryButton _approve = new();
     private readonly ModernDangerButton _reject = new();
@@ -499,10 +499,11 @@ public sealed class AdminUsersManagementPanel : UserControl
         using (var b = new SolidBrush(fill))
             g.FillPath(b, path);
 
+        var drawFont = e.CellStyle?.Font ?? _grid.Font ?? SystemFonts.DefaultFont;
         TextRenderer.DrawText(
             g,
             "Delete",
-            e.CellStyle.Font,
+            drawFont,
             inset,
             Color.White,
             TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
@@ -615,15 +616,14 @@ public sealed class AdminUsersManagementPanel : UserControl
         _stripTitle.AutoSize = true;
         _stripTitle.MaximumSize = new Size(2000, 0);
         _stripTitle.Text =
-            "Select an employee in the table. Pending accounts can be approved here with a unique four-digit Employee ID and final role.";
+            "Select an employee in the table. Pending accounts can be approved here; the Employee ID is assigned automatically when you approve.";
 
         _approvalRow.Dock = DockStyle.Fill;
-        _approvalRow.ColumnCount = 7;
+        _approvalRow.ColumnCount = 6;
         _approvalRow.RowCount = 1;
         _approvalRow.BackColor = UiTheme.AccentMintWash;
         _approvalRow.Padding = new Padding(0, 4, 0, 4);
-        _approvalRow.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-        _approvalRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 112F));
+        _approvalRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 340F));
         _approvalRow.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
         _approvalRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 216F));
         _approvalRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 168F));
@@ -631,28 +631,16 @@ public sealed class AdminUsersManagementPanel : UserControl
         _approvalRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 168F));
         _approvalRow.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 
-        var idCaption = new Label
-        {
-            Text = "Employee ID",
-            AutoSize = true,
-            Anchor = AnchorStyles.Left,
-            ForeColor = UiTheme.TextMuted,
-            Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point),
-            TextAlign = ContentAlignment.MiddleLeft,
-            Margin = new Padding(0, 0, 10, 0),
-            BackColor = UiTheme.AccentMintWash
-        };
-
-        _approveId.MaxLength = 4;
-        _approveId.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-        _approveId.Height = 46;
-        _approveId.MinimumSize = new Size(112, 46);
-        _approveId.Width = 112;
-        _approveId.Margin = new Padding(0, 0, 20, 0);
-        _approveId.Anchor = AnchorStyles.Left;
-        _approveId.PlaceholderText = "0000";
-        _approveId.BorderStyle = BorderStyle.None;
-        _approveId.BackColor = UiTheme.InputBackground;
+        _autoIdNotice.Text = "Employee ID will be generated automatically";
+        _autoIdNotice.AutoSize = false;
+        _autoIdNotice.Width = 340;
+        _autoIdNotice.Height = 46;
+        _autoIdNotice.Margin = new Padding(0, 0, 20, 0);
+        _autoIdNotice.Anchor = AnchorStyles.Left;
+        _autoIdNotice.TextAlign = ContentAlignment.MiddleLeft;
+        _autoIdNotice.ForeColor = UiTheme.TextDark;
+        _autoIdNotice.Font = new Font("Segoe UI", 11.5F, FontStyle.Regular, GraphicsUnit.Point);
+        _autoIdNotice.BackColor = UiTheme.AccentMintWash;
 
         var roleCaption = new Label
         {
@@ -699,13 +687,12 @@ public sealed class AdminUsersManagementPanel : UserControl
         _reject.Anchor = AnchorStyles.Left;
         _reject.Click += async (_, _) => await RejectSelectedAsync();
 
-        _approvalRow.Controls.Add(idCaption, 0, 0);
-        _approvalRow.Controls.Add(_approveId, 1, 0);
-        _approvalRow.Controls.Add(roleCaption, 2, 0);
-        _approvalRow.Controls.Add(_finalRole, 3, 0);
-        _approvalRow.Controls.Add(_approve, 4, 0);
-        _approvalRow.Controls.Add(new Panel { Width = 16, BackColor = UiTheme.AccentMintWash, Dock = DockStyle.Fill }, 5, 0);
-        _approvalRow.Controls.Add(_reject, 6, 0);
+        _approvalRow.Controls.Add(_autoIdNotice, 0, 0);
+        _approvalRow.Controls.Add(roleCaption, 1, 0);
+        _approvalRow.Controls.Add(_finalRole, 2, 0);
+        _approvalRow.Controls.Add(_approve, 3, 0);
+        _approvalRow.Controls.Add(new Panel { Width = 16, BackColor = UiTheme.AccentMintWash, Dock = DockStyle.Fill }, 4, 0);
+        _approvalRow.Controls.Add(_reject, 5, 0);
 
         outer.Controls.Add(_stripTitle, 0, 0);
         outer.Controls.Add(_approvalRow, 0, 1);
@@ -826,7 +813,7 @@ public sealed class AdminUsersManagementPanel : UserControl
         if (_grid.SelectedRows.Count != 1)
         {
             _selectedId = null;
-            _stripTitle.Text = "Select an employee in the table. Pending accounts can be approved here with a unique four-digit Employee ID and final role.";
+            _stripTitle.Text = "Select an employee in the table. Pending accounts can be approved here; the Employee ID is assigned automatically when you approve.";
             SetPendingControlsVisible(false);
             return;
         }
@@ -850,9 +837,8 @@ public sealed class AdminUsersManagementPanel : UserControl
         if (IsStatus(emp, EmployeeAccountStatusNames.Pending))
         {
             _stripTitle.Text =
-                $"Pending: {emp.FullName}. Assign a unique four-digit Employee ID, choose the final role, then approve or reject.";
+                $"Pending: {emp.FullName}. Choose the final role, then approve or reject. The Employee ID will be generated automatically.";
             SetPendingControlsVisible(true);
-            _approveId.Text = string.Empty;
             SelectDefaultFinalRole(emp.Role);
         }
         else if (IsStatus(emp, EmployeeAccountStatusNames.Rejected))
@@ -899,7 +885,7 @@ public sealed class AdminUsersManagementPanel : UserControl
         try
         {
             var finalRole = _finalRole.SelectedItem?.ToString() ?? string.Empty;
-            var (ok, message) = await _approvals.ApproveAsync(_selectedId.Value, _approveId.Text, finalRole, _admin);
+            var (ok, message) = await _approvals.ApproveAsync(_selectedId.Value, finalRole, _admin);
             if (!ok)
             {
                 MessageBox.Show(

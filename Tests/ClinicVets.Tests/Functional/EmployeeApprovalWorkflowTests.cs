@@ -38,7 +38,7 @@ public class EmployeeApprovalWorkflowTests
         Assert.Equal("Secretary", pending.Role);
         Assert.Equal("Secretary", pending.RequestedRole);
 
-        var (approveOk, approveMsg) = await approvals.ApproveAsync(pending.Id, "5511", "Veterinarian", admin);
+        var (approveOk, approveMsg) = await approvals.ApproveAsync(pending.Id, "Veterinarian", admin);
         Assert.True(approveOk);
         Assert.Contains("approved", approveMsg, StringComparison.OrdinalIgnoreCase);
 
@@ -46,7 +46,7 @@ public class EmployeeApprovalWorkflowTests
         Assert.True(ok);
         Assert.NotNull(employee);
         Assert.Equal(EmployeeAccountStatusNames.Approved, employee.Status);
-        Assert.Equal("5511", employee.EmployeeId);
+        Assert.Equal("1001", employee.EmployeeId);
         Assert.Equal("Veterinarian", employee.Role);
         Assert.Equal("Secretary", employee.RequestedRole);
     }

@@ -7,7 +7,7 @@ using ClinicVets.Desktop.UI;
 namespace ClinicVets.Desktop.Forms;
 
 /// <summary>
-/// Administrator queue for self-service registrations awaiting approval and a four-digit employee ID.
+/// Administrator queue for self-service registrations awaiting approval; Employee IDs are assigned automatically on approval.
 /// </summary>
 public sealed class PendingEmployeesPanel : UserControl
 {
@@ -36,7 +36,7 @@ public sealed class PendingEmployeesPanel : UserControl
         title.Margin = new Padding(0, 0, 0, 6);
 
         var subtitle = UiStyles.CreateHeroSubtitle(
-            "Review self-service registrations. Choose the final role, enter a unique four-digit Employee ID, then approve or reject.");
+            "Review self-service registrations. Choose the final role, then approve or reject. The Employee ID is assigned automatically when you approve.");
         subtitle.Margin = new Padding(0, 0, 0, 12);
 
         var root = new TableLayoutPanel
@@ -115,7 +115,7 @@ public sealed class PendingEmployeesPanel : UserControl
         var wrap = new Panel
         {
             Margin = new Padding(0, 0, 0, 14),
-            Height = 218,
+            Height = 198,
             BackColor = UiTheme.MetricTileBackground,
             Padding = new Padding(0)
         };
@@ -124,7 +124,7 @@ public sealed class PendingEmployeesPanel : UserControl
         var bottomBar = new Panel
         {
             Dock = DockStyle.Bottom,
-            Height = 88,
+            Height = 76,
             BackColor = Color.Transparent
         };
         var main = new Panel
@@ -216,25 +216,15 @@ public sealed class PendingEmployeesPanel : UserControl
         UiStyles.ApplyComboInner(roleCombo);
         SelectDefaultFinalRole(roleCombo, emp.Role);
 
-        var idCaption = new Label
+        var autoIdLbl = new Label
         {
-            Text = "Employee ID",
-            Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point),
-            ForeColor = UiTheme.TextMuted,
+            Text = "Employee ID will be generated automatically",
+            Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point),
+            ForeColor = UiTheme.TextDark,
             AutoSize = true,
-            Margin = new Padding(0, 8, 8, 8),
+            Margin = new Padding(0, 8, 20, 8),
             Padding = new Padding(0, 10, 0, 0),
             BackColor = Color.Transparent
-        };
-
-        var idBox = new TextBox
-        {
-            MaxLength = 4,
-            Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point),
-            Width = 96,
-            Height = 36,
-            Margin = new Padding(0, 4, 12, 4),
-            PlaceholderText = "0000"
         };
 
         var approve = new ModernPrimaryButton
@@ -264,8 +254,7 @@ public sealed class PendingEmployeesPanel : UserControl
         };
         actions.Controls.Add(roleCaption);
         actions.Controls.Add(roleCombo);
-        actions.Controls.Add(idCaption);
-        actions.Controls.Add(idBox);
+        actions.Controls.Add(autoIdLbl);
         actions.Controls.Add(approve);
         actions.Controls.Add(reject);
         bottomBar.Controls.Add(actions);
@@ -278,7 +267,7 @@ public sealed class PendingEmployeesPanel : UserControl
             try
             {
                 var finalRole = roleCombo.SelectedItem?.ToString() ?? string.Empty;
-                var (ok, message) = await _approvals.ApproveAsync(capturedId, idBox.Text, finalRole, _admin);
+                var (ok, message) = await _approvals.ApproveAsync(capturedId, finalRole, _admin);
                 if (!ok)
                 {
                     MessageBox.Show(
