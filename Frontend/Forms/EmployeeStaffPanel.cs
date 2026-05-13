@@ -6,7 +6,7 @@ using ClinicVets.Desktop.UI;
 namespace ClinicVets.Desktop.Forms;
 
 /// <summary>
-/// Administrator directory view (no passwords shown).
+/// Administrator directory view (includes demo password column for classroom testing).
 /// </summary>
 public sealed class EmployeeStaffPanel : UserControl
 {
@@ -18,6 +18,7 @@ public sealed class EmployeeStaffPanel : UserControl
     private readonly ModernOutlineButton _refresh = new();
     private readonly Label _title;
     private readonly Label _hint;
+    private readonly Label _demoBanner;
 
     public EmployeeStaffPanel(Employee admin, IEmployeeRepository repository, EmployeeRegistrationService registration)
     {
@@ -33,8 +34,18 @@ public sealed class EmployeeStaffPanel : UserControl
         _title.Margin = new Padding(0, 0, 0, 6);
 
         _hint = UiStyles.CreateHeroSubtitle(
-            "Create clinic accounts and assign roles. Passwords are never shown here after they are saved locally.");
-        _hint.Margin = new Padding(0, 0, 0, 16);
+            "All registered employees appear below. Use Pending Employees to approve self-service sign-ups and assign Employee IDs.");
+        _hint.Margin = new Padding(0, 0, 0, 8);
+
+        _demoBanner = new Label
+        {
+            Text = "Demo only - passwords are visible for testing.",
+            AutoSize = true,
+            ForeColor = Color.FromArgb(180, 90, 0),
+            Font = new Font("Segoe UI", 10.5F, FontStyle.Bold, GraphicsUnit.Point),
+            Margin = new Padding(0, 0, 0, 12),
+            BackColor = UiTheme.CardWhite
+        };
 
         _grid.ReadOnly = true;
         _grid.AllowUserToAddRows = false;
@@ -89,9 +100,10 @@ public sealed class EmployeeStaffPanel : UserControl
         {
             Dock = DockStyle.Fill,
             ColumnCount = 1,
-            RowCount = 4,
+            RowCount = 5,
             BackColor = UiTheme.CardWhite
         };
+        root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         root.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
@@ -99,8 +111,9 @@ public sealed class EmployeeStaffPanel : UserControl
 
         root.Controls.Add(_title, 0, 0);
         root.Controls.Add(_hint, 0, 1);
-        root.Controls.Add(_grid, 0, 2);
-        root.Controls.Add(buttons, 0, 3);
+        root.Controls.Add(_demoBanner, 0, 2);
+        root.Controls.Add(_grid, 0, 3);
+        root.Controls.Add(buttons, 0, 4);
 
         Controls.Add(root);
 
@@ -113,6 +126,7 @@ public sealed class EmployeeStaffPanel : UserControl
         var inner = Math.Max(320, ClientSize.Width - Padding.Horizontal);
         _title.MaximumSize = new Size(inner, 0);
         _hint.MaximumSize = new Size(inner, 0);
+        _demoBanner.MaximumSize = new Size(inner, 0);
     }
 
     private async Task AddEmployeeAsync()
@@ -132,19 +146,24 @@ public sealed class EmployeeStaffPanel : UserControl
             var rows = await _repository.GetAllAsync();
             _grid.Rows.Clear();
             _grid.Columns.Clear();
-            _grid.Columns.Add("FullName", "Name");
-            _grid.Columns.Add("Email", "Email");
+            _grid.Columns.Add("FullName", "Full name");
             _grid.Columns.Add("Username", "Username");
-            _grid.Columns.Add("Role", "Role");
+            _grid.Columns.Add("Email", "Email");
+            _grid.Columns.Add("RequestedRole", "Requested role");
+            _grid.Columns.Add("FinalRole", "Final role");
             _grid.Columns.Add("Status", "Status");
             _grid.Columns.Add("EmployeeId", "Employee ID");
+            _grid.Columns.Add("Password", "Password");
 
             foreach (var e in rows)
             {
                 var username = string.IsNullOrWhiteSpace(e.Username) ? "—" : e.Username;
                 var empId = string.IsNullOrWhiteSpace(e.EmployeeId) ? "—" : e.EmployeeId;
                 var status = string.IsNullOrWhiteSpace(e.Status) ? "—" : e.Status;
-                _grid.Rows.Add(e.FullName, e.Email, username, e.Role, status, empId);
+                var requested = string.IsNullOrWhiteSpace(e.RequestedRole) ? "—" : e.RequestedRole;
+                var finalRole = string.IsNullOrWhiteSpace(e.Role) ? "—" : e.Role;
+                var password = string.IsNullOrWhiteSpace(e.Password) ? "—" : e.Password;
+                _grid.Rows.Add(e.FullName, username, e.Email, requested, finalRole, status, empId, password);
             }
         }
         finally

@@ -1,4 +1,6 @@
+using ClinicVets.Application.Security;
 using ClinicVets.Application.Services;
+using ClinicVets.Core;
 using ClinicVets.Core.Entities;
 using ClinicVets.Desktop.UI;
 
@@ -34,7 +36,7 @@ public sealed class PendingEmployeesPanel : UserControl
         title.Margin = new Padding(0, 0, 0, 6);
 
         var subtitle = UiStyles.CreateHeroSubtitle(
-            "Review self-service registrations. Enter a unique four-digit Employee ID, then approve or reject.");
+            "Review self-service registrations. Choose the final role, enter a unique four-digit Employee ID, then approve or reject.");
         subtitle.Margin = new Padding(0, 0, 0, 12);
 
         var root = new TableLayoutPanel
@@ -113,7 +115,7 @@ public sealed class PendingEmployeesPanel : UserControl
         var wrap = new Panel
         {
             Margin = new Padding(0, 0, 0, 14),
-            Height = 188,
+            Height = 218,
             BackColor = UiTheme.MetricTileBackground,
             Padding = new Padding(0)
         };
@@ -122,7 +124,7 @@ public sealed class PendingEmployeesPanel : UserControl
         var bottomBar = new Panel
         {
             Dock = DockStyle.Bottom,
-            Height = 58,
+            Height = 88,
             BackColor = Color.Transparent
         };
         var main = new Panel
@@ -148,9 +150,13 @@ public sealed class PendingEmployeesPanel : UserControl
             BackColor = Color.Transparent
         };
 
+        var requestedRoleDisplay = string.IsNullOrWhiteSpace(emp.RequestedRole)
+            ? (string.IsNullOrWhiteSpace(emp.Role) ? "—" : emp.Role.Trim())
+            : emp.RequestedRole.Trim();
+
         var detailsLbl = new Label
         {
-            Text = $"Username: {usernameDisplay}   ·   Email: {emp.Email}   ·   Requested role: {emp.Role}",
+            Text = $"Username: {usernameDisplay}   ·   Email: {emp.Email}   ·   Requested role: {requestedRoleDisplay}",
             Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point),
             ForeColor = UiTheme.TextMuted,
             AutoSize = true,
@@ -186,6 +192,29 @@ public sealed class PendingEmployeesPanel : UserControl
         infoGrid.Controls.Add(detailsLbl, 0, 1);
         infoGrid.Controls.Add(statusLbl, 0, 2);
         main.Controls.Add(infoGrid);
+
+        var roleCaption = new Label
+        {
+            Text = "Final role",
+            Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point),
+            ForeColor = UiTheme.TextMuted,
+            AutoSize = true,
+            Margin = new Padding(0, 8, 8, 8),
+            Padding = new Padding(0, 10, 0, 0),
+            BackColor = Color.Transparent
+        };
+
+        var roleCombo = new ComboBox
+        {
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point),
+            Width = 160,
+            Height = 32,
+            Margin = new Padding(0, 4, 16, 4)
+        };
+        roleCombo.Items.AddRange(new object[] { EmployeeRoleNames.Secretary, EmployeeRoleNames.Veterinarian, "Administrator" });
+        UiStyles.ApplyComboInner(roleCombo);
+        SelectDefaultFinalRole(roleCombo, emp.Role);
 
         var idCaption = new Label
         {
@@ -233,6 +262,8 @@ public sealed class PendingEmployeesPanel : UserControl
             Padding = new Padding(12, 6, 12, 6),
             BackColor = Color.Transparent
         };
+        actions.Controls.Add(roleCaption);
+        actions.Controls.Add(roleCombo);
         actions.Controls.Add(idCaption);
         actions.Controls.Add(idBox);
         actions.Controls.Add(approve);
@@ -246,7 +277,8 @@ public sealed class PendingEmployeesPanel : UserControl
             reject.Enabled = false;
             try
             {
-                var (ok, message) = await _approvals.ApproveAsync(capturedId, idBox.Text, _admin);
+                var finalRole = roleCombo.SelectedItem?.ToString() ?? string.Empty;
+                var (ok, message) = await _approvals.ApproveAsync(capturedId, idBox.Text, finalRole, _admin);
                 if (!ok)
                 {
                     MessageBox.Show(
@@ -304,5 +336,18 @@ public sealed class PendingEmployeesPanel : UserControl
         };
 
         return wrap;
+    }
+
+    private static void SelectDefaultFinalRole(ComboBox combo, string? storedRole)
+    {
+        if (!EmployeeRoleNames.TryParse(storedRole, out var parsed))
+        {
+            combo.SelectedIndex = 0;
+            return;
+        }
+
+        var pick = parsed == EmployeeRole.Admin ? "Administrator" : EmployeeRoleNames.ToStoredString(parsed);
+        var idx = combo.Items.IndexOf(pick);
+        combo.SelectedIndex = idx >= 0 ? idx : 0;
     }
 }

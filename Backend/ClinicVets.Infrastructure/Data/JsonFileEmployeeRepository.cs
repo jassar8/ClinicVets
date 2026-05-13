@@ -203,6 +203,12 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
                 e.Status = EmployeeAccountStatusNames.Approved;
         }
 
+        foreach (var e in _employees)
+        {
+            if (string.IsNullOrWhiteSpace(e.RequestedRole))
+                e.RequestedRole = string.IsNullOrWhiteSpace(e.Role) ? string.Empty : e.Role.Trim();
+        }
+
         foreach (var e in _employees.Where(x => RolePermissions.IsAdministrator(x)))
         {
             e.Status = EmployeeAccountStatusNames.Approved;
@@ -258,6 +264,7 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
             Email = "vet@clinicvets.com",
             Password = "Vet12!ab",
             Role = EmployeeRoleNames.Veterinarian,
+            RequestedRole = EmployeeRoleNames.Veterinarian,
             Status = EmployeeAccountStatusNames.Approved,
             EmployeeId = "2001"
         },
@@ -267,6 +274,7 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
             Email = "secretary@clinicvets.com",
             Password = "Sec12!ab",
             Role = EmployeeRoleNames.Secretary,
+            RequestedRole = EmployeeRoleNames.Secretary,
             Status = EmployeeAccountStatusNames.Approved,
             EmployeeId = "2002"
         }
@@ -279,6 +287,7 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
         Email = SystemAccounts.DefaultAdminEmail,
         Password = SystemAccounts.DefaultAdminPassword,
         Role = SystemAccounts.DefaultAdminRole,
+        RequestedRole = SystemAccounts.DefaultAdminRole,
         Status = EmployeeAccountStatusNames.Approved,
         EmployeeId = "9000"
     };

@@ -141,13 +141,15 @@ public class EmployeeRegistrationService
             successMessage = "Employee registered successfully.";
         }
 
+        var storedRole = EmployeeRoleNames.ToStoredString(parsedRole);
         var employee = new Employee
         {
             FullName = fullName.Trim(),
             Username = normalizedUsername,
             Email = normalizedEmail,
             Password = password.Trim(),
-            Role = EmployeeRoleNames.ToStoredString(parsedRole),
+            Role = storedRole,
+            RequestedRole = storedRole,
             Status = status,
             EmployeeId = assignedEmployeeId
         };

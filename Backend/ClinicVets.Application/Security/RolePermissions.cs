@@ -20,17 +20,20 @@ public static class RolePermissions
         if (!EmployeeRoleNames.TryParse(employee.Role, out var role))
             return section == DashboardSection.Home;
 
+        if (role == EmployeeRole.Admin)
+            return true;
+
         return section switch
         {
             DashboardSection.Home => true,
-            DashboardSection.Visits => role is EmployeeRole.Admin or EmployeeRole.Secretary or EmployeeRole.Veterinarian,
-            DashboardSection.Patients => role is EmployeeRole.Admin or EmployeeRole.Veterinarian,
-            DashboardSection.Billing => role is EmployeeRole.Admin or EmployeeRole.Secretary,
-            DashboardSection.Staff => role == EmployeeRole.Admin,
-            DashboardSection.PendingEmployees => role == EmployeeRole.Admin,
-            DashboardSection.CustomerRegistration => role is EmployeeRole.Admin or EmployeeRole.Secretary,
-            DashboardSection.CustomerSearch => role is EmployeeRole.Admin or EmployeeRole.Secretary,
-            DashboardSection.CustomerAnimals => role is EmployeeRole.Admin or EmployeeRole.Secretary,
+            DashboardSection.Visits => role is EmployeeRole.Secretary or EmployeeRole.Veterinarian,
+            DashboardSection.Patients => role == EmployeeRole.Veterinarian,
+            DashboardSection.Billing => role == EmployeeRole.Secretary,
+            DashboardSection.Staff => false,
+            DashboardSection.PendingEmployees => false,
+            DashboardSection.CustomerRegistration => role == EmployeeRole.Secretary,
+            DashboardSection.CustomerSearch => role == EmployeeRole.Secretary,
+            DashboardSection.CustomerAnimals => role == EmployeeRole.Secretary,
             _ => false
         };
     }

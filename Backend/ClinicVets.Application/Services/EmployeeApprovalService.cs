@@ -17,13 +17,23 @@ public sealed class EmployeeApprovalService
 
     public Task<IReadOnlyList<Employee>> GetPendingAsync() => _repository.GetPendingRegistrationsAsync();
 
-    public async Task<(bool Ok, string Message)> ApproveAsync(Guid employeeId, string fourDigitId, Employee actingAdmin)
+    public async Task<(bool Ok, string Message)> ApproveAsync(
+        Guid employeeId,
+        string fourDigitId,
+        string finalRole,
+        Employee actingAdmin)
     {
         if (!RolePermissions.IsAdministrator(actingAdmin))
             return (false, "Only an administrator can approve registrations.");
 
         if (!EmployeeIdValidation.IsFourDigitEmployeeId(fourDigitId))
             return (false, "Employee ID must be exactly four digits.");
+
+        if (!EmployeeRoleNames.TryParse(finalRole, out var finalParsed) ||
+            finalParsed is not (EmployeeRole.Admin or EmployeeRole.Secretary or EmployeeRole.Veterinarian))
+        {
+            return (false, "Final role must be Secretary, Veterinarian, or Administrator.");
+        }
 
         var trimmedId = fourDigitId.Trim();
         var all = await _repository.GetAllAsync();
@@ -40,12 +50,10 @@ public sealed class EmployeeApprovalService
         if (!string.Equals(employee.Status?.Trim(), EmployeeAccountStatusNames.Pending, StringComparison.OrdinalIgnoreCase))
             return (false, "Only pending registrations can be approved.");
 
-        if (!EmployeeRoleNames.TryParse(employee.Role, out var role) ||
-            role is not (EmployeeRole.Secretary or EmployeeRole.Veterinarian))
-        {
-            return (false, "Only secretary or veterinarian registrations can be approved from this queue.");
-        }
+        if (string.IsNullOrWhiteSpace(employee.RequestedRole))
+            employee.RequestedRole = (employee.Role ?? string.Empty).Trim();
 
+        employee.Role = EmployeeRoleNames.ToStoredString(finalParsed);
         employee.Status = EmployeeAccountStatusNames.Approved;
         employee.EmployeeId = trimmedId;
         await _repository.UpdateAsync(employee);

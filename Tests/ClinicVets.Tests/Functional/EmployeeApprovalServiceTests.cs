@@ -7,7 +7,7 @@ namespace ClinicVets.Tests.Functional;
 public class EmployeeApprovalServiceTests
 {
     [Fact]
-    public async Task ApproveAsync_assigns_id_and_sets_approved()
+    public async Task ApproveAsync_assigns_id_sets_approved_and_applies_final_role()
     {
         var repo = new FakeEmployeeRepository();
         var admin = new Employee
@@ -26,12 +26,13 @@ public class EmployeeApprovalServiceTests
             Email = "hire@x.com",
             Password = "Abcd1234!",
             Role = "Secretary",
+            RequestedRole = "Secretary",
             Status = EmployeeAccountStatusNames.Pending
         };
         await repo.AddAsync(pending);
 
         var sut = new EmployeeApprovalService(repo);
-        var (ok, message) = await sut.ApproveAsync(pending.Id, "4820", admin);
+        var (ok, message) = await sut.ApproveAsync(pending.Id, "4820", "Veterinarian", admin);
 
         Assert.True(ok);
         Assert.Contains("approved", message, StringComparison.OrdinalIgnoreCase);
@@ -39,6 +40,8 @@ public class EmployeeApprovalServiceTests
         Assert.NotNull(updated);
         Assert.Equal(EmployeeAccountStatusNames.Approved, updated.Status);
         Assert.Equal("4820", updated.EmployeeId);
+        Assert.Equal("Veterinarian", updated.Role);
+        Assert.Equal("Secretary", updated.RequestedRole);
     }
 
     [Fact]
@@ -53,12 +56,13 @@ public class EmployeeApprovalServiceTests
             Email = "p@x.com",
             Password = "Abcd1234!",
             Role = "Veterinarian",
+            RequestedRole = "Veterinarian",
             Status = EmployeeAccountStatusNames.Pending
         };
         await repo.AddAsync(pending);
         var sut = new EmployeeApprovalService(repo);
 
-        var (ok, message) = await sut.ApproveAsync(pending.Id, "482", admin);
+        var (ok, message) = await sut.ApproveAsync(pending.Id, "482", "Secretary", admin);
 
         Assert.False(ok);
         Assert.Contains("four", message, StringComparison.OrdinalIgnoreCase);
@@ -85,15 +89,40 @@ public class EmployeeApprovalServiceTests
             Email = "p@x.com",
             Password = "Abcd1234!",
             Role = "Veterinarian",
+            RequestedRole = "Veterinarian",
             Status = EmployeeAccountStatusNames.Pending
         };
         await repo.AddAsync(pending);
         var sut = new EmployeeApprovalService(repo);
 
-        var (ok, message) = await sut.ApproveAsync(pending.Id, "1000", admin);
+        var (ok, message) = await sut.ApproveAsync(pending.Id, "1000", "Secretary", admin);
 
         Assert.False(ok);
         Assert.Contains("already", message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ApproveAsync_fails_when_final_role_invalid()
+    {
+        var repo = new FakeEmployeeRepository();
+        var admin = new Employee { FullName = "A", Email = "a@x.com", Password = "x", Role = "Admin" };
+        await repo.AddAsync(admin);
+        var pending = new Employee
+        {
+            FullName = "Odd",
+            Email = "odd@x.com",
+            Password = "Abcd1234!",
+            Role = "Janitor",
+            RequestedRole = "Janitor",
+            Status = EmployeeAccountStatusNames.Pending
+        };
+        await repo.AddAsync(pending);
+        var sut = new EmployeeApprovalService(repo);
+
+        var (ok, message) = await sut.ApproveAsync(pending.Id, "4821", "Janitor", admin);
+
+        Assert.False(ok);
+        Assert.Contains("Final role", message, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -121,28 +150,5 @@ public class EmployeeApprovalServiceTests
         Assert.NotNull(updated);
         Assert.Equal(EmployeeAccountStatusNames.Rejected, updated.Status);
         Assert.Equal(string.Empty, updated.EmployeeId);
-    }
-
-    [Fact]
-    public async Task ApproveAsync_fails_when_pending_role_is_not_secretary_or_veterinarian()
-    {
-        var repo = new FakeEmployeeRepository();
-        var admin = new Employee { FullName = "A", Email = "a@x.com", Password = "x", Role = "Admin" };
-        await repo.AddAsync(admin);
-        var pending = new Employee
-        {
-            FullName = "Odd",
-            Email = "odd@x.com",
-            Password = "Abcd1234!",
-            Role = "Janitor",
-            Status = EmployeeAccountStatusNames.Pending
-        };
-        await repo.AddAsync(pending);
-        var sut = new EmployeeApprovalService(repo);
-
-        var (ok, message) = await sut.ApproveAsync(pending.Id, "4821", admin);
-
-        Assert.False(ok);
-        Assert.Contains("secretary", message, StringComparison.OrdinalIgnoreCase);
     }
 }
