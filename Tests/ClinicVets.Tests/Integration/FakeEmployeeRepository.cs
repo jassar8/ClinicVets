@@ -1,4 +1,5 @@
 using ClinicVets.Application.Interfaces;
+using ClinicVets.Application.Security;
 using ClinicVets.Core.Entities;
 
 namespace ClinicVets.Tests.Integration;
@@ -14,7 +15,7 @@ public sealed class FakeEmployeeRepository : IEmployeeRepository
     {
         var key = email?.Trim() ?? string.Empty;
         var match = _employees.FirstOrDefault(e =>
-            e.Email.Equals(key, StringComparison.OrdinalIgnoreCase));
+            string.Equals(e.Email?.Trim(), key, StringComparison.OrdinalIgnoreCase));
         return Task.FromResult(match);
     }
 
@@ -24,19 +25,7 @@ public sealed class FakeEmployeeRepository : IEmployeeRepository
         if (raw.Length == 0)
             return Task.FromResult<Employee?>(null);
 
-        if (raw.Contains('@', StringComparison.Ordinal))
-        {
-            var key = raw.ToLowerInvariant();
-            var match = _employees.FirstOrDefault(e =>
-                e.Email.Equals(key, StringComparison.OrdinalIgnoreCase));
-            return Task.FromResult(match);
-        }
-
-        var byAlias = _employees.FirstOrDefault(e =>
-            (!string.IsNullOrWhiteSpace(e.Username) &&
-             e.Username.Equals(raw, StringComparison.OrdinalIgnoreCase)) ||
-            e.Email.Equals(raw, StringComparison.OrdinalIgnoreCase));
-        return Task.FromResult(byAlias);
+        return Task.FromResult(EmployeeLoginLookup.FindEmployee(_employees, raw));
     }
 
     public Task<IReadOnlyList<Employee>> GetAllAsync()

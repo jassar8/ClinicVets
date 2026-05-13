@@ -19,8 +19,11 @@ public class EmployeeAuthenticationService
             return (false, "Sign-in name and password are required.", null);
         }
 
-        var employee = await _employeeRepository.GetByLoginIdentifierAsync(loginIdentifier);
-        if (employee is null || !string.Equals(employee.Password, password.Trim(), StringComparison.Ordinal))
+        var id = loginIdentifier.Trim();
+        var employee = await _employeeRepository.GetByLoginIdentifierAsync(id);
+        var stored = (employee?.Password ?? string.Empty).Trim();
+        var provided = password.Trim();
+        if (employee is null || !string.Equals(stored, provided, StringComparison.Ordinal))
         {
             return (false, "Invalid sign-in name or password.", null);
         }

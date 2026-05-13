@@ -107,4 +107,25 @@ public class EmployeeAuthenticationServiceTests
         Assert.Equal(SystemAccounts.DefaultAdminEmail, userEmployee.Email);
         Assert.Equal(SystemAccounts.DefaultAdminEmail, emailEmployee.Email);
     }
+
+    [Fact]
+    public async Task LoginAsync_succeeds_for_bootstrap_admin_alias_when_username_not_stored()
+    {
+        var repo = new FakeEmployeeRepository();
+        await repo.AddAsync(new Employee
+        {
+            FullName = SystemAccounts.DefaultAdminDisplayName,
+            Email = SystemAccounts.DefaultAdminEmail,
+            Password = SystemAccounts.DefaultAdminPassword,
+            Role = SystemAccounts.DefaultAdminRole,
+            Username = string.Empty
+        });
+        var sut = new EmployeeAuthenticationService(repo);
+
+        var (ok, _, employee) = await sut.LoginAsync("admin", $"  {SystemAccounts.DefaultAdminPassword}  ");
+
+        Assert.True(ok);
+        Assert.NotNull(employee);
+        Assert.Equal(SystemAccounts.DefaultAdminRole, employee.Role);
+    }
 }

@@ -119,7 +119,7 @@ public sealed class DashboardPage : UserControl
             if (!RolePermissions.CanAccessDashboardSection(_employee, section))
                 continue;
 
-            var nav = MakeNavEntry(section, SectionCaption(section), section == DashboardSection.Home);
+            var nav = MakeNavEntry(section, SectionCaption(section), active: false);
             _navPanels[section] = nav;
             navFlow.Controls.Add(nav);
         }
@@ -171,7 +171,11 @@ public sealed class DashboardPage : UserControl
         Load += (_, _) =>
         {
             Relayout();
-            SelectSection(DashboardSection.Home);
+            if (RolePermissions.IsAdministrator(_employee) &&
+                RolePermissions.CanAccessDashboardSection(_employee, DashboardSection.Staff))
+                SelectSection(DashboardSection.Staff);
+            else
+                SelectSection(DashboardSection.Home);
         };
     }
 

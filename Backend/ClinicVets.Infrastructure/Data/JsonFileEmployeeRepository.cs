@@ -10,6 +10,12 @@ namespace ClinicVets.Infrastructure.Data;
 /// </summary>
 public sealed class JsonFileEmployeeRepository : IEmployeeRepository
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        WriteIndented = true,
+        PropertyNameCaseInsensitive = true
+    };
+
     private readonly object _sync = new();
     private readonly string _filePath;
     private List<Employee> _employees;
@@ -33,7 +39,7 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
         lock (_sync)
         {
             var match = _employees.FirstOrDefault(e =>
-                e.Email.Equals(key, StringComparison.OrdinalIgnoreCase));
+                string.Equals(e.Email?.Trim(), key, StringComparison.OrdinalIgnoreCase));
             return Task.FromResult(match);
         }
     }
@@ -46,19 +52,7 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
 
         lock (_sync)
         {
-            if (raw.Contains('@', StringComparison.Ordinal))
-            {
-                var key = raw.ToLowerInvariant();
-                var match = _employees.FirstOrDefault(e =>
-                    e.Email.Equals(key, StringComparison.OrdinalIgnoreCase));
-                return Task.FromResult(match);
-            }
-
-            var matchByAlias = _employees.FirstOrDefault(e =>
-                (!string.IsNullOrWhiteSpace(e.Username) &&
-                 e.Username.Equals(raw, StringComparison.OrdinalIgnoreCase)) ||
-                e.Email.Equals(raw, StringComparison.OrdinalIgnoreCase));
-            return Task.FromResult(matchByAlias);
+            return Task.FromResult(EmployeeLoginLookup.FindEmployee(_employees, raw));
         }
     }
 
@@ -93,10 +87,11 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
                 try
                 {
                     var json = File.ReadAllText(_filePath);
-                    var list = JsonSerializer.Deserialize<List<Employee>>(json);
+                    var list = JsonSerializer.Deserialize<List<Employee>>(json, JsonOptions);
                     if (list is { Count: > 0 })
                     {
                         _employees = list;
+                        RepairBootstrapAdministratorUnlocked();
                         EnsureBootstrapAdminIfMissingUnlocked();
                         SaveUnlocked();
                         return _employees;
@@ -112,6 +107,24 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
             _employees = seed;
             SaveUnlocked();
             return seed;
+        }
+    }
+
+    private void RepairBootstrapAdministratorUnlocked()
+    {
+        foreach (var e in _employees)
+        {
+            if (!string.Equals(e.Email?.Trim(), SystemAccounts.DefaultAdminEmail, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (string.IsNullOrWhiteSpace(e.Username))
+                e.Username = SystemAccounts.DefaultAdminUsername;
+
+            if (!RolePermissions.IsAdministrator(e))
+                e.Role = SystemAccounts.DefaultAdminRole;
+
+            // Published demo credentials for the bootstrap administrator mailbox.
+            e.Password = SystemAccounts.DefaultAdminPassword;
         }
     }
 
@@ -154,7 +167,7 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
 
     private void SaveUnlocked()
     {
-        var json = JsonSerializer.Serialize(_employees, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(_employees, JsonOptions);
         File.WriteAllText(_filePath, json);
     }
 }
