@@ -161,6 +161,22 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
         return Task.CompletedTask;
     }
 
+    public Task<bool> DeleteRejectedEmployeeAsync(Guid id)
+    {
+        lock (_sync)
+        {
+            var idx = _employees.FindIndex(e =>
+                e.Id == id &&
+                string.Equals(e.Status?.Trim(), EmployeeAccountStatusNames.Rejected, StringComparison.OrdinalIgnoreCase));
+            if (idx < 0)
+                return Task.FromResult(false);
+
+            _employees.RemoveAt(idx);
+            SaveUnlocked();
+            return Task.FromResult(true);
+        }
+    }
+
     private List<Employee> LoadOrSeed()
     {
         lock (_sync)

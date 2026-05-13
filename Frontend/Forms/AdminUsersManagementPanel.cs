@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using ClinicVets.Application.Interfaces;
 using ClinicVets.Application.Security;
 using ClinicVets.Application.Services;
@@ -30,7 +31,7 @@ public sealed class AdminUsersManagementPanel : UserControl
     private readonly Panel _toolbar = new() { Dock = DockStyle.Fill, Height = 56, BackColor = UiTheme.CardWhite };
     private readonly Panel _tabBar = new() { Dock = DockStyle.Fill, Height = 44, BackColor = UiTheme.CardWhite };
     private readonly DataGridView _grid = new() { Dock = DockStyle.Fill };
-    private readonly Panel _actionStrip = new() { Dock = DockStyle.Fill, MinimumSize = new Size(0, 108), BackColor = UiTheme.AccentMintWash };
+    private readonly Panel _actionStrip = new() { Dock = DockStyle.Fill, MinimumSize = new Size(0, 132), BackColor = UiTheme.AccentMintWash };
     private readonly Panel _demoStrip = new() { Dock = DockStyle.Fill, Height = 52, BackColor = Color.FromArgb(236, 248, 252) };
 
     private readonly TextBox _search = new();
@@ -47,7 +48,7 @@ public sealed class AdminUsersManagementPanel : UserControl
     private readonly ComboBox _finalRole = new();
     private readonly ModernPrimaryButton _approve = new();
     private readonly ModernDangerButton _reject = new();
-    private readonly FlowLayoutPanel _pendingActions = new();
+    private readonly TableLayoutPanel _approvalRow = new();
 
     private readonly Panel _overlay = new() { Visible = false, BackColor = Color.FromArgb(200, 236, 244, 240) };
     private readonly AdminCreateEmployeePanel _createPanel;
@@ -102,7 +103,7 @@ public sealed class AdminUsersManagementPanel : UserControl
         _root.RowStyles.Add(new RowStyle(SizeType.Absolute, 58F));
         _root.RowStyles.Add(new RowStyle(SizeType.Absolute, 46F));
         _root.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-        _root.RowStyles.Add(new RowStyle(SizeType.Absolute, 118F));
+        _root.RowStyles.Add(new RowStyle(SizeType.Absolute, 148F));
         _root.RowStyles.Add(new RowStyle(SizeType.Absolute, 68F));
         _root.Controls.Add(_statsRow, 0, 0);
         _root.Controls.Add(_toolbar, 0, 1);
@@ -366,10 +367,11 @@ public sealed class AdminUsersManagementPanel : UserControl
             Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point),
             Padding = new Padding(10, 8, 10, 8)
         };
-        _grid.RowTemplate.Height = 40;
+        _grid.RowTemplate.Height = 44;
         _grid.SelectionChanged += (_, _) => SyncActionStripFromSelection();
         _grid.CellFormatting += GridOnCellFormatting;
-        _grid.CellClick += GridOnCellClick;
+        _grid.CellContentClick += GridOnCellContentClick;
+        _grid.CellPainting += GridOnCellPainting;
 
         _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Id", HeaderText = "Id", Visible = false });
         _grid.Columns.Add("FullName", "Full name");
@@ -379,7 +381,21 @@ public sealed class AdminUsersManagementPanel : UserControl
         _grid.Columns.Add("EmployeeId", "Employee ID");
         _grid.Columns.Add("Status", "Status");
         _grid.Columns.Add("Password", "Password (Demo only)");
-        _grid.Columns.Add("Actions", "Actions");
+        _grid.Columns.Add(new DataGridViewButtonColumn
+        {
+            Name = "Actions",
+            HeaderText = "Actions",
+            FlatStyle = FlatStyle.Flat,
+            UseColumnTextForButtonValue = false,
+            AutoSizeMode = DataGridViewAutoSizeColumnMode.None,
+            Width = 108,
+            MinimumWidth = 96,
+            DefaultCellStyle = new DataGridViewCellStyle
+            {
+                Alignment = DataGridViewContentAlignment.MiddleCenter,
+                Padding = new Padding(8, 6, 8, 6)
+            }
+        });
     }
 
     private void GridOnCellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
@@ -420,107 +436,280 @@ public sealed class AdminUsersManagementPanel : UserControl
         }
         else if (col == "Actions")
         {
+            var softDeleteFill = Color.FromArgb(233, 139, 139);
+            var reviewFill = Color.FromArgb(232, 248, 240);
+            var neutralFill = Color.FromArgb(244, 246, 245);
+
             if (IsStatusLiteral(status, EmployeeAccountStatusNames.Pending))
             {
                 e.Value = "Review";
+                e.CellStyle.BackColor = reviewFill;
                 e.CellStyle.ForeColor = UiTheme.PrimaryButton;
-                e.CellStyle.Font = new Font("Segoe UI", 10.5F, FontStyle.Underline, GraphicsUnit.Point);
+                e.CellStyle.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold, GraphicsUnit.Point);
+                e.CellStyle.SelectionBackColor = reviewFill;
+                e.CellStyle.SelectionForeColor = UiTheme.PrimaryButton;
+            }
+            else if (IsStatusLiteral(status, EmployeeAccountStatusNames.Rejected))
+            {
+                e.Value = "Delete";
+                e.CellStyle.BackColor = softDeleteFill;
+                e.CellStyle.ForeColor = Color.White;
+                e.CellStyle.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold, GraphicsUnit.Point);
+                e.CellStyle.SelectionBackColor = softDeleteFill;
+                e.CellStyle.SelectionForeColor = Color.White;
             }
             else
             {
                 e.Value = "—";
+                e.CellStyle.BackColor = neutralFill;
                 e.CellStyle.ForeColor = UiTheme.TextMuted;
-                e.CellStyle.Font = _grid.DefaultCellStyle.Font;
+                e.CellStyle.Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point);
+                e.CellStyle.SelectionBackColor = neutralFill;
+                e.CellStyle.SelectionForeColor = UiTheme.TextMuted;
             }
+
+            if (_grid.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewButtonCell btn)
+                btn.FlatStyle = FlatStyle.Flat;
         }
     }
 
-    private void GridOnCellClick(object? sender, DataGridViewCellEventArgs e)
+    private void GridOnCellPainting(object? sender, DataGridViewCellPaintingEventArgs e)
     {
         if (e.RowIndex < 0 || e.ColumnIndex < 0 || _grid.Columns[e.ColumnIndex].Name != "Actions")
             return;
         var status = _grid.Rows[e.RowIndex].Cells["Status"].Value?.ToString() ?? string.Empty;
-        if (!IsStatusLiteral(status, EmployeeAccountStatusNames.Pending))
+        if (!IsStatusLiteral(status, EmployeeAccountStatusNames.Rejected))
             return;
-        _grid.ClearSelection();
-        _grid.Rows[e.RowIndex].Selected = true;
+
+        e.Handled = true;
+        e.Paint(e.CellBounds, DataGridViewPaintParts.Background | DataGridViewPaintParts.SelectionBackground);
+
+        var g = e.Graphics;
+        if (g is null)
+            return;
+
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        var inset = Rectangle.Inflate(e.CellBounds, -7, -8);
+        if (inset.Width < 2 || inset.Height < 2)
+            return;
+
+        var radius = Math.Min(10, Math.Min(inset.Width, inset.Height) / 2);
+        using var path = UiChrome.CreateRoundRectPath(inset, radius);
+        var fill = Color.FromArgb(233, 139, 139);
+        using (var b = new SolidBrush(fill))
+            g.FillPath(b, path);
+
+        TextRenderer.DrawText(
+            g,
+            "Delete",
+            new Font("Segoe UI", 10.5F, FontStyle.Bold, GraphicsUnit.Point),
+            inset,
+            Color.White,
+            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
+
+        using var line = new Pen(_grid.GridColor, 1);
+        var y = e.CellBounds.Bottom - 1;
+        g.DrawLine(line, e.CellBounds.Left, y, e.CellBounds.Right, y);
+    }
+
+    private async void GridOnCellContentClick(object? sender, DataGridViewCellEventArgs e)
+    {
+        if (e.RowIndex < 0 || e.ColumnIndex < 0 || _grid.Columns[e.ColumnIndex].Name != "Actions")
+            return;
+
+        var status = _grid.Rows[e.RowIndex].Cells["Status"].Value?.ToString() ?? string.Empty;
+        if (IsStatusLiteral(status, EmployeeAccountStatusNames.Pending))
+        {
+            _grid.ClearSelection();
+            _grid.Rows[e.RowIndex].Selected = true;
+            return;
+        }
+
+        if (!IsStatusLiteral(status, EmployeeAccountStatusNames.Rejected))
+            return;
+
+        if (!Guid.TryParse(_grid.Rows[e.RowIndex].Cells["Id"].Value?.ToString(), out var id))
+            return;
+
+        try
+        {
+            await DeleteRejectedRecordAsync(id);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                FindForm(),
+                ex.Message,
+                "ClinicVets",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
+    }
+
+    private async Task DeleteRejectedRecordAsync(Guid id)
+    {
+        if (!RolePermissions.IsAdministrator(_admin))
+        {
+            MessageBox.Show(
+                FindForm(),
+                "Only an administrator can delete rejected employee records.",
+                "ClinicVets",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+            return;
+        }
+
+        var emp = _all.FirstOrDefault(x => x.Id == id);
+        if (emp is null || !IsStatus(emp, EmployeeAccountStatusNames.Rejected))
+            return;
+
+        var confirm = MessageBox.Show(
+            FindForm(),
+            "Are you sure you want to permanently delete this rejected employee record?",
+            "ClinicVets — delete rejected record",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Warning,
+            MessageBoxDefaultButton.Button2);
+        if (confirm != DialogResult.Yes)
+            return;
+
+        var removed = await _repository.DeleteRejectedEmployeeAsync(id);
+        if (!removed)
+        {
+            MessageBox.Show(
+                FindForm(),
+                "This record could not be deleted. It may no longer be rejected or may have already been removed.",
+                "ClinicVets",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+            return;
+        }
+
+        await RefreshAsync();
     }
 
     private void BuildActionStrip()
     {
-        _actionStrip.Padding = new Padding(16, 12, 16, 12);
+        _actionStrip.Padding = new Padding(16, 14, 16, 16);
         _actionStrip.Paint += (_, e) =>
         {
             using var pen = new Pen(UiTheme.CardBorder, 1);
             e.Graphics.DrawLine(pen, 0, 0, _actionStrip.Width, 0);
         };
 
-        var layout = new TableLayoutPanel
+        var outer = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
-            ColumnCount = 2,
-            RowCount = 1,
+            ColumnCount = 1,
+            RowCount = 2,
             BackColor = UiTheme.AccentMintWash
         };
-        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 38F));
-        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 62F));
+        outer.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        outer.RowStyles.Add(new RowStyle(SizeType.Absolute, 72F));
 
         _stripTitle.Dock = DockStyle.Fill;
         _stripTitle.TextAlign = ContentAlignment.TopLeft;
         _stripTitle.Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point);
         _stripTitle.ForeColor = UiTheme.TextDark;
-        _stripTitle.Text = "Select an employee in the table. Pending accounts can be approved here with a unique four-digit Employee ID and final role.";
+        _stripTitle.Margin = new Padding(0, 0, 0, 10);
+        _stripTitle.AutoSize = true;
+        _stripTitle.MaximumSize = new Size(2000, 0);
+        _stripTitle.Text =
+            "Select an employee in the table. Pending accounts can be approved here with a unique four-digit Employee ID and final role.";
 
-        _pendingActions.FlowDirection = FlowDirection.LeftToRight;
-        _pendingActions.WrapContents = true;
-        _pendingActions.AutoSize = true;
-        _pendingActions.Dock = DockStyle.Fill;
-        _pendingActions.BackColor = UiTheme.AccentMintWash;
-        _pendingActions.Padding = new Padding(0, 2, 0, 0);
+        _approvalRow.Dock = DockStyle.Fill;
+        _approvalRow.ColumnCount = 7;
+        _approvalRow.RowCount = 1;
+        _approvalRow.BackColor = UiTheme.AccentMintWash;
+        _approvalRow.Padding = new Padding(0, 4, 0, 4);
+        _approvalRow.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+        _approvalRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 112F));
+        _approvalRow.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+        _approvalRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 216F));
+        _approvalRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 168F));
+        _approvalRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 16F));
+        _approvalRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 168F));
+        _approvalRow.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 
         var idCaption = new Label
         {
             Text = "Employee ID",
             AutoSize = true,
+            Anchor = AnchorStyles.Left,
             ForeColor = UiTheme.TextMuted,
-            Margin = new Padding(0, 10, 8, 0)
+            Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point),
+            TextAlign = ContentAlignment.MiddleLeft,
+            Margin = new Padding(0, 0, 10, 0),
+            BackColor = UiTheme.AccentMintWash
         };
+
         _approveId.MaxLength = 4;
-        _approveId.Width = 88;
-        _approveId.Margin = new Padding(0, 4, 14, 4);
+        _approveId.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+        _approveId.Height = 46;
+        _approveId.MinimumSize = new Size(112, 46);
+        _approveId.Width = 112;
+        _approveId.Margin = new Padding(0, 0, 20, 0);
+        _approveId.Anchor = AnchorStyles.Left;
         _approveId.PlaceholderText = "0000";
+        _approveId.BorderStyle = BorderStyle.None;
+        _approveId.BackColor = UiTheme.InputBackground;
 
         var roleCaption = new Label
         {
             Text = "Final role",
             AutoSize = true,
+            Anchor = AnchorStyles.Left,
             ForeColor = UiTheme.TextMuted,
-            Margin = new Padding(0, 10, 8, 0)
+            Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point),
+            TextAlign = ContentAlignment.MiddleLeft,
+            Margin = new Padding(0, 0, 10, 0),
+            BackColor = UiTheme.AccentMintWash
         };
+
         _finalRole.DropDownStyle = ComboBoxStyle.DropDownList;
-        _finalRole.Width = 150;
-        _finalRole.Margin = new Padding(0, 4, 14, 4);
+        _finalRole.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+        _finalRole.ItemHeight = 38;
+        _finalRole.Height = 46;
+        _finalRole.Width = 200;
+        _finalRole.Margin = new Padding(0, 0, 24, 0);
+        _finalRole.Anchor = AnchorStyles.Left;
         _finalRole.Items.AddRange(new object[] { EmployeeRoleNames.Secretary, EmployeeRoleNames.Veterinarian, "Administrator" });
         UiStyles.ApplyComboInner(_finalRole);
 
+        const int approvalBtnH = 52;
+        const int approvalBtnW = 156;
+        var actionFont = new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point);
+
+        _approve.AccentOverride = Color.FromArgb(32, 138, 118);
         _approve.Text = "Approve";
-        _approve.Margin = new Padding(0, 4, 10, 4);
+        _approve.Font = actionFont;
+        _approve.AutoSize = false;
+        _approve.Width = approvalBtnW;
+        _approve.Height = approvalBtnH;
+        _approve.Margin = new Padding(0, 0, 0, 0);
+        _approve.Anchor = AnchorStyles.Left;
         _approve.Click += async (_, _) => await ApproveSelectedAsync();
 
         _reject.Text = "Reject";
-        _reject.Margin = new Padding(0, 4, 0, 4);
+        _reject.Font = actionFont;
+        _reject.AutoSize = false;
+        _reject.Width = approvalBtnW;
+        _reject.Height = approvalBtnH;
+        _reject.Margin = new Padding(0, 0, 0, 0);
+        _reject.Anchor = AnchorStyles.Left;
         _reject.Click += async (_, _) => await RejectSelectedAsync();
 
-        _pendingActions.Controls.Add(idCaption);
-        _pendingActions.Controls.Add(_approveId);
-        _pendingActions.Controls.Add(roleCaption);
-        _pendingActions.Controls.Add(_finalRole);
-        _pendingActions.Controls.Add(_approve);
-        _pendingActions.Controls.Add(_reject);
+        _approvalRow.Controls.Add(idCaption, 0, 0);
+        _approvalRow.Controls.Add(_approveId, 1, 0);
+        _approvalRow.Controls.Add(roleCaption, 2, 0);
+        _approvalRow.Controls.Add(_finalRole, 3, 0);
+        _approvalRow.Controls.Add(_approve, 4, 0);
+        _approvalRow.Controls.Add(new Panel { Width = 16, BackColor = UiTheme.AccentMintWash, Dock = DockStyle.Fill }, 5, 0);
+        _approvalRow.Controls.Add(_reject, 6, 0);
 
-        layout.Controls.Add(_stripTitle, 0, 0);
-        layout.Controls.Add(_pendingActions, 1, 0);
-        _actionStrip.Controls.Add(layout);
+        outer.Controls.Add(_stripTitle, 0, 0);
+        outer.Controls.Add(_approvalRow, 0, 1);
+        _actionStrip.Controls.Add(outer);
 
         SetPendingControlsVisible(false);
     }
@@ -693,7 +882,7 @@ public sealed class AdminUsersManagementPanel : UserControl
 
     private void SetPendingControlsVisible(bool visible)
     {
-        foreach (Control c in _pendingActions.Controls)
+        foreach (Control c in _approvalRow.Controls)
             c.Visible = visible;
     }
 

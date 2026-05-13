@@ -12,4 +12,7 @@ public interface IEmployeeRepository
     Task AddAsync(Employee employee);
     Task UpdateAsync(Employee employee);
     Task RemoveRejectedApplicationsForEmailAsync(string normalizedEmail);
+
+    /// <summary>Permanently removes a rejected registration row. Returns false if not found or status is not rejected.</summary>
+    Task<bool> DeleteRejectedEmployeeAsync(Guid id);
 }

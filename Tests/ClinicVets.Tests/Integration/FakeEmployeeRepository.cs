@@ -77,4 +77,16 @@ public sealed class FakeEmployeeRepository : IEmployeeRepository
             string.Equals(e.Status?.Trim(), EmployeeAccountStatusNames.Rejected, StringComparison.OrdinalIgnoreCase));
         return Task.CompletedTask;
     }
+
+    public Task<bool> DeleteRejectedEmployeeAsync(Guid id)
+    {
+        var idx = _employees.FindIndex(e =>
+            e.Id == id &&
+            string.Equals(e.Status?.Trim(), EmployeeAccountStatusNames.Rejected, StringComparison.OrdinalIgnoreCase));
+        if (idx < 0)
+            return Task.FromResult(false);
+
+        _employees.RemoveAt(idx);
+        return Task.FromResult(true);
+    }
 }
