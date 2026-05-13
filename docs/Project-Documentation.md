@@ -99,12 +99,13 @@ All business logic runs in **C#** (no Python, Node.js, or web-server backend). T
 
 | Area | Path | Purpose |
 |------|------|--------|
-| Domain (models) | `Backend/ClinicVets.Core/Models/` | `Employee` and future domain types |
-| Application (services) | `Backend/ClinicVets.Application/Services/`, `Interfaces/`, `Validation/` | Business logic, contracts, and input rules |
-| Infrastructure (data) | `Backend/ClinicVets.Infrastructure/Data/` | Local JSON persistence (`JsonFileEmployeeRepository`) |
-| Desktop (UI) | `Frontend/Forms/`, `Frontend/UI/`, `Frontend/UserControls/` | WinForms screens, theme, and shared controls |
+| Domain (models) | `src/Backend/ClinicVets.Core/Models/` | `Employee` and future domain types |
+| Application (services) | `src/Backend/ClinicVets.Application/Services/`, `Interfaces/`, `Validation/` | Business logic, contracts, and input rules |
+| Infrastructure (data) | `src/Backend/ClinicVets.Infrastructure/Data/` | Local JSON persistence (`JsonFileEmployeeRepository`) |
+| Desktop (UI) | `src/Frontend/Forms/`, `src/Frontend/UI/`, `src/Frontend/UserControls/` | WinForms screens, theme, and shared controls |
 | Tests | `Tests/ClinicVets.Tests/` (`Functional/`, `Integration/`, `GUI/`) | Automated tests (xUnit) |
-| Branding source | `assets/branding/` | Logo PNG used to regenerate `Frontend/Assets/ClinicVets.ico` |
+| Branding source | `assets/branding/` | Logo PNG; multi-size `.ico` is built to `assets/app/ClinicVets.ico` |
+| Persistence overview | `database/README.md` | Where runtime JSON files live |
 | Published app | `PublishedApp/` | Release output after `publish-win-x64.ps1` (run `ClinicVets.exe` here) |
 
 ## Running As Standalone Windows EXE (Demo)

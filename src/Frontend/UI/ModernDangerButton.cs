@@ -2,18 +2,18 @@ using System.Drawing.Drawing2D;
 
 namespace ClinicVets.Desktop.UI;
 
-/// <summary>Owner-drawn primary action: deep teal, white label, rounded corners, hover/press/disabled states.</summary>
-public sealed class ModernPrimaryButton : Button
+/// <summary>Destructive actions: soft red fill, white label, rounded corners.</summary>
+public sealed class ModernDangerButton : Button
 {
     private bool _hover;
     private bool _pressed;
 
-    public ModernPrimaryButton()
+    public ModernDangerButton()
     {
         FlatStyle = FlatStyle.Flat;
         FlatAppearance.BorderSize = 0;
         ForeColor = UiTheme.PrimaryButtonText;
-        Font = UiStyles.PrimaryButtonFont;
+        Font = UiStyles.DangerButtonFont;
         Cursor = Cursors.Hand;
         Height = UiTheme.PrimaryButtonHeight;
         TabStop = true;
@@ -98,17 +98,17 @@ public sealed class ModernPrimaryButton : Button
         }
         else if (_pressed)
         {
-            fill = UiTheme.PrimaryButtonPressed;
+            fill = UiTheme.DangerButtonPressed;
             textColor = UiTheme.PrimaryButtonText;
         }
         else if (_hover)
         {
-            fill = UiTheme.PrimaryButtonHover;
+            fill = UiTheme.DangerButtonHover;
             textColor = UiTheme.PrimaryButtonText;
         }
         else
         {
-            fill = UiTheme.PrimaryButton;
+            fill = UiTheme.DangerButton;
             textColor = UiTheme.PrimaryButtonText;
         }
 
@@ -120,15 +120,17 @@ public sealed class ModernPrimaryButton : Button
         {
             Alignment = StringAlignment.Center,
             LineAlignment = StringAlignment.Center,
-            Trimming = StringTrimming.EllipsisCharacter
+            Trimming = StringTrimming.EllipsisCharacter,
+            FormatFlags = StringFormatFlags.NoWrap
         };
         using var brush = new SolidBrush(textColor);
-        g.DrawString(Text, Font, brush, ClientRectangle, format);
+        var textRect = ClientRectangle;
+        textRect.Inflate(-14, -8);
+        g.DrawString(Text, Font, brush, textRect, format);
         g.ResetClip();
     }
 
     protected override void OnPaintBackground(PaintEventArgs pevent)
     {
-        // Fully custom chrome; avoid default button chrome/borders.
     }
 }

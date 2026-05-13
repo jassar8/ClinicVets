@@ -1,19 +1,22 @@
+using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 
 namespace ClinicVets.Desktop.UI;
 
-/// <summary>Destructive actions: soft red fill, white label, rounded corners.</summary>
-public sealed class ModernDangerButton : Button
+/// <summary>Owner-drawn primary action: deep teal, white label, rounded corners, hover/press/disabled states.</summary>
+public sealed class ModernPrimaryButton : Button
 {
     private bool _hover;
     private bool _pressed;
+    private Color? _accentOverride;
 
-    public ModernDangerButton()
+    public ModernPrimaryButton()
     {
         FlatStyle = FlatStyle.Flat;
         FlatAppearance.BorderSize = 0;
         ForeColor = UiTheme.PrimaryButtonText;
-        Font = UiStyles.DangerButtonFont;
+        Font = UiStyles.PrimaryButtonFont;
         Cursor = Cursors.Hand;
         Height = UiTheme.PrimaryButtonHeight;
         TabStop = true;
@@ -37,6 +40,21 @@ public sealed class ModernDangerButton : Button
             _hover = false;
             Invalidate();
         };
+    }
+
+    /// <summary>When set, replaces the default primary fill and derives hover/press shades for this button only.</summary>
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public Color? AccentOverride
+    {
+        get => _accentOverride;
+        set
+        {
+            if (_accentOverride == value)
+                return;
+            _accentOverride = value;
+            Invalidate();
+        }
     }
 
     protected override void OnEnabledChanged(EventArgs e)
@@ -78,6 +96,13 @@ public sealed class ModernDangerButton : Button
         Invalidate();
     }
 
+    private static Color Shift(Color c, int delta) =>
+        Color.FromArgb(
+            c.A,
+            Math.Clamp(c.R + delta, 0, 255),
+            Math.Clamp(c.G + delta, 0, 255),
+            Math.Clamp(c.B + delta, 0, 255));
+
     protected override void OnPaint(PaintEventArgs e)
     {
         var g = e.Graphics;
@@ -96,19 +121,37 @@ public sealed class ModernDangerButton : Button
             fill = UiTheme.ButtonDisabledFill;
             textColor = UiTheme.ButtonDisabledText;
         }
+        else if (AccentOverride is Color accent)
+        {
+            if (_pressed)
+            {
+                fill = Shift(accent, -22);
+                textColor = UiTheme.PrimaryButtonText;
+            }
+            else if (_hover)
+            {
+                fill = Shift(accent, 16);
+                textColor = UiTheme.PrimaryButtonText;
+            }
+            else
+            {
+                fill = accent;
+                textColor = UiTheme.PrimaryButtonText;
+            }
+        }
         else if (_pressed)
         {
-            fill = UiTheme.DangerButtonPressed;
+            fill = UiTheme.PrimaryButtonPressed;
             textColor = UiTheme.PrimaryButtonText;
         }
         else if (_hover)
         {
-            fill = UiTheme.DangerButtonHover;
+            fill = UiTheme.PrimaryButtonHover;
             textColor = UiTheme.PrimaryButtonText;
         }
         else
         {
-            fill = UiTheme.DangerButton;
+            fill = UiTheme.PrimaryButton;
             textColor = UiTheme.PrimaryButtonText;
         }
 
@@ -120,14 +163,18 @@ public sealed class ModernDangerButton : Button
         {
             Alignment = StringAlignment.Center,
             LineAlignment = StringAlignment.Center,
-            Trimming = StringTrimming.EllipsisCharacter
+            Trimming = StringTrimming.EllipsisCharacter,
+            FormatFlags = StringFormatFlags.NoWrap
         };
         using var brush = new SolidBrush(textColor);
-        g.DrawString(Text, Font, brush, ClientRectangle, format);
+        var textRect = ClientRectangle;
+        textRect.Inflate(-14, -8);
+        g.DrawString(Text, Font, brush, textRect, format);
         g.ResetClip();
     }
 
     protected override void OnPaintBackground(PaintEventArgs pevent)
     {
+        // Fully custom chrome; avoid default button chrome/borders.
     }
 }

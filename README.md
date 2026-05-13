@@ -6,18 +6,21 @@ Veterinary clinic management — **Windows desktop** app (.NET 9, WinForms).
 
 | Area | Folder |
 |------|--------|
-| **Frontend** (WinForms UI) | `Frontend/` — `Forms/`, `UI/`, `UserControls/`, `Assets/` |
-| **Backend** (logic + data) | `Backend/` — `ClinicVets.Core`, `ClinicVets.Application`, `ClinicVets.Infrastructure` |
+| **Frontend** (WinForms UI) | `src/Frontend/` — `Forms/`, `UI/`, `UserControls/` |
+| **Backend** (logic + data) | `src/Backend/` — `ClinicVets.Core`, `ClinicVets.Application`, `ClinicVets.Infrastructure` |
 | **Tests** | `Tests/ClinicVets.Tests/` — `Functional/`, `Integration/`, `GUI/` |
-| **Documentation** | `Documentation/` — charter, scripts |
+| **Documentation** | `docs/` — charter, scripts |
+| **Shared assets** | `assets/` — branding (`branding/`), app icon (`app/`) |
+| **Persistence notes** | `database/README.md` — where JSON data is stored at runtime |
+| **Tooling** | `tooling/BuildIcon` — optional dev utility to rebuild the `.ico` |
 | **Published EXE** | `PublishedApp/ClinicVets.exe` (created by the publish script) |
 
 ## Run from source
 
-Open `clinicVets.sln` in Visual Studio and set **ClinicVets.Desktop** as startup, or from the repo root:
+Open `ClinicVets.sln` in Visual Studio and set **ClinicVets.Desktop** as startup, or from the repo root:
 
 ```powershell
-dotnet run --project .\Frontend\ClinicVets.Desktop.csproj
+dotnet run --project .\src\Frontend\ClinicVets.Desktop.csproj
 ```
 
 ## Build the standalone Windows EXE
@@ -31,9 +34,9 @@ Then run **`PublishedApp\ClinicVets.exe`** (keep the whole `PublishedApp` folder
 ## Desktop shortcut
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\Documentation\Scripts\Update-ClinicVets-DesktopShortcut.ps1 -ExePath .\PublishedApp\ClinicVets.exe
+powershell -ExecutionPolicy Bypass -File .\docs\Scripts\Update-ClinicVets-DesktopShortcut.ps1 -ExePath .\PublishedApp\ClinicVets.exe
 ```
 
 ## More detail
 
-See [Documentation/Project-Documentation.md](Documentation/Project-Documentation.md) for the full project charter, architecture notes, and data paths.
+See [docs/Project-Documentation.md](docs/Project-Documentation.md) for the full project charter, architecture notes, and data paths.

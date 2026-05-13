@@ -20,9 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Backend\ClinicVets.Application\ClinicVets.Application.csproj" />
-    <ProjectReference Include="..\..\Backend\ClinicVets.Core\ClinicVets.Core.csproj" />
-    <ProjectReference Include="..\..\Backend\ClinicVets.Infrastructure\ClinicVets.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Backend\ClinicVets.Application\ClinicVets.Application.csproj" />
+    <ProjectReference Include="..\..\src\Backend\ClinicVets.Core\ClinicVets.Core.csproj" />
+    <ProjectReference Include="..\..\src\Backend\ClinicVets.Infrastructure\ClinicVets.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

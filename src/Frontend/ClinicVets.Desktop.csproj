@@ -10,7 +10,7 @@
     <RootNamespace>ClinicVets.Desktop</RootNamespace>
     <ApplicationTitle>ClinicVets</ApplicationTitle>
     <!-- Multi-size ICO under this project so Win32 resources and publish apphost embed the EXE/shortcut icon reliably. -->
-    <ApplicationIcon>Assets\ClinicVets.ico</ApplicationIcon>
+    <ApplicationIcon>..\..\assets\app\ClinicVets.ico</ApplicationIcon>
     <AssemblyTitle>ClinicVets</AssemblyTitle>
     <Description>Veterinary clinic management (desktop)</Description>
     <Product>ClinicVets</Product>
@@ -22,10 +22,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\ClinicVets.ico">
+    <EmbeddedResource Include="..\..\assets\app\ClinicVets.ico">
       <LogicalName>ClinicVets.app.ico</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Assets\ClinicVetsLogo.png">
+    <EmbeddedResource Include="..\..\assets\branding\ClinicVetsLogo.png">
       <LogicalName>ClinicVets.logo.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>

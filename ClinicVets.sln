@@ -2,21 +2,21 @@
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{A2000001-0001-0001-0001-000000000004}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A2000001-0001-0001-0001-000000000004}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{1AE8ACA6-933B-BF2A-3671-3E2EAC007D16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicVets.Core", "Backend\ClinicVets.Core\ClinicVets.Core.csproj", "{5BCF51A0-E131-4F19-A563-CE893440D519}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicVets.Core", "src\Backend\ClinicVets.Core\ClinicVets.Core.csproj", "{5BCF51A0-E131-4F19-A563-CE893440D519}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicVets.Application", "Backend\ClinicVets.Application\ClinicVets.Application.csproj", "{B7B40E62-5F1A-46E2-A23D-CD718EDDB6C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicVets.Application", "src\Backend\ClinicVets.Application\ClinicVets.Application.csproj", "{B7B40E62-5F1A-46E2-A23D-CD718EDDB6C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicVets.Infrastructure", "Backend\ClinicVets.Infrastructure\ClinicVets.Infrastructure.csproj", "{9786FC97-C2D1-4CB8-9236-9C4F07742D83}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicVets.Infrastructure", "src\Backend\ClinicVets.Infrastructure\ClinicVets.Infrastructure.csproj", "{9786FC97-C2D1-4CB8-9236-9C4F07742D83}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{CE609670-85B9-0D16-FB54-ED063D5D8A6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicVets.Desktop", "Frontend\ClinicVets.Desktop.csproj", "{D444B3C9-EFAF-4CA2-91F4-DE1E0FA3AF2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicVets.Desktop", "src\Frontend\ClinicVets.Desktop.csproj", "{D444B3C9-EFAF-4CA2-91F4-DE1E0FA3AF2B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicVets.Tests", "Tests\ClinicVets.Tests\ClinicVets.Tests.csproj", "{959BD9DC-FA6D-481C-ADFF-B8690A51BEBC}"
 EndProject

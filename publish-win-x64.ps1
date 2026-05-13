@@ -9,7 +9,7 @@ Write-Host "Publishing ClinicVets (WinForms desktop) for Windows x64..." -Foregr
 
 Get-Process | Where-Object { $_.ProcessName -like '*ClinicVets*' } | Stop-Process -Force -ErrorAction SilentlyContinue
 
-dotnet publish .\Frontend\ClinicVets.Desktop.csproj `
+dotnet publish .\src\Frontend\ClinicVets.Desktop.csproj `
     -c $Configuration `
     -r win-x64 `
     --self-contained true `
