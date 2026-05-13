@@ -502,7 +502,7 @@ public sealed class AdminUsersManagementPanel : UserControl
         TextRenderer.DrawText(
             g,
             "Delete",
-            new Font("Segoe UI", 10.5F, FontStyle.Bold, GraphicsUnit.Point),
+            e.CellStyle.Font,
             inset,
             Color.White,
             TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
