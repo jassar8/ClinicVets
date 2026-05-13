@@ -1,4 +1,4 @@
-namespace ClinicVets.Desktop.Forms;
+namespace ClinicVets.Application.Shell;
 
 /// <summary>Primary navigation destinations in the unified clinic shell.</summary>
 public enum ClinicShellNavKind

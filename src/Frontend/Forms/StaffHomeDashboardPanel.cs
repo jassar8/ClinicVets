@@ -2,6 +2,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using ClinicVets.Application.Security;
 using ClinicVets.Application.Services;
+using ClinicVets.Application.Shell;
 using ClinicVets.Core.Entities;
 using ClinicVets.Desktop.UI;
 

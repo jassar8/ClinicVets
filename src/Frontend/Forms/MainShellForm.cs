@@ -1,9 +1,9 @@
 using ClinicVets.Application.Interfaces;
 using ClinicVets.Application.Services;
+using ClinicVets.Application.Shell;
 using ClinicVets.Core.Entities;
-using ClinicVets.Desktop;
-using ClinicVets.Desktop.Demo;
 using ClinicVets.Desktop.UI;
+using ClinicVets.Infrastructure.Demo;
 
 namespace ClinicVets.Desktop.Forms;
 

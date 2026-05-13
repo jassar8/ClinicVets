@@ -1,6 +1,6 @@
-namespace ClinicVets.Desktop;
+namespace ClinicVets.Application.Shell;
 
-/// <summary>Compile-time switches for the WinForms host. Change here before a final release build.</summary>
+/// <summary>Compile-time switches for desktop hosts (WPF / WinForms). Change before a final release build.</summary>
 public static class DesktopBuildOptions
 {
     /// <summary>

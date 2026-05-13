@@ -22,10 +22,13 @@ public class RolePermissionsCustomerSectionsTests
     [InlineData(EmployeeRole.Secretary, DashboardSection.CustomerAnimals, true)]
     [InlineData(EmployeeRole.Veterinarian, DashboardSection.CustomerRegistration, false)]
     [InlineData(EmployeeRole.Veterinarian, DashboardSection.CustomerSearch, false)]
-    [InlineData(EmployeeRole.Veterinarian, DashboardSection.CustomerAnimals, false)]
+    [InlineData(EmployeeRole.Veterinarian, DashboardSection.CustomerAnimals, true)]
+    [InlineData(EmployeeRole.Veterinarian, DashboardSection.Visits, true)]
     [InlineData(EmployeeRole.Veterinarian, DashboardSection.Treatments, true)]
-    [InlineData(EmployeeRole.Veterinarian, DashboardSection.Settings, true)]
-    [InlineData(EmployeeRole.Secretary, DashboardSection.Treatments, true)]
+    [InlineData(EmployeeRole.Veterinarian, DashboardSection.Settings, false)]
+    [InlineData(EmployeeRole.Secretary, DashboardSection.Visits, false)]
+    [InlineData(EmployeeRole.Secretary, DashboardSection.Treatments, false)]
+    [InlineData(EmployeeRole.Secretary, DashboardSection.Settings, false)]
     public void Dashboard_sections_follow_role_rules(EmployeeRole role, DashboardSection section, bool allowed)
     {
         var e = Emp(role);

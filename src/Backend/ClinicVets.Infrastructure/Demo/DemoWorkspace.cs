@@ -4,11 +4,11 @@ using ClinicVets.Application.Services;
 using ClinicVets.Core.Entities;
 using ClinicVets.Infrastructure.Data;
 
-namespace ClinicVets.Desktop.Demo;
+namespace ClinicVets.Infrastructure.Demo;
 
 /// <summary>Seeds in-memory customers, animals, employees, and the Demo Administrator for UI walkthroughs.</summary>
 /// <remarks>No static fields that execute on type load — all work happens in <see cref="TryInitializeDemoData"/>.</remarks>
-internal static class DemoWorkspace
+public static class DemoWorkspace
 {
     /// <summary>Builds demo repositories and the Demo Admin in memory. Safe if no JSON or DB exists.</summary>
     public static bool TryInitializeDemoData(
@@ -40,7 +40,6 @@ internal static class DemoWorkspace
         out CustomerDirectoryService customers,
         out Employee demoAdmin)
     {
-        // Stable id — must be a valid GUID (hex digits only; do not embed letters like DEMO in the hex block).
         var demoAdminId = new Guid("00000000-0000-4000-8000-0000000000D1");
 
         demoAdmin = new Employee

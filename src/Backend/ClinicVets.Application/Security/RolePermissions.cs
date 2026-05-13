@@ -26,16 +26,16 @@ public static class RolePermissions
         return section switch
         {
             DashboardSection.Home => true,
-            DashboardSection.Visits => role is EmployeeRole.Secretary or EmployeeRole.Veterinarian,
+            DashboardSection.Visits => role == EmployeeRole.Veterinarian,
             DashboardSection.Patients => role == EmployeeRole.Veterinarian,
             DashboardSection.Billing => role == EmployeeRole.Secretary,
             DashboardSection.Staff => false,
             DashboardSection.PendingEmployees => false,
             DashboardSection.CustomerRegistration => role == EmployeeRole.Secretary,
             DashboardSection.CustomerSearch => role == EmployeeRole.Secretary,
-            DashboardSection.CustomerAnimals => role == EmployeeRole.Secretary,
-            DashboardSection.Treatments => role is EmployeeRole.Secretary or EmployeeRole.Veterinarian or EmployeeRole.Admin,
-            DashboardSection.Settings => true,
+            DashboardSection.CustomerAnimals => role is EmployeeRole.Secretary or EmployeeRole.Veterinarian,
+            DashboardSection.Treatments => role == EmployeeRole.Veterinarian,
+            DashboardSection.Settings => role == EmployeeRole.Admin,
             _ => false
         };
     }

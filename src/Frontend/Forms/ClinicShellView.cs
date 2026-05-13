@@ -3,6 +3,7 @@ using System.Drawing.Drawing2D;
 using ClinicVets.Application.Interfaces;
 using ClinicVets.Application.Security;
 using ClinicVets.Application.Services;
+using ClinicVets.Application.Shell;
 using ClinicVets.Core;
 using ClinicVets.Core.Entities;
 using ClinicVets.Desktop.UI;
@@ -35,6 +36,12 @@ public sealed class ClinicShellView : UserControl
     private AdminSidebarNavItem? _navPending;
     private StaffHomeDashboardPanel? _homePanel;
     private readonly System.Windows.Forms.Timer _clockTimer = new() { Interval = 30_000 };
+
+    private ComboBox? _demoRoleCombo;
+    private bool _demoRoleComboInit;
+    private Label? _profileNameLabel;
+    private Label? _profileRoleLabel;
+    private Panel? _profileAvatar;
 
     public ClinicShellView(
         Employee employee,
@@ -80,6 +87,7 @@ public sealed class ClinicShellView : UserControl
 
         Load += async (_, _) =>
         {
+            InitDemoRoleSwitcherFromShell();
             UpdateClock();
             Navigate(ClinicShellNavKind.Dashboard);
             await RefreshPendingBadgeAsync();
@@ -210,7 +218,7 @@ public sealed class ClinicShellView : UserControl
             BackColor = UiTheme.ContentCanvas
         };
         if (_isQuickAccessDemo)
-            col.RowStyles.Add(new RowStyle(SizeType.Absolute, 36F));
+            col.RowStyles.Add(new RowStyle(SizeType.Absolute, DesktopBuildOptions.EnableDemoMode ? 54F : 36F));
         col.RowStyles.Add(new RowStyle(SizeType.Absolute, 104F));
         col.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 
@@ -219,22 +227,67 @@ public sealed class ClinicShellView : UserControl
 
         if (_isQuickAccessDemo)
         {
-            var demoStrip = new Panel
+            var demoStrip = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 BackColor = UiTheme.WarningBackground,
-                Padding = new Padding(16, 0, 16, 0)
+                Padding = new Padding(14, 4, 14, 4),
+                ColumnCount = 1,
+                RowCount = DesktopBuildOptions.EnableDemoMode ? 2 : 1
             };
-            demoStrip.Controls.Add(new Label
+            demoStrip.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            if (DesktopBuildOptions.EnableDemoMode)
+                demoStrip.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+            demoStrip.Controls.Add(
+                new Label
+                {
+                    Text = "Demo Mode — not real login · in-memory data only",
+                    Dock = DockStyle.Fill,
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    ForeColor = UiTheme.WarningText,
+                    Font = new Font("Segoe UI", 9.5F, FontStyle.Bold, GraphicsUnit.Point),
+                    BackColor = UiTheme.WarningBackground,
+                    AutoSize = true
+                },
+                0,
+                0);
+
+            if (DesktopBuildOptions.EnableDemoMode)
             {
-                Text = "Demo Mode — not real login · sample in-memory data only",
-                Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.MiddleLeft,
-                ForeColor = UiTheme.WarningText,
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point),
-                BackColor = UiTheme.WarningBackground,
-                AutoSize = false
-            });
+                var roleRow = new FlowLayoutPanel
+                {
+                    Dock = DockStyle.Fill,
+                    FlowDirection = FlowDirection.LeftToRight,
+                    WrapContents = false,
+                    AutoSize = true,
+                    BackColor = UiTheme.WarningBackground,
+                    Padding = new Padding(0, 2, 0, 0)
+                };
+                roleRow.Controls.Add(
+                    new Label
+                    {
+                        Text = "Demo role:",
+                        AutoSize = true,
+                        Margin = new Padding(0, 6, 8, 0),
+                        ForeColor = UiTheme.WarningText,
+                        Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point),
+                        BackColor = UiTheme.WarningBackground
+                    });
+                _demoRoleCombo = new ComboBox
+                {
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Width = 168,
+                    Margin = new Padding(0, 2, 0, 0),
+                    Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point),
+                    FlatStyle = FlatStyle.Flat
+                };
+                _demoRoleCombo.Items.AddRange(new object[] { "Administrator", "Secretary", "Veterinarian" });
+                _demoRoleCombo.SelectedIndexChanged += OnDemoRoleComboChanged;
+                roleRow.Controls.Add(_demoRoleCombo);
+                demoStrip.Controls.Add(roleRow, 0, 1);
+            }
+
             col.Controls.Add(demoStrip, 0, 0);
         }
 
@@ -303,35 +356,36 @@ public sealed class ClinicShellView : UserControl
             BackColor = Color.Transparent
         };
 
-        var avatar = new Panel
+        _profileAvatar = new Panel
         {
             Size = new Size(44, 44),
             Location = new Point(0, 6),
             BackColor = UiTheme.AccentMintSoft
         };
-        avatar.Paint += (_, e) =>
+        _profileAvatar.Paint += (_, e) =>
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             var letter = string.IsNullOrWhiteSpace(_employee.Username)
                 ? (_employee.FullName.Length > 0 ? _employee.FullName[0].ToString() : "?")
                 : _employee.Username.Trim()[0].ToString().ToUpperInvariant();
-            using var path = UiChrome.CreateRoundRectPath(new Rectangle(0, 0, avatar.Width - 1, avatar.Height - 1), 22);
+            using var path = UiChrome.CreateRoundRectPath(new Rectangle(0, 0, _profileAvatar.Width - 1, _profileAvatar.Height - 1), 22);
             using (var b = new SolidBrush(UiTheme.PrimaryButton))
                 e.Graphics.FillPath(b, path);
             TextRenderer.DrawText(
                 e.Graphics,
                 letter,
                 new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point),
-                avatar.ClientRectangle,
+                _profileAvatar.ClientRectangle,
                 Color.White,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
         };
 
-        var roleText = EmployeeRoleNames.TryParse(_employee.Role, out var pr)
+        var eff = DemoModeSession.GetEffectiveEmployee(_employee);
+        var roleText = EmployeeRoleNames.TryParse(eff.Role, out var pr)
             ? (pr == EmployeeRole.Admin ? "Administrator" : EmployeeRoleNames.ToStoredString(pr))
-            : _employee.Role;
+            : eff.Role;
 
-        var name = new Label
+        _profileNameLabel = new Label
         {
             Text = string.IsNullOrWhiteSpace(_employee.Username) ? _employee.FullName : _employee.Username,
             Font = new Font("Segoe UI", 11.5F, FontStyle.Bold, GraphicsUnit.Point),
@@ -340,7 +394,7 @@ public sealed class ClinicShellView : UserControl
             Location = new Point(52, 6),
             MaximumSize = new Size(170, 0)
         };
-        var role = new Label
+        _profileRoleLabel = new Label
         {
             Text = roleText,
             Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point),
@@ -365,11 +419,95 @@ public sealed class ClinicShellView : UserControl
         menu.Items.Add("Sign out", null, (_, _) => _shell.NavigateToLogin());
         menuBtn.Click += (_, _) => menu.Show(menuBtn, new Point(0, menuBtn.Height));
 
-        wrap.Controls.Add(avatar);
-        wrap.Controls.Add(name);
-        wrap.Controls.Add(role);
+        wrap.Controls.Add(_profileAvatar);
+        wrap.Controls.Add(_profileNameLabel);
+        wrap.Controls.Add(_profileRoleLabel);
         wrap.Controls.Add(menuBtn);
         return wrap;
+    }
+
+    private void InitDemoRoleSwitcherFromShell()
+    {
+        if (!_isQuickAccessDemo || !DesktopBuildOptions.EnableDemoMode || _demoRoleCombo is null)
+            return;
+        _demoRoleComboInit = true;
+        _demoRoleCombo.SelectedIndex = 0;
+        DemoModeSession.SetSimulatedRole(EmployeeRole.Admin);
+        _demoRoleComboInit = false;
+        ApplyDemoNavVisibility();
+    }
+
+    private void OnDemoRoleComboChanged(object? sender, EventArgs e)
+    {
+        if (!_isQuickAccessDemo || _demoRoleComboInit || _demoRoleCombo is null)
+            return;
+
+        var role = _demoRoleCombo.SelectedIndex switch
+        {
+            0 => EmployeeRole.Admin,
+            1 => EmployeeRole.Secretary,
+            _ => EmployeeRole.Veterinarian
+        };
+        DemoModeSession.SetSimulatedRole(role);
+        ApplyDemoNavVisibility();
+        ClearRoleDependentPages();
+
+        ClinicShellNavKind target = ClinicShellNavKind.Dashboard;
+        foreach (var kv in _navItems)
+        {
+            if (!kv.Value.IsActive)
+                continue;
+            target = kv.Key;
+            break;
+        }
+
+        if (!ShellNavPermissions.CanAccess(_employee, target))
+            Navigate(ClinicShellNavKind.Dashboard);
+        else
+            Navigate(target);
+
+        RefreshProfileLabels();
+        _profileAvatar?.Invalidate();
+        _ = RefreshPendingBadgeAsync();
+    }
+
+    private void ApplyDemoNavVisibility()
+    {
+        if (!_isQuickAccessDemo || !DesktopBuildOptions.EnableDemoMode)
+            return;
+        foreach (var kv in _navItems)
+            kv.Value.Visible = ShellNavPermissions.CanAccess(_employee, kv.Key);
+    }
+
+    private void ClearRoleDependentPages()
+    {
+        foreach (var c in _lazyPages.Values)
+            c.Dispose();
+        _lazyPages.Clear();
+
+        if (_usersHub is not null)
+        {
+            _usersHub.StaffDirectoryChanged -= OnUsersHubStaffDirectoryChanged;
+            _usersHub.Dispose();
+            _usersHub = null;
+        }
+
+        _homePanel?.Dispose();
+        _homePanel = null;
+    }
+
+    private async void OnUsersHubStaffDirectoryChanged(object? sender, EventArgs e) =>
+        await RefreshPendingBadgeAsync();
+
+    private void RefreshProfileLabels()
+    {
+        if (_profileRoleLabel is null)
+            return;
+        var eff = DemoModeSession.GetEffectiveEmployee(_employee);
+        var roleText = EmployeeRoleNames.TryParse(eff.Role, out var pr)
+            ? (pr == EmployeeRole.Admin ? "Administrator" : EmployeeRoleNames.ToStoredString(pr))
+            : eff.Role;
+        _profileRoleLabel.Text = roleText;
     }
 
     private void Navigate(ClinicShellNavKind kind)
@@ -394,6 +532,7 @@ public sealed class ClinicShellView : UserControl
 
     private Control ResolvePage(ClinicShellNavKind kind)
     {
+        var eff = DemoModeSession.GetEffectiveEmployee(_employee);
         switch (kind)
         {
             case ClinicShellNavKind.Dashboard:
@@ -402,7 +541,7 @@ public sealed class ClinicShellView : UserControl
                     CustomerDirectoryService? cust = ShellNavPermissions.CanAccess(_employee, ClinicShellNavKind.Customers)
                         ? _customerDirectory
                         : null;
-                    _homePanel = new StaffHomeDashboardPanel(_employee, cust, Navigate);
+                    _homePanel = new StaffHomeDashboardPanel(eff, cust, Navigate);
                 }
 
                 return _homePanel;
@@ -411,8 +550,8 @@ public sealed class ClinicShellView : UserControl
             case ClinicShellNavKind.PendingApprovals:
                 if (_usersHub is null)
                 {
-                    _usersHub = new AdminUsersManagementPanel(_employee, _repository, _registration, _approvals);
-                    _usersHub.StaffDirectoryChanged += async (_, _) => await RefreshPendingBadgeAsync();
+                    _usersHub = new AdminUsersManagementPanel(eff, _repository, _registration, _approvals);
+                    _usersHub.StaffDirectoryChanged += OnUsersHubStaffDirectoryChanged;
                 }
 
                 var tab = kind == ClinicShellNavKind.PendingApprovals ? UsersHubTab.Pending : UsersHubTab.All;
@@ -420,7 +559,7 @@ public sealed class ClinicShellView : UserControl
                 return _usersHub;
 
             case ClinicShellNavKind.Customers:
-                return GetLazy(kind, new CustomersHubPanel(_customerDirectory, _employee));
+                return GetLazy(kind, new CustomersHubPanel(_customerDirectory, eff));
 
             case ClinicShellNavKind.Animals:
                 return GetLazy(kind, new CustomerAnimalsPanel(_customerDirectory));
@@ -497,6 +636,13 @@ public sealed class ClinicShellView : UserControl
         {
             if (_navPending is null)
                 return;
+            if (!RolePermissions.IsAdministrator(DemoModeSession.GetEffectiveEmployee(_employee)))
+            {
+                _navPending.BadgeCount = null;
+                _navPending.Invalidate();
+                return;
+            }
+
             var pending = await _repository.GetPendingRegistrationsAsync();
             _navPending.BadgeCount = pending.Count > 0 ? pending.Count : null;
             _navPending.Invalidate();

@@ -7,7 +7,8 @@ namespace ClinicVets.Desktop;
 static class Program
 {
     /// <summary>
-    /// Desktop entry point: no browser, no Kestrel — pure WinForms.
+    /// Legacy WinForms entry (assembly <c>ClinicVets.WinForms</c>). Primary desktop UI is WPF: run
+    /// <c>dotnet run --project src/Frontend/ClinicVets.Wpf/ClinicVets.Wpf.csproj</c>.
     /// </summary>
     [STAThread]
     static void Main()

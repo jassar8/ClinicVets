@@ -1,0 +1,81 @@
+<UserControl x:Class="ClinicVets.Wpf.Views.ShellView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="260" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <Border Grid.Column="0" Background="{StaticResource Brush.Sidebar}">
+      <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Top" Margin="20,28,20,8">
+          <TextBlock Text="ClinicVets" Style="{StaticResource Text.SidebarBrand}" />
+          <TextBlock Text="Veterinary clinic system"
+                     Foreground="#99F6E4"
+                     FontSize="12"
+                     TextWrapping="Wrap"
+                     Margin="0,6,0,0" />
+        </StackPanel>
+        <Button DockPanel.Dock="Bottom"
+                Content="Sign out"
+                Style="{StaticResource Btn.Nav}"
+                Margin="12,8,12,20"
+                Click="OnLogout" />
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="8,0,8,8">
+          <StackPanel x:Name="NavPanel" />
+        </ScrollViewer>
+      </DockPanel>
+    </Border>
+
+    <Grid Grid.Column="1" Background="{StaticResource Brush.PageBg}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <Border x:Name="DemoBanner"
+              Grid.Row="0"
+              Background="{StaticResource Brush.WarningBg}"
+              Padding="16,10"
+              Visibility="Collapsed">
+        <StackPanel>
+          <TextBlock Text="Demo Mode — not real login · in-memory data only"
+                     Foreground="{StaticResource Brush.WarningFg}"
+                     FontWeight="SemiBold"
+                     FontSize="13" />
+          <StackPanel x:Name="DemoRoleRow" Orientation="Horizontal" Margin="0,8,0,0" Visibility="Collapsed">
+            <TextBlock Text="Demo role:" VerticalAlignment="Center" Foreground="{StaticResource Brush.WarningFg}" Margin="0,0,12,0" />
+            <ComboBox x:Name="DemoRoleCombo" Width="200" SelectionChanged="DemoRoleCombo_SelectionChanged" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Row="1" Background="{StaticResource Brush.Card}" Padding="28,18" BorderBrush="{StaticResource Brush.Border}" BorderThickness="0,0,0,1">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <StackPanel>
+            <TextBlock x:Name="HeaderTitle" FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource Brush.Text}" />
+            <TextBlock x:Name="HeaderSubtitle"
+                       Margin="0,4,0,0"
+                       FontSize="14"
+                       Foreground="{StaticResource Brush.TextMuted}" />
+          </StackPanel>
+          <TextBlock x:Name="ClockText"
+                     Grid.Column="1"
+                     VerticalAlignment="Center"
+                     FontSize="14"
+                     Foreground="{StaticResource Brush.TextMuted}" />
+        </Grid>
+      </Border>
+
+      <Border Grid.Row="2" Margin="24" Style="{StaticResource Card.Border}">
+        <ContentPresenter x:Name="PageHost" />
+      </Border>
+    </Grid>
+  </Grid>
+</UserControl>

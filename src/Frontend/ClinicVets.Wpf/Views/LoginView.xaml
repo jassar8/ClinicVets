@@ -1,0 +1,58 @@
+<UserControl x:Class="ClinicVets.Wpf.Views.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="0.36*" MinWidth="280" />
+      <ColumnDefinition Width="0.64*" />
+    </Grid.ColumnDefinitions>
+
+    <Border Grid.Column="0">
+      <Border.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+          <GradientStop Color="#0D5E58" Offset="0" />
+          <GradientStop Color="#0F766E" Offset="1" />
+        </LinearGradientBrush>
+      </Border.Background>
+      <StackPanel VerticalAlignment="Center" Margin="40">
+        <Image x:Name="BrandLogo" Width="72" Height="72" Stretch="Uniform" Margin="0,0,0,20" />
+        <TextBlock Text="ClinicVets" Style="{StaticResource Text.Hero}" />
+        <TextBlock Text="Veterinary clinic system"
+                   FontSize="15"
+                   Foreground="{StaticResource Brush.MintAccent}"
+                   TextWrapping="Wrap"
+                   MaxWidth="320"
+                   Margin="0,12,0,0" />
+      </StackPanel>
+    </Border>
+
+    <Grid Grid.Column="1" VerticalAlignment="Center">
+      <Border Style="{StaticResource Card.Border}" MaxWidth="520" HorizontalAlignment="Center" Margin="40">
+        <StackPanel>
+          <TextBlock Text="Sign in" Style="{StaticResource Text.Title}" FontSize="26" />
+          <TextBlock Text="Use your email or username and password."
+                     Style="{StaticResource Text.Subtitle}"
+                     Margin="0,6,0,0" />
+
+          <TextBlock Text="Sign-in name" Style="{StaticResource Field.Caption}" Margin="0,20,0,0" />
+          <TextBox x:Name="LoginId" />
+
+          <TextBlock Text="Password" Style="{StaticResource Field.Caption}" />
+          <PasswordBox x:Name="PasswordBox" />
+
+          <Border x:Name="Feedback" Margin="0,16,0,0" Padding="12" CornerRadius="10" Visibility="Collapsed">
+            <TextBlock x:Name="FeedbackText" TextWrapping="Wrap" Foreground="{StaticResource Brush.Error}" />
+          </Border>
+
+          <Button Content="Sign in" Style="{StaticResource Btn.Primary}" Margin="0,20,0,0" Click="OnLoginClick" />
+          <Button Content="Create account" Style="{StaticResource Btn.Outline}" Margin="0,10,0,0" Click="OnRegisterClick" />
+          <Button x:Name="DemoButton"
+                  Content="Enter Demo Mode"
+                  Style="{StaticResource Btn.Outline}"
+                  Margin="0,10,0,0"
+                  Click="OnDemoClick" />
+        </StackPanel>
+      </Border>
+    </Grid>
+  </Grid>
+</UserControl>
