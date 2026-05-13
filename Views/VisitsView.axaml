@@ -1,0 +1,160 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ClinicVetsAvalonia.Views.VisitsView"
+             FlowDirection="RightToLeft">
+
+    <Grid Width="900" Height="650" Margin="20" Background="#BFEFF7">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0"
+                Background="White"
+                BorderBrush="#69C5D8"
+                BorderThickness="3"
+                CornerRadius="18"
+                Padding="18"
+                VerticalAlignment="Top">
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="10" VerticalAlignment="Top">
+                <TextBlock Text="ניהול ביקורים וטיפולים"
+                           FontSize="28"
+                           FontWeight="Bold"
+                           Foreground="#2D3748"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,15"/>
+
+                <TextBlock Text="ביקור, אבחנה, טיפול, תרופה ועלות"
+                           FontSize="14"
+                           Foreground="#526172"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           Margin="0,-8,0,6"/>
+
+                <TextBox x:Name="AnimalSearchInput"
+                         PlaceholderText="חיפוש חיה לפי שם או שבב"
+                         Width="270"
+                         TextChanged="ValidateInputs_Changed"/>
+
+                <Button Content="חפש חיה"
+                        Width="130"
+                        Height="35"
+                        HorizontalAlignment="Center"
+                        Click="SearchAnimal_Click"/>
+
+                <TextBox x:Name="AnimalChipInput"
+                         PlaceholderText="מספר שבב"
+                         Width="270"
+                         FlowDirection="LeftToRight"
+                         TextChanged="ValidateInputs_Changed"/>
+
+                <TextBlock Text="תאריך ביקור"
+                           HorizontalAlignment="Center"/>
+
+                <DatePicker x:Name="VisitDatePicker"
+                            Width="270"/>
+
+                <TextBox x:Name="VisitTimeInput"
+                         PlaceholderText="שעה לדוגמה 14:30"
+                         Width="270"
+                         FlowDirection="LeftToRight"
+                         TextChanged="ValidateInputs_Changed"/>
+
+                <TextBox x:Name="ReasonInput"
+                         PlaceholderText="סיבת הגעה"
+                         Width="270"
+                         TextChanged="ValidateInputs_Changed"/>
+
+                <TextBox x:Name="SymptomsInput"
+                         PlaceholderText="סימפטומים"
+                         Width="270"
+                         AcceptsReturn="True"
+                         Height="55"
+                         TextChanged="ValidateInputs_Changed"/>
+
+                <TextBox x:Name="DiagnosisInput"
+                         PlaceholderText="אבחנה"
+                         Width="270"
+                         AcceptsReturn="True"
+                         Height="55"
+                         TextChanged="ValidateInputs_Changed"/>
+
+                <TextBox x:Name="VeterinarianInput"
+                         PlaceholderText="שם הווטרינר המטפל"
+                         Width="270"
+                         TextChanged="ValidateInputs_Changed"/>
+
+                <TextBox x:Name="BaseCostInput"
+                         PlaceholderText="מחיר ביקור בסיסי"
+                         Width="270"
+                         FlowDirection="LeftToRight"
+                         TextChanged="ValidateInputs_Changed"/>
+
+                <ComboBox x:Name="MedicationDropdown"
+                          Width="270"/>
+
+                <TextBox x:Name="MedicationQuantityInput"
+                         PlaceholderText="כמות תרופה"
+                         Width="270"
+                         FlowDirection="LeftToRight"
+                         TextChanged="ValidateInputs_Changed"/>
+
+                <TextBlock x:Name="TotalCostText"
+                           Text="עלות כוללת: 0"
+                           FontWeight="Bold"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center"/>
+
+                <TextBlock x:Name="ValidationText"
+                           Text=""
+                           Foreground="#C62828"
+                           FontSize="13"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           MinHeight="20"/>
+
+                <WrapPanel HorizontalAlignment="Center">
+                    <Button Content="שמור ביקור"
+                            Width="115"
+                            Margin="5"
+                            Click="SaveVisit_Click"/>
+
+                    <Button Content="חשב עלות"
+                            Width="115"
+                            Margin="5"
+                            Click="CalculateCost_Click"/>
+
+                    <Button Content="נקה שדות"
+                            Width="115"
+                            Margin="5"
+                            Click="ClearFields_Click"/>
+                </WrapPanel>
+
+                <Button Content="חזרה"
+                        Width="240"
+                        Height="40"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0"
+                        Click="Back_Click"/>
+            </StackPanel>
+        </ScrollViewer>
+        </Border>
+
+        <Border Grid.Column="1"
+                BorderThickness="1"
+                BorderBrush="#69C5D8"
+                Background="White"
+                CornerRadius="18"
+                Padding="16"
+                Margin="20,60,20,40">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <TextBlock x:Name="VisitsTextBlock"
+                           FontSize="14"
+                           TextWrapping="Wrap"/>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

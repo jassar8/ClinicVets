@@ -1,0 +1,148 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ClinicVetsAvalonia.Views.AnimalsView"
+             FlowDirection="RightToLeft">
+
+    <Grid Width="900" Height="650" Margin="20" Background="#BFEFF7">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0"
+                Background="White"
+                BorderBrush="#69C5D8"
+                BorderThickness="3"
+                CornerRadius="18"
+                Padding="18"
+                VerticalAlignment="Top">
+
+        <StackPanel Spacing="10">
+            <Button Content="חזרה לתפריט"
+                    Width="150"
+                    Height="36"
+                    HorizontalAlignment="Left"
+                    Background="#476A88"
+                    BorderBrush="#476A88"
+                    ToolTip.Tip="חזרה לתפריט הראשי"
+                    Click="Back_Click"/>
+
+            <TextBlock Text="ניהול בעלי חיים"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="#2D3748"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,15"/>
+
+            <TextBlock Text="כרטיס חיה, שבב, בעלים וחיסון אחרון"
+                       FontSize="14"
+                       Foreground="#526172"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       Margin="0,-8,0,6"/>
+
+            <TextBox x:Name="NameInput"
+                     PlaceholderText="שם החיה"
+                     Width="260"
+                     TextChanged="ValidateInputs_Changed"/>
+
+            <ComboBox x:Name="SpeciesDropdown"
+                      Width="260"
+                      SelectedIndex="0">
+                <ComboBoxItem Content="כלב"/>
+                <ComboBoxItem Content="חתול"/>
+                <ComboBoxItem Content="זוחל"/>
+                <ComboBoxItem Content="ציפור"/>
+            </ComboBox>
+
+            <TextBox x:Name="ChipNumberInput"
+                     PlaceholderText="מספר שבב"
+                     Width="260"
+                     FlowDirection="LeftToRight"
+                     TextChanged="ValidateInputs_Changed"/>
+
+            <TextBox x:Name="WeightInput"
+                     PlaceholderText="משקל בקג"
+                     Width="260"
+                     FlowDirection="LeftToRight"
+                     TextChanged="ValidateInputs_Changed"/>
+
+            <TextBlock Text="תאריך לידה"
+                       HorizontalAlignment="Center"/>
+
+            <DatePicker x:Name="BirthDatePicker"
+                        Width="260"/>
+
+            <TextBox x:Name="OwnerIdInput"
+                     PlaceholderText="תעודת זהות בעלים"
+                     Width="260"
+                     FlowDirection="LeftToRight"
+                     TextChanged="ValidateInputs_Changed"/>
+
+            <TextBlock Text="תאריך חיסון אחרון"
+                       HorizontalAlignment="Center"/>
+
+            <DatePicker x:Name="VaccinationDatePicker"
+                        Width="260"/>
+
+            <TextBlock x:Name="ValidationText"
+                       Text=""
+                       Foreground="#C62828"
+                       FontSize="13"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       MinHeight="20"/>
+
+            <WrapPanel HorizontalAlignment="Center">
+                <Button Content="הוסף חיה"
+                        Width="110"
+                        Margin="5"
+                        Click="AddAnimal_Click"/>
+
+                <Button Content="חפש חיה"
+                        Width="110"
+                        Margin="5"
+                        Click="SearchAnimal_Click"/>
+
+                <Button Content="עדכן חיה"
+                        Width="110"
+                        Margin="5"
+                        Click="UpdateAnimal_Click"/>
+
+                <Button Content="מחק חיה"
+                        Width="110"
+                        Margin="5"
+                        Click="DeleteAnimal_Click"/>
+
+                <Button Content="נקה שדות"
+                        Width="110"
+                        Margin="5"
+                        Click="ClearFields_Click"/>
+            </WrapPanel>
+
+            <Button Content="חזרה"
+                    Width="240"
+                    Height="40"
+                    HorizontalAlignment="Center"
+                    Margin="0,15,0,0"
+                    Click="Back_Click"/>
+        </StackPanel>
+        </Border>
+
+        <Border Grid.Column="1"
+                BorderThickness="1"
+                BorderBrush="#69C5D8"
+                Background="White"
+                CornerRadius="18"
+                Padding="16"
+                Margin="20,60,20,40">
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <TextBlock x:Name="AnimalsTextBlock"
+                           FontSize="14"
+                           TextWrapping="Wrap"/>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

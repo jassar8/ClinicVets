@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ClinicVetsAvalonia.Views.ClientsView"
+             FlowDirection="RightToLeft">
+
+    <Grid Width="900" Height="650" Margin="20" Background="#BFEFF7">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="340"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0"
+                Background="White"
+                BorderBrush="#69C5D8"
+                BorderThickness="3"
+                CornerRadius="18"
+                Padding="18"
+                VerticalAlignment="Top">
+
+        <StackPanel Spacing="12">
+            <TextBlock Text="ניהול לקוחות"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="#2D3748"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,20"/>
+
+            <TextBlock Text="הוסף, חפש ועדכן לקוחות המרפאה"
+                       FontSize="14"
+                       Foreground="#526172"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       Margin="0,-12,0,8"/>
+
+            <TextBox x:Name="FullNameInput"
+                     PlaceholderText="שם מלא"
+                     Width="240"
+                     TextChanged="ValidateInputs_Changed"/>
+
+            <TextBox x:Name="IdNumberInput"
+                     PlaceholderText="תעודת זהות"
+                     Width="240"
+                     TextChanged="ValidateInputs_Changed"/>
+
+            <TextBox x:Name="PhoneInput"
+                     PlaceholderText="טלפון"
+                     Width="240"
+                     TextChanged="ValidateInputs_Changed"/>
+
+            <TextBox x:Name="EmailInput"
+                     PlaceholderText="אימייל"
+                     Width="240"
+                     TextChanged="ValidateInputs_Changed"/>
+
+            <TextBlock x:Name="ValidationText"
+                       Text=""
+                       Foreground="#C62828"
+                       FontSize="13"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       MinHeight="20"/>
+
+            <WrapPanel HorizontalAlignment="Center">
+                <Button Content="הוסף לקוח"
+                        Width="110"
+                        Margin="5"
+                        Click="AddClient_Click"/>
+
+                <Button Content="חפש לקוח"
+                        Width="110"
+                        Margin="5"
+                        Click="SearchClient_Click"/>
+
+                <Button Content="עדכן לקוח"
+                        Width="110"
+                        Margin="5"
+                        Click="UpdateClient_Click"/>
+
+                <Button Content="מחק לקוח"
+                        Width="110"
+                        Margin="5"
+                        Click="DeleteClient_Click"/>
+
+                <Button Content="נקה שדות"
+                        Width="110"
+                        Margin="5"
+                        Click="ClearFields_Click"/>
+
+                <Button Content="הצג חיות של לקוח"
+                        Width="130"
+                        Margin="5"
+                        Click="OpenClientAnimals_Click"/>
+            </WrapPanel>
+
+            <Button Content="חזרה"
+                    Width="240"
+                    Height="40"
+                    HorizontalAlignment="Center"
+                    Margin="0,20,0,0"
+                    Click="Back_Click"/>
+        </StackPanel>
+        </Border>
+
+        <Border Grid.Column="1"
+                BorderThickness="1"
+                BorderBrush="#69C5D8"
+                Background="White"
+                CornerRadius="18"
+                Padding="16"
+                Margin="20,60,20,40">
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <TextBlock x:Name="ClientsTextBlock"
+                           FontSize="14"
+                           TextWrapping="Wrap"/>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

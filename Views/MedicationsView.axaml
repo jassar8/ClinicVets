@@ -1,0 +1,123 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ClinicVetsAvalonia.Views.MedicationsView"
+             FlowDirection="RightToLeft">
+
+    <Grid Width="900" Height="650" Margin="20" Background="#BFEFF7">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="340"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0"
+                Background="White"
+                BorderBrush="#69C5D8"
+                BorderThickness="3"
+                CornerRadius="18"
+                Padding="18"
+                VerticalAlignment="Top">
+
+        <StackPanel Spacing="12">
+            <TextBlock Text="ניהול תרופות ומלאי"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="#2D3748"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,20"/>
+
+            <TextBlock Text="מעקב מלאי, מחיר ותאריכי תפוגה"
+                       FontSize="14"
+                       Foreground="#526172"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       Margin="0,-12,0,8"/>
+
+            <TextBox x:Name="NameInput"
+                     PlaceholderText="שם תרופה"
+                     Width="260"
+                     TextChanged="ValidateInputs_Changed"/>
+
+            <TextBox x:Name="StockInput"
+                     PlaceholderText="כמות במלאי"
+                     Width="260"
+                     FlowDirection="LeftToRight"
+                     TextChanged="ValidateInputs_Changed"/>
+
+            <TextBox x:Name="UnitPriceInput"
+                     PlaceholderText="מחיר ליחידה"
+                     Width="260"
+                     FlowDirection="LeftToRight"
+                     TextChanged="ValidateInputs_Changed"/>
+
+            <TextBlock Text="תאריך תפוגה"
+                       HorizontalAlignment="Center"/>
+
+            <DatePicker x:Name="ExpirationDatePicker"
+                        Width="260"/>
+
+            <TextBox x:Name="NotesInput"
+                     PlaceholderText="הערות"
+                     Width="260"
+                     Height="65"
+                     AcceptsReturn="True"/>
+
+            <TextBlock x:Name="ValidationText"
+                       Text=""
+                       Foreground="#C62828"
+                       FontSize="13"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       MinHeight="20"/>
+
+            <WrapPanel HorizontalAlignment="Center">
+                <Button Content="הוסף תרופה"
+                        Width="110"
+                        Margin="5"
+                        Click="AddMedication_Click"/>
+
+                <Button Content="חפש תרופה"
+                        Width="110"
+                        Margin="5"
+                        Click="SearchMedication_Click"/>
+
+                <Button Content="עדכן תרופה"
+                        Width="110"
+                        Margin="5"
+                        Click="UpdateMedication_Click"/>
+
+                <Button Content="מחק תרופה"
+                        Width="110"
+                        Margin="5"
+                        Click="DeleteMedication_Click"/>
+
+                <Button Content="נקה שדות"
+                        Width="110"
+                        Margin="5"
+                        Click="ClearFields_Click"/>
+            </WrapPanel>
+
+            <Button Content="חזרה"
+                    Width="240"
+                    Height="40"
+                    HorizontalAlignment="Center"
+                    Margin="0,20,0,0"
+                    Click="Back_Click"/>
+        </StackPanel>
+        </Border>
+
+        <Border Grid.Column="1"
+                BorderThickness="1"
+                BorderBrush="#69C5D8"
+                Background="White"
+                CornerRadius="18"
+                Padding="16"
+                Margin="20,60,20,40">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <TextBlock x:Name="MedicationsTextBlock"
+                           FontSize="14"
+                           TextWrapping="Wrap"/>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>
