@@ -1,6 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="ClinicVetsAvalonia.Views.MainMenuView"
+             x:Class="ClinicVetsAvalonia.Views.Dashboard.MainMenuView"
              FlowDirection="RightToLeft">
 
     <Grid Width="900" Height="650" Background="#BFEFF7">

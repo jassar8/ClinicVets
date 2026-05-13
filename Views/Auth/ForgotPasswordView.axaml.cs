@@ -6,7 +6,7 @@ using ClinicVetsAvalonia.Data;
 using ClinicVetsAvalonia.Models;
 using ClinicVetsAvalonia.Services;
 
-namespace ClinicVetsAvalonia.Views
+namespace ClinicVetsAvalonia.Views.Auth
 {
     public partial class ForgotPasswordView : UserControl
     {

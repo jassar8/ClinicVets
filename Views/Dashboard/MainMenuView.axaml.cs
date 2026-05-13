@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ClinicVetsAvalonia.Models;
 
-namespace ClinicVetsAvalonia.Views
+namespace ClinicVetsAvalonia.Views.Dashboard
 {
     public partial class MainMenuView : UserControl
     {

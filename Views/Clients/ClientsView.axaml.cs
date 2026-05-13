@@ -7,7 +7,7 @@ using ClinicVetsAvalonia.Helpers;
 using ClinicVetsAvalonia.Models;
 using ClinicVetsAvalonia.Services;
 
-namespace ClinicVetsAvalonia.Views
+namespace ClinicVetsAvalonia.Views.Clients
 {
     public partial class ClientsView : UserControl
     {

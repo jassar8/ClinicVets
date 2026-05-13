@@ -9,7 +9,7 @@ using ClinicVetsAvalonia.Helpers;
 using ClinicVetsAvalonia.Models;
 using ClinicVetsAvalonia.Services;
 
-namespace ClinicVetsAvalonia.Views
+namespace ClinicVetsAvalonia.Views.Visits
 {
     public partial class VisitsView : UserControl
     {

@@ -1,7 +1,12 @@
 using Avalonia.Controls;
 using ClinicVetsAvalonia.Data;
 using ClinicVetsAvalonia.Models;
-using ClinicVetsAvalonia.Views;
+using ClinicVetsAvalonia.Views.Animals;
+using ClinicVetsAvalonia.Views.Auth;
+using ClinicVetsAvalonia.Views.Clients;
+using ClinicVetsAvalonia.Views.Dashboard;
+using ClinicVetsAvalonia.Views.Medicine;
+using ClinicVetsAvalonia.Views.Visits;
 
 namespace ClinicVetsAvalonia
 {
