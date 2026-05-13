@@ -13,6 +13,7 @@ static class Program
     static void Main()
     {
         ApplicationConfiguration.Initialize();
+        System.Diagnostics.Trace.AutoFlush = true;
         try
         {
             var repository = new JsonFileEmployeeRepository();

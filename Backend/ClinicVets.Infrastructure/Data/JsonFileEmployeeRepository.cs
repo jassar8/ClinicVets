@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using ClinicVets.Application.Interfaces;
 using ClinicVets.Application.Security;
@@ -20,14 +21,41 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
     private readonly string _filePath;
     private List<Employee> _employees;
 
-    public JsonFileEmployeeRepository()
+    /// <param name="persistenceRootOverride">
+    /// Optional folder that will contain <c>employees.json</c> (for tests). When null, uses LocalApplicationData\ClinicVets.
+    /// </param>
+    public JsonFileEmployeeRepository(string? persistenceRootOverride = null)
     {
-        var dir = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "ClinicVets");
+        var dir = string.IsNullOrWhiteSpace(persistenceRootOverride)
+            ? Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "ClinicVets")
+            : persistenceRootOverride.Trim();
         Directory.CreateDirectory(dir);
         _filePath = Path.Combine(dir, "employees.json");
         _employees = LoadOrSeed();
+        LogBootstrapState();
+    }
+
+    private void LogBootstrapState()
+    {
+        try
+        {
+            lock (_sync)
+            {
+                var probe = EmployeeLoginLookup.FindEmployee(_employees, SystemAccounts.DefaultAdminUsername);
+                Trace.WriteLine($"[ClinicVets] Employee store: {_filePath}");
+                Trace.WriteLine($"[ClinicVets] Employee count: {_employees.Count}");
+                Trace.WriteLine(
+                    probe is null
+                        ? "[ClinicVets] Bootstrap admin lookup(admin): FAILED"
+                        : $"[ClinicVets] Bootstrap admin lookup(admin): OK role={probe.Role} email={probe.Email} username={probe.Username} passwordLength={probe.Password?.Length ?? 0}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Trace.WriteLine("[ClinicVets] Bootstrap log error: " + ex.Message);
+        }
     }
 
     public Task<Employee?> GetByEmailAsync(string email)
@@ -91,8 +119,7 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
                     if (list is { Count: > 0 })
                     {
                         _employees = list;
-                        RepairBootstrapAdministratorUnlocked();
-                        EnsureBootstrapAdminIfMissingUnlocked();
+                        ApplyCanonicalBootstrapAdministratorUnlocked();
                         SaveUnlocked();
                         return _employees;
                     }
@@ -105,34 +132,20 @@ public sealed class JsonFileEmployeeRepository : IEmployeeRepository
 
             var seed = CreateDefaultEmployees();
             _employees = seed;
+            ApplyCanonicalBootstrapAdministratorUnlocked();
             SaveUnlocked();
-            return seed;
+            return _employees;
         }
     }
 
-    private void RepairBootstrapAdministratorUnlocked()
+    /// <summary>
+    /// Guarantees exactly one bootstrap row for <see cref="SystemAccounts.DefaultAdminEmail"/> with published demo credentials.
+    /// Removes any stale/duplicate rows for that mailbox so username "admin" always resolves to a working account.
+    /// </summary>
+    private void ApplyCanonicalBootstrapAdministratorUnlocked()
     {
-        foreach (var e in _employees)
-        {
-            if (!string.Equals(e.Email?.Trim(), SystemAccounts.DefaultAdminEmail, StringComparison.OrdinalIgnoreCase))
-                continue;
-
-            if (string.IsNullOrWhiteSpace(e.Username))
-                e.Username = SystemAccounts.DefaultAdminUsername;
-
-            if (!RolePermissions.IsAdministrator(e))
-                e.Role = SystemAccounts.DefaultAdminRole;
-
-            // Published demo credentials for the bootstrap administrator mailbox.
-            e.Password = SystemAccounts.DefaultAdminPassword;
-        }
-    }
-
-    private void EnsureBootstrapAdminIfMissingUnlocked()
-    {
-        var hasAdmin = _employees.Any(e => RolePermissions.IsAdministrator(e));
-        if (hasAdmin)
-            return;
+        _employees.RemoveAll(e =>
+            string.Equals(e.Email?.Trim(), SystemAccounts.DefaultAdminEmail, StringComparison.OrdinalIgnoreCase));
 
         _employees.Insert(0, CreateDefaultAdmin());
     }

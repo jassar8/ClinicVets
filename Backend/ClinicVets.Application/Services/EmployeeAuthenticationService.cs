@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using ClinicVets.Application.Interfaces;
 using ClinicVets.Core.Entities;
 
@@ -20,14 +21,23 @@ public class EmployeeAuthenticationService
         }
 
         var id = loginIdentifier.Trim();
-        var employee = await _employeeRepository.GetByLoginIdentifierAsync(id);
-        var stored = (employee?.Password ?? string.Empty).Trim();
         var provided = password.Trim();
-        if (employee is null || !string.Equals(stored, provided, StringComparison.Ordinal))
+        var employee = await _employeeRepository.GetByLoginIdentifierAsync(id);
+        if (employee is null)
         {
+            Trace.WriteLine($"[ClinicVets] Login failed: no employee for sign-in '{id}'.");
             return (false, "Invalid sign-in name or password.", null);
         }
 
+        var stored = (employee.Password ?? string.Empty).Trim();
+        if (!string.Equals(stored, provided, StringComparison.Ordinal))
+        {
+            Trace.WriteLine(
+                $"[ClinicVets] Login failed: password mismatch for '{id}' (stored length {stored.Length}, provided length {provided.Length}).");
+            return (false, "Invalid sign-in name or password.", null);
+        }
+
+        Trace.WriteLine($"[ClinicVets] Login OK: '{id}' role={employee.Role}.");
         return (true, "Login successful.", employee);
     }
 }

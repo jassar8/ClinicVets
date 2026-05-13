@@ -171,11 +171,7 @@ public sealed class DashboardPage : UserControl
         Load += (_, _) =>
         {
             Relayout();
-            if (RolePermissions.IsAdministrator(_employee) &&
-                RolePermissions.CanAccessDashboardSection(_employee, DashboardSection.Staff))
-                SelectSection(DashboardSection.Staff);
-            else
-                SelectSection(DashboardSection.Home);
+            SelectSection(DashboardSection.Home);
         };
     }
 
