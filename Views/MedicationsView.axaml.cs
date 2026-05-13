@@ -3,6 +3,8 @@ using System.Globalization;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
+using Avalonia.Media;
 using ClinicVetsAvalonia.Data;
 using ClinicVetsAvalonia.Helpers;
 using ClinicVetsAvalonia.Models;
@@ -18,6 +20,7 @@ namespace ClinicVetsAvalonia.Views
         {
             InitializeComponent();
             ExpirationDatePicker.SelectedDate = DateTime.Today.AddMonths(6);
+            RefreshMedicationSelector();
             RefreshMedicationsList();
         }
 
@@ -93,39 +96,30 @@ namespace ClinicVetsAvalonia.Views
 
             UIHelper.ShowMessage(this, "התרופה נוספה בהצלחה");
             ClearFields();
+            RefreshMedicationSelector();
             RefreshMedicationsList();
         }
 
         private void SearchMedication_Click(object? sender, RoutedEventArgs e)
         {
-            string name = NameInput.Text?.Trim() ?? "";
-
-            var medication = AppData.Medications.FirstOrDefault(m =>
-                string.Equals(m.Name, name, StringComparison.OrdinalIgnoreCase));
+            var medication = FindSelectedOrTypedMedication();
 
             if (medication == null)
             {
-                UIHelper.ShowMessage(this, "לא נמצאה תרופה בשם זה");
+                UIHelper.ShowMessage(this, "בחר תרופה מהרשימה או הקלד שם תרופה קיים");
                 return;
             }
 
-            NameInput.Text = medication.Name;
-            StockInput.Text = medication.StockQuantity.ToString();
-            UnitPriceInput.Text = medication.UnitPrice.ToString(CultureInfo.InvariantCulture);
-            ExpirationDatePicker.SelectedDate = medication.ExpirationDate;
-            NotesInput.Text = medication.Notes;
+            FillMedicationFields(medication);
         }
 
         private void UpdateMedication_Click(object? sender, RoutedEventArgs e)
         {
-            string name = NameInput.Text?.Trim() ?? "";
-
-            var medication = AppData.Medications.FirstOrDefault(m =>
-                string.Equals(m.Name, name, StringComparison.OrdinalIgnoreCase));
+            var medication = FindSelectedOrTypedMedication();
 
             if (medication == null)
             {
-                UIHelper.ShowMessage(this, "לא נמצאה תרופה לעדכון");
+                UIHelper.ShowMessage(this, "בחר תרופה מהרשימה לפני עדכון");
                 return;
             }
 
@@ -140,19 +134,17 @@ namespace ClinicVetsAvalonia.Views
             AppData.SaveMedicationsToDatabase();
 
             UIHelper.ShowMessage(this, "התרופה עודכנה בהצלחה");
+            RefreshMedicationSelector();
             RefreshMedicationsList();
         }
 
         private void DeleteMedication_Click(object? sender, RoutedEventArgs e)
         {
-            string name = NameInput.Text?.Trim() ?? "";
-
-            var medication = AppData.Medications.FirstOrDefault(m =>
-                string.Equals(m.Name, name, StringComparison.OrdinalIgnoreCase));
+            var medication = FindSelectedOrTypedMedication();
 
             if (medication == null)
             {
-                UIHelper.ShowMessage(this, "לא נמצאה תרופה למחיקה");
+                UIHelper.ShowMessage(this, "בחר תרופה מהרשימה לפני מחיקה");
                 return;
             }
 
@@ -161,6 +153,27 @@ namespace ClinicVetsAvalonia.Views
 
             UIHelper.ShowMessage(this, "התרופה נמחקה בהצלחה");
             ClearFields();
+            RefreshMedicationSelector();
+            RefreshMedicationsList();
+        }
+
+        private void MedicationSelector_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            var medication = FindSelectedMedication();
+
+            if (medication != null)
+            {
+                FillMedicationFields(medication);
+            }
+        }
+
+        private void MedicationSearch_Changed(object? sender, TextChangedEventArgs e)
+        {
+            RefreshMedicationsList();
+        }
+
+        private void MedicationFilter_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
             RefreshMedicationsList();
         }
 
@@ -227,6 +240,13 @@ namespace ClinicVetsAvalonia.Views
             ClearFields();
         }
 
+        private void ClearMedicationSearch_Click(object? sender, RoutedEventArgs e)
+        {
+            MedicationSearchInput.Text = "";
+            MedicationFilterDropdown.SelectedIndex = 0;
+            RefreshMedicationsList();
+        }
+
         private void Back_Click(object? sender, RoutedEventArgs e)
         {
             BackToMainMenu?.Invoke();
@@ -239,6 +259,7 @@ namespace ClinicVetsAvalonia.Views
             UnitPriceInput.Text = "";
             NotesInput.Text = "";
             ExpirationDatePicker.SelectedDate = DateTime.Today.AddMonths(6);
+            MedicationSelector.SelectedIndex = 0;
             ValidationText.Text = "";
         }
 
@@ -250,42 +271,235 @@ namespace ClinicVetsAvalonia.Views
             ValidationText.Text = message;
         }
 
+        private Medication? FindSelectedMedication()
+        {
+            string selectedName = MedicationSelector.SelectedItem?.ToString() ?? "";
+
+            if (string.IsNullOrWhiteSpace(selectedName) || selectedName == "בחר תרופה קיימת")
+                return null;
+
+            return AppData.Medications.FirstOrDefault(m =>
+                string.Equals(m.Name, selectedName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private Medication? FindSelectedOrTypedMedication()
+        {
+            var selectedMedication = FindSelectedMedication();
+
+            if (selectedMedication != null)
+                return selectedMedication;
+
+            string typedName = NameInput.Text?.Trim() ?? "";
+
+            return AppData.Medications.FirstOrDefault(m =>
+                string.Equals(m.Name, typedName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private void FillMedicationFields(Medication medication)
+        {
+            NameInput.Text = medication.Name;
+            StockInput.Text = medication.StockQuantity.ToString();
+            UnitPriceInput.Text = medication.UnitPrice.ToString(CultureInfo.InvariantCulture);
+            ExpirationDatePicker.SelectedDate = medication.ExpirationDate;
+            NotesInput.Text = medication.Notes;
+            SetValidationMessage("התרופה נטענה ואפשר לעדכן אותה", isValid: true);
+        }
+
+        private void RefreshMedicationSelector()
+        {
+            var medicationNames = AppData.Medications
+                .OrderBy(m => m.Name)
+                .Select(m => m.Name)
+                .ToList();
+
+            medicationNames.Insert(0, "בחר תרופה קיימת");
+            MedicationSelector.ItemsSource = medicationNames;
+            MedicationSelector.SelectedIndex = 0;
+        }
+
         private void RefreshMedicationsList()
         {
+            if (MedicationCardsPanel == null || MedicationResultsText == null)
+                return;
+
+            MedicationCardsPanel.Children.Clear();
+
+            var filteredMedications = AppData.Medications
+                .Where(MatchesSearchAndFilter)
+                .OrderBy(m => m.Name)
+                .ToList();
+
+            MedicationResultsText.Text =
+                $"מציג {filteredMedications.Count} מתוך {AppData.Medications.Count} תרופות";
+
             if (AppData.Medications.Count == 0)
             {
-                MedicationsTextBlock.Text = "אין תרופות במערכת";
+                MedicationCardsPanel.Children.Add(new TextBlock
+                {
+                    Text = "אין תרופות במערכת",
+                    FontSize = 18,
+                    Foreground = Brushes.Gray,
+                    TextAlignment = TextAlignment.Center,
+                    Margin = new Avalonia.Thickness(20)
+                });
                 return;
             }
 
-            string text = "";
-
-            foreach (var medication in AppData.Medications.OrderBy(m => m.Name))
+            if (filteredMedications.Count == 0)
             {
-                text += $"שם תרופה: {medication.Name}\n";
-                text += $"מלאי: {medication.StockQuantity}\n";
-                text += $"מחיר ליחידה: {medication.UnitPrice:0.00}\n";
-                text += $"תאריך תפוגה: {medication.ExpirationDate:dd/MM/yyyy}\n";
-
-                if (!string.IsNullOrWhiteSpace(medication.Notes))
+                MedicationCardsPanel.Children.Add(new TextBlock
                 {
-                    text += $"הערות: {medication.Notes}\n";
-                }
-
-                if (medication.IsLowStock)
-                {
-                    text += "התראה: מלאי נמוך\n";
-                }
-
-                if (medication.IsExpiringSoon)
-                {
-                    text += "התראה: תאריך תפוגה קרוב\n";
-                }
-
-                text += "-----------------------------\n";
+                    Text = "לא נמצאו תרופות שמתאימות לחיפוש",
+                    FontSize = 18,
+                    Foreground = Brushes.Gray,
+                    TextAlignment = TextAlignment.Center,
+                    Margin = new Avalonia.Thickness(20)
+                });
+                return;
             }
 
-            MedicationsTextBlock.Text = text;
+            foreach (var medication in filteredMedications)
+            {
+                MedicationCardsPanel.Children.Add(CreateMedicationCard(medication));
+            }
+        }
+
+        private bool MatchesSearchAndFilter(Medication medication)
+        {
+            string searchText = MedicationSearchInput?.Text?.Trim() ?? "";
+            string filter = GetSelectedMedicationFilter();
+
+            bool matchesSearch = string.IsNullOrWhiteSpace(searchText) ||
+                                 medication.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase);
+
+            bool matchesFilter = filter switch
+            {
+                "מלאי נמוך" => medication.IsLowStock,
+                "תוקף קרוב" => medication.IsExpiringSoon,
+                _ => true
+            };
+
+            return matchesSearch && matchesFilter;
+        }
+
+        private string GetSelectedMedicationFilter()
+        {
+            if (MedicationFilterDropdown?.SelectedItem is ComboBoxItem selectedItem &&
+                selectedItem.Content != null)
+            {
+                return selectedItem.Content.ToString() ?? "הכל";
+            }
+
+            return "הכל";
+        }
+
+        private Button CreateMedicationCard(Medication medication)
+        {
+            string alertText = "";
+
+            if (medication.IsLowStock)
+                alertText += "מלאי נמוך  ";
+
+            if (medication.IsExpiringSoon)
+                alertText += "תוקף קרוב";
+
+            var card = new Button
+            {
+                Width = 190,
+                MinHeight = 210,
+                Margin = new Avalonia.Thickness(8),
+                Padding = new Avalonia.Thickness(12),
+                Background = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.Parse("#69C5D8")),
+                BorderThickness = new Avalonia.Thickness(2),
+                Foreground = new SolidColorBrush(Color.Parse("#2D3748")),
+                Content = new StackPanel
+                {
+                    Spacing = 6,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Children =
+                    {
+                        new Border
+                        {
+                            Width = 68,
+                            Height = 68,
+                            CornerRadius = new Avalonia.CornerRadius(34),
+                            Background = new SolidColorBrush(Color.Parse("#E9F8FC")),
+                            Child = new TextBlock
+                            {
+                                Text = "💊",
+                                FontSize = 34,
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                TextAlignment = TextAlignment.Center
+                            }
+                        },
+                        new TextBlock
+                        {
+                            Text = medication.Name,
+                            FontSize = 18,
+                            FontWeight = FontWeight.Bold,
+                            TextAlignment = TextAlignment.Center,
+                            TextWrapping = TextWrapping.Wrap,
+                            Foreground = new SolidColorBrush(Color.Parse("#2D3748"))
+                        },
+                        new TextBlock
+                        {
+                            Text = $"מלאי: {medication.StockQuantity}",
+                            FontSize = 14,
+                            TextAlignment = TextAlignment.Center,
+                            Foreground = new SolidColorBrush(Color.Parse("#526172"))
+                        },
+                        new TextBlock
+                        {
+                            Text = $"מחיר: {medication.UnitPrice:0.00}",
+                            FontSize = 14,
+                            TextAlignment = TextAlignment.Center,
+                            Foreground = new SolidColorBrush(Color.Parse("#526172"))
+                        },
+                        new TextBlock
+                        {
+                            Text = $"תוקף: {medication.ExpirationDate:dd/MM/yyyy}",
+                            FontSize = 13,
+                            TextAlignment = TextAlignment.Center,
+                            Foreground = new SolidColorBrush(Color.Parse("#526172"))
+                        },
+                        new TextBlock
+                        {
+                            Text = alertText,
+                            FontSize = 13,
+                            FontWeight = FontWeight.Bold,
+                            TextAlignment = TextAlignment.Center,
+                            TextWrapping = TextWrapping.Wrap,
+                            Foreground = medication.IsLowStock || medication.IsExpiringSoon
+                                ? Brushes.Firebrick
+                                : Brushes.ForestGreen
+                        }
+                    }
+                }
+            };
+
+            ToolTip.SetTip(card, "לחץ כדי לראות ולעדכן את התרופה");
+
+            card.Click += (_, _) =>
+            {
+                SelectMedicationInDropdown(medication);
+                FillMedicationFields(medication);
+            };
+
+            return card;
+        }
+
+        private void SelectMedicationInDropdown(Medication medication)
+        {
+            for (int i = 0; i < MedicationSelector.ItemCount; i++)
+            {
+                if (MedicationSelector.Items[i]?.ToString() == medication.Name)
+                {
+                    MedicationSelector.SelectedIndex = i;
+                    return;
+                }
+            }
         }
     }
 }

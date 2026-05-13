@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ClinicVetsAvalonia")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b0c22bfc4784a676a81ed2376341716827a0bb2f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c39d97c9c737782405a9769149775f51e1e97bff")]
 [assembly: System.Reflection.AssemblyProductAttribute("ClinicVetsAvalonia")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ClinicVetsAvalonia")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
+using Avalonia.Media;
 using ClinicVetsAvalonia.Data;
 using ClinicVetsAvalonia.Helpers;
 using ClinicVetsAvalonia.Models;
@@ -22,6 +24,23 @@ namespace ClinicVetsAvalonia.Views
         private void ShowMessage(string message)
         {
             UIHelper.ShowMessage(this, message);
+        }
+
+        private void AnimalSearch_Changed(object? sender, TextChangedEventArgs e)
+        {
+            RefreshAnimalsList();
+        }
+
+        private void AnimalFilter_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            RefreshAnimalsList();
+        }
+
+        private void ClearAnimalSearch_Click(object? sender, RoutedEventArgs e)
+        {
+            AnimalSearchInput.Text = "";
+            AnimalFilterDropdown.SelectedIndex = 0;
+            RefreshAnimalsList();
         }
 
         private void ValidateInputs_Changed(object? sender, TextChangedEventArgs e)
@@ -349,35 +368,215 @@ namespace ClinicVetsAvalonia.Views
 
         private void RefreshAnimalsList()
         {
+            if (AnimalCardsPanel == null || AnimalResultsText == null)
+                return;
+
+            AnimalCardsPanel.Children.Clear();
+
+            var filteredAnimals = AppData.Animals
+                .Where(MatchesSearchAndFilter)
+                .OrderBy(a => a.Name)
+                .ToList();
+
+            AnimalResultsText.Text =
+                $"מציג {filteredAnimals.Count} מתוך {AppData.Animals.Count} בעלי חיים";
+
             if (AppData.Animals.Count == 0)
             {
-                AnimalsTextBlock.Text = "אין בעלי חיים במערכת";
+                AnimalCardsPanel.Children.Add(new TextBlock
+                {
+                    Text = "אין בעלי חיים במערכת",
+                    FontSize = 18,
+                    Foreground = Brushes.Gray,
+                    TextAlignment = TextAlignment.Center,
+                    Margin = new Avalonia.Thickness(20)
+                });
                 return;
             }
 
-            string text = "";
-
-            foreach (var animal in AppData.Animals)
+            if (filteredAnimals.Count == 0)
             {
-                var owner = AppData.Clients.FirstOrDefault(c => c.IdNumber == animal.OwnerIdNumber);
-
-                text += $"שם: {animal.Name}\n";
-                text += $"סוג: {animal.Species}\n";
-                text += $"שבב: {animal.ChipNumber}\n";
-                text += $"משקל: {animal.Weight} קג\n";
-                text += $"תאריך לידה: {animal.BirthDate:dd/MM/yyyy}\n";
-                text += $"בעלים: {(owner != null ? owner.FullName : animal.OwnerIdNumber)}\n";
-                text += $"חיסון אחרון: {animal.LastVaccinationDate:dd/MM/yyyy}\n";
-
-                if (ValidationService.IsVaccinationDue(animal.LastVaccinationDate))
+                AnimalCardsPanel.Children.Add(new TextBlock
                 {
-                    text += "תזכורת: יש לקבוע חיסון שנתי\n";
-                }
-
-                text += "-----------------------------\n";
+                    Text = "לא נמצאו בעלי חיים שמתאימים לחיפוש",
+                    FontSize = 18,
+                    Foreground = Brushes.Gray,
+                    TextAlignment = TextAlignment.Center,
+                    Margin = new Avalonia.Thickness(20)
+                });
+                return;
             }
 
-            AnimalsTextBlock.Text = text;
+            foreach (var animal in filteredAnimals)
+            {
+                AnimalCardsPanel.Children.Add(CreateAnimalCard(animal));
+            }
+        }
+
+        private bool MatchesSearchAndFilter(Animal animal)
+        {
+            string searchText = AnimalSearchInput?.Text?.Trim() ?? "";
+            string filter = GetSelectedAnimalFilter();
+
+            bool matchesSearch = string.IsNullOrWhiteSpace(searchText) ||
+                                 animal.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                                 animal.ChipNumber.Contains(searchText, StringComparison.OrdinalIgnoreCase);
+
+            bool matchesFilter = filter switch
+            {
+                "כלב" => animal.Species == "כלב" || animal.Species == "Dog",
+                "חתול" => animal.Species == "חתול" || animal.Species == "Cat",
+                "זוחל" => animal.Species == "זוחל" || animal.Species == "Reptile",
+                "ציפור" => animal.Species == "ציפור" || animal.Species == "Bird",
+                "צריך חיסון" => ValidationService.IsVaccinationDue(animal.LastVaccinationDate),
+                _ => true
+            };
+
+            return matchesSearch && matchesFilter;
+        }
+
+        private string GetSelectedAnimalFilter()
+        {
+            if (AnimalFilterDropdown?.SelectedItem is ComboBoxItem selectedItem &&
+                selectedItem.Content != null)
+            {
+                return selectedItem.Content.ToString() ?? "הכל";
+            }
+
+            return "הכל";
+        }
+
+        private Button CreateAnimalCard(Animal animal)
+        {
+            var owner = AppData.Clients.FirstOrDefault(c => c.IdNumber == animal.OwnerIdNumber);
+            bool vaccinationDue = ValidationService.IsVaccinationDue(animal.LastVaccinationDate);
+
+            var card = new Button
+            {
+                Width = 190,
+                MinHeight = 230,
+                Margin = new Avalonia.Thickness(8),
+                Padding = new Avalonia.Thickness(12),
+                Background = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.Parse(vaccinationDue ? "#E57373" : "#69C5D8")),
+                BorderThickness = new Avalonia.Thickness(2),
+                Foreground = new SolidColorBrush(Color.Parse("#2D3748")),
+                Content = new StackPanel
+                {
+                    Spacing = 6,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Children =
+                    {
+                        new Border
+                        {
+                            Width = 72,
+                            Height = 72,
+                            CornerRadius = new Avalonia.CornerRadius(36),
+                            Background = new SolidColorBrush(Color.Parse(GetAnimalAccentColor(animal.Species))),
+                            Child = new TextBlock
+                            {
+                                Text = GetAnimalIcon(animal.Species),
+                                FontSize = 36,
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                TextAlignment = TextAlignment.Center
+                            }
+                        },
+                        new TextBlock
+                        {
+                            Text = animal.Name,
+                            FontSize = 18,
+                            FontWeight = FontWeight.Bold,
+                            TextAlignment = TextAlignment.Center,
+                            TextWrapping = TextWrapping.Wrap,
+                            Foreground = new SolidColorBrush(Color.Parse("#2D3748"))
+                        },
+                        new TextBlock
+                        {
+                            Text = $"סוג: {animal.Species}",
+                            FontSize = 14,
+                            TextAlignment = TextAlignment.Center,
+                            Foreground = new SolidColorBrush(Color.Parse("#526172"))
+                        },
+                        new TextBlock
+                        {
+                            Text = $"שבב: {animal.ChipNumber}",
+                            FontSize = 13,
+                            TextAlignment = TextAlignment.Center,
+                            Foreground = new SolidColorBrush(Color.Parse("#526172"))
+                        },
+                        new TextBlock
+                        {
+                            Text = $"בעלים: {(owner != null ? owner.FullName : animal.OwnerIdNumber)}",
+                            FontSize = 13,
+                            TextAlignment = TextAlignment.Center,
+                            TextWrapping = TextWrapping.Wrap,
+                            Foreground = new SolidColorBrush(Color.Parse("#526172"))
+                        },
+                        new TextBlock
+                        {
+                            Text = vaccinationDue ? "צריך חיסון שנתי" : "חיסון תקין",
+                            FontSize = 13,
+                            FontWeight = FontWeight.Bold,
+                            TextAlignment = TextAlignment.Center,
+                            TextWrapping = TextWrapping.Wrap,
+                            Foreground = vaccinationDue ? Brushes.Firebrick : Brushes.ForestGreen
+                        }
+                    }
+                }
+            };
+
+            ToolTip.SetTip(card, "לחץ כדי לראות ולעדכן את כרטיס החיה");
+
+            card.Click += (_, _) => FillAnimalFields(animal);
+
+            return card;
+        }
+
+        private void FillAnimalFields(Animal animal)
+        {
+            NameInput.Text = animal.Name;
+            ChipNumberInput.Text = animal.ChipNumber;
+            WeightInput.Text = animal.Weight.ToString();
+            OwnerIdInput.Text = animal.OwnerIdNumber;
+            BirthDatePicker.SelectedDate = animal.BirthDate;
+            VaccinationDatePicker.SelectedDate = animal.LastVaccinationDate;
+
+            for (int i = 0; i < SpeciesDropdown.ItemCount; i++)
+            {
+                if (SpeciesDropdown.Items[i] is ComboBoxItem item &&
+                    item.Content?.ToString() == animal.Species)
+                {
+                    SpeciesDropdown.SelectedIndex = i;
+                    break;
+                }
+            }
+
+            SetValidationMessage("כרטיס החיה נטען ואפשר לעדכן אותו", isValid: true);
+        }
+
+        private string GetAnimalIcon(string species)
+        {
+            return species switch
+            {
+                "כלב" or "Dog" => "🐶",
+                "חתול" or "Cat" => "🐱",
+                "זוחל" or "Reptile" => "🦎",
+                "ציפור" or "Bird" => "🐦",
+                _ => "🐾"
+            };
+        }
+
+        private string GetAnimalAccentColor(string species)
+        {
+            return species switch
+            {
+                "כלב" or "Dog" => "#E9F8FC",
+                "חתול" or "Cat" => "#FFF1D6",
+                "זוחל" or "Reptile" => "#E5F6E8",
+                "ציפור" or "Bird" => "#E8ECFF",
+                _ => "#F1F5F9"
+            };
         }
     }
 }

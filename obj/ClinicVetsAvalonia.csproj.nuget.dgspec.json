@@ -10,7 +10,7 @@
         "projectUniqueName": "/Users/fares/ClinicVetsAvalonia/ClinicVetsAvalonia.csproj",
         "projectName": "ClinicVetsAvalonia",
         "projectPath": "/Users/fares/ClinicVetsAvalonia/ClinicVetsAvalonia.csproj",
-        "packagesPath": "/var/folders/25/r13vnh2s1_3gn_tbs3s2rsmc0000gn/T/cursor-sandbox-cache/77014bddf37874299cf9cc3a6ef8d0cf/nuget",
+        "packagesPath": "/Users/fares/.nuget/packages/",
         "outputPath": "/Users/fares/ClinicVetsAvalonia/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
