@@ -28,7 +28,7 @@ public sealed class DashboardPage : UserControl
     private readonly Panel _contentHost = new();
     private readonly Panel _card = new();
     private readonly Panel _viewHost = new();
-    private readonly Dictionary<DashboardSection, Panel> _navPanels = new();
+    private readonly Dictionary<DashboardSection, SidebarNavItem> _navPanels = new();
     private readonly Dictionary<DashboardSection, Control> _viewCache = new();
     private DashboardSection _activeSection = DashboardSection.Home;
 
@@ -123,7 +123,7 @@ public sealed class DashboardPage : UserControl
             if (!RolePermissions.CanAccessDashboardSection(_employee, section))
                 continue;
 
-            var nav = MakeNavEntry(section, SectionCaption(section), active: false);
+            var nav = MakeNavEntry(section, SectionCaption(section));
             _navPanels[section] = nav;
             navFlow.Controls.Add(nav);
         }
@@ -179,39 +179,15 @@ public sealed class DashboardPage : UserControl
         };
     }
 
-    private Panel MakeNavEntry(DashboardSection section, string caption, bool active)
+    private SidebarNavItem MakeNavEntry(DashboardSection section, string caption)
     {
-        var p = new Panel
+        var nav = new SidebarNavItem(section, caption)
         {
             Width = UiTheme.SidebarWidth - 36,
-            Height = 46,
-            Margin = new Padding(8, 4, 8, 4),
-            BackColor = active ? UiTheme.SidebarItemActive : UiTheme.SidebarBackground,
-            Cursor = Cursors.Hand,
-            Tag = section
+            Margin = new Padding(8, 4, 8, 4)
         };
-
-        var lbl = new Label
-        {
-            Text = caption,
-            Font = new Font(
-                "Segoe UI",
-                active ? 12.5F : 11.5F,
-                active ? FontStyle.Bold : FontStyle.Regular,
-                GraphicsUnit.Point),
-            ForeColor = active ? UiTheme.PrimaryButton : UiTheme.SidebarMuted,
-            AutoSize = true,
-            Location = new Point(18, 12),
-            BackColor = active ? UiTheme.SidebarItemActive : UiTheme.SidebarBackground,
-            Cursor = Cursors.Hand
-        };
-
-        void OnSelect(object? sender, EventArgs args) => SelectSection(section);
-        p.Click += OnSelect;
-        lbl.Click += OnSelect;
-
-        p.Controls.Add(lbl);
-        return p;
+        nav.Click += (_, _) => SelectSection(section);
+        return nav;
     }
 
     private void SelectSection(DashboardSection section)
@@ -222,22 +198,7 @@ public sealed class DashboardPage : UserControl
         _activeSection = section;
 
         foreach (var kv in _navPanels)
-        {
-            var key = kv.Key;
-            var panel = kv.Value;
-            var isActive = key == section;
-            panel.BackColor = isActive ? UiTheme.SidebarItemActive : UiTheme.SidebarBackground;
-            if (panel.Controls.Count > 0 && panel.Controls[0] is Label lbl)
-            {
-                lbl.Font = new Font(
-                    "Segoe UI",
-                    isActive ? 12.5F : 11.5F,
-                    isActive ? FontStyle.Bold : FontStyle.Regular,
-                    GraphicsUnit.Point);
-                lbl.ForeColor = isActive ? UiTheme.PrimaryButton : UiTheme.SidebarMuted;
-                lbl.BackColor = isActive ? UiTheme.SidebarItemActive : UiTheme.SidebarBackground;
-            }
-        }
+            kv.Value.IsActive = kv.Key == section;
 
         while (_viewHost.Controls.Count > 0)
         {
@@ -331,8 +292,7 @@ public sealed class DashboardPage : UserControl
         metrics.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.34F));
         metrics.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
         metrics.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-        var sage = Color.FromArgb(64, 148, 112);
-        var m0 = MakeMetricTile("Session", "Active", sage, new Padding(0, 0, 12, 0));
+        var m0 = MakeMetricTile("Session", "Active", UiTheme.MetricAccentStripe, new Padding(0, 0, 12, 0));
         var m1 = MakeMetricTile("Workspace", "ClinicVets", UiTheme.PrimaryButton, new Padding(6, 0, 6, 0));
         var m2 = MakeMetricTile("Build", "Course demo", UiTheme.TextMuted, new Padding(12, 0, 0, 0));
         metrics.Controls.Add(m0, 0, 0);
@@ -459,7 +419,7 @@ public sealed class DashboardPage : UserControl
         using var brush = new LinearGradientBrush(
             c.ClientRectangle,
             UiTheme.PageBackground,
-            Color.FromArgb(232, 242, 238),
+            UiTheme.PageGradientBottom,
             LinearGradientMode.Vertical);
         g.FillRectangle(brush, c.ClientRectangle);
     }

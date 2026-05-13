@@ -113,11 +113,11 @@ public sealed class PendingEmployeesPanel : UserControl
         var row = new Panel
         {
             Margin = new Padding(0, 0, 0, 12),
-            Height = 132,
+            Height = 138,
             BackColor = UiTheme.MetricTileBackground,
             Padding = new Padding(16, 14, 16, 14)
         };
-        row.Paint += (_, e) => UiChrome.PaintMetricTile(row, e, UiTheme.PrimaryButton);
+        row.Paint += (_, e) => UiChrome.PaintMetricTile(row, e, UiTheme.MetricAccentStripe);
 
         var nameLbl = new Label
         {
@@ -155,7 +155,7 @@ public sealed class PendingEmployeesPanel : UserControl
         {
             MaxLength = 4,
             Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point),
-            Location = new Point(110, 88),
+            Location = new Point(110, 86),
             Width = 88,
             PlaceholderText = "0000"
         };
@@ -163,17 +163,17 @@ public sealed class PendingEmployeesPanel : UserControl
         var approve = new ModernPrimaryButton
         {
             Text = "Approve",
-            Location = new Point(220, 86),
-            Width = 110,
-            Height = UiTheme.PrimaryButtonHeight - 4
+            Location = new Point(212, 80),
+            Width = 118,
+            Height = UiTheme.PrimaryButtonHeight
         };
 
-        var reject = new ModernOutlineButton
+        var reject = new ModernDangerButton
         {
             Text = "Reject",
-            Location = new Point(340, 86),
-            Width = 100,
-            Height = UiTheme.PrimaryButtonHeight - 4
+            Location = new Point(338, 80),
+            Width = 118,
+            Height = UiTheme.PrimaryButtonHeight
         };
 
         var capturedId = emp.Id;

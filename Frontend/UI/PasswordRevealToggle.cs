@@ -93,7 +93,7 @@ public sealed class PasswordRevealToggle : Control
 
         if (_hover || Focused)
         {
-            using var halo = new SolidBrush(_pressed ? Color.FromArgb(48, 40, 138, 124) : Color.FromArgb(28, 40, 138, 124));
+            using var halo = new SolidBrush(Color.FromArgb(_pressed ? 52 : 34, UiTheme.PrimaryButton));
             var r = Math.Min(ClientSize.Width, ClientSize.Height) * 0.72f;
             g.FillEllipse(halo, cx - r / 2f, cy - r / 2f, r, r);
         }

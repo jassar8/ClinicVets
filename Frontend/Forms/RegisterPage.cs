@@ -149,7 +149,7 @@ public sealed class RegisterPage : UserControl
         using var brush = new LinearGradientBrush(
             c.ClientRectangle,
             UiTheme.PageBackground,
-            Color.FromArgb(232, 242, 238),
+            UiTheme.PageGradientBottom,
             LinearGradientMode.Vertical);
         g.FillRectangle(brush, c.ClientRectangle);
     }

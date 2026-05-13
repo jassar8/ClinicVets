@@ -9,7 +9,7 @@ public sealed class FeedbackBannerPanel : Panel
         Padding = new Padding(18, 14, 18, 14),
         AutoSize = false,
         TextAlign = ContentAlignment.MiddleLeft,
-        BackColor = UiTheme.PageBackground
+        BackColor = Color.Transparent
     };
 
     private UiFeedbackKind _kind = UiFeedbackKind.None;
@@ -20,7 +20,13 @@ public sealed class FeedbackBannerPanel : Panel
         Margin = new Padding(0, 10, 0, 4);
         BackColor = UiTheme.PageBackground;
         Controls.Add(Message);
-        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+        SetStyle(
+            ControlStyles.AllPaintingInWmPaint |
+            ControlStyles.UserPaint |
+            ControlStyles.OptimizedDoubleBuffer |
+            ControlStyles.ResizeRedraw |
+            ControlStyles.SupportsTransparentBackColor,
+            true);
         UpdateStyles();
         Visible = false;
     }

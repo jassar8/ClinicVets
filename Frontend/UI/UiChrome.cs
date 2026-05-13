@@ -56,7 +56,11 @@ public static class UiChrome
         using (var border = new Pen(UiTheme.MetricTileBorder, 1))
             g.DrawPath(border, path);
 
-        using var stripe = new Pen(accent, 4);
+        using var stripe = new Pen(accent, 3.5f)
+        {
+            StartCap = LineCap.Round,
+            EndCap = LineCap.Round
+        };
         g.DrawLine(stripe, 12, 16, 12, tile.Height - 16);
     }
 

@@ -14,8 +14,11 @@ public static class UiStyles
     public static Font HeroSubtitleFont { get; } = new("Segoe UI", 15.5F, FontStyle.Regular, GraphicsUnit.Point);
     public static Font FieldCaptionFont { get; } = new("Segoe UI", 11.5F, FontStyle.Bold, GraphicsUnit.Point);
     public static Font InputFont { get; } = new("Segoe UI", 14.5F, FontStyle.Regular, GraphicsUnit.Point);
-    public static Font PrimaryButtonFont { get; } = new("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point);
-    public static Font SecondaryButtonFont { get; } = new("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+    public static Font PrimaryButtonFont { get; } = new("Segoe UI", 14.5F, FontStyle.Bold, GraphicsUnit.Point);
+    public static Font SecondaryButtonFont { get; } = new("Segoe UI", 14.5F, FontStyle.Regular, GraphicsUnit.Point);
+    public static Font DangerButtonFont { get; } = new("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+    public static Font SidebarNavFont { get; } = new("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+    public static Font SidebarNavFontActive { get; } = new("Segoe UI", 12.25F, FontStyle.Bold, GraphicsUnit.Point);
     public static Font FeedbackFont { get; } = new("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
 
     public static void ApplyComboInner(ComboBox combo)

@@ -81,7 +81,7 @@ public sealed class LoginPage : UserControl
         hint.TextAlign = ContentAlignment.MiddleCenter;
         hint.Margin = new Padding(0, 20, 0, 0);
         hint.Height = 56;
-        hint.BackColor = Color.FromArgb(232, 246, 238);
+        hint.BackColor = UiTheme.SuccessBackground;
 
         _flow.Controls.Add(_heroTitle);
         _flow.Controls.Add(_heroSubtitle);
@@ -115,7 +115,7 @@ public sealed class LoginPage : UserControl
         var g = e.Graphics;
         g.SmoothingMode = SmoothingMode.AntiAlias;
         var top = UiTheme.PageBackground;
-        var bottom = Color.FromArgb(232, 242, 238);
+        var bottom = UiTheme.PageGradientBottom;
         using var brush = new LinearGradientBrush(
             c.ClientRectangle,
             top,

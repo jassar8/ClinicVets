@@ -2,21 +2,20 @@ using System.Drawing.Drawing2D;
 
 namespace ClinicVets.Desktop.UI;
 
-/// <summary>Secondary action: white fill, teal border and text, mint hover wash.</summary>
-public sealed class ModernOutlineButton : Button
+/// <summary>Destructive actions: soft red fill, white label, rounded corners.</summary>
+public sealed class ModernDangerButton : Button
 {
     private bool _hover;
     private bool _pressed;
 
-    public ModernOutlineButton()
+    public ModernDangerButton()
     {
         FlatStyle = FlatStyle.Flat;
         FlatAppearance.BorderSize = 0;
-        ForeColor = UiTheme.SecondaryButtonText;
-        Font = UiStyles.SecondaryButtonFont;
-        BackColor = UiTheme.SecondaryButtonBackground;
+        ForeColor = UiTheme.PrimaryButtonText;
+        Font = UiStyles.DangerButtonFont;
         Cursor = Cursors.Hand;
-        Height = UiTheme.SecondaryButtonHeight;
+        Height = UiTheme.PrimaryButtonHeight;
         TabStop = true;
         SetStyle(
             ControlStyles.AllPaintingInWmPaint |
@@ -53,7 +52,6 @@ public sealed class ModernOutlineButton : Button
             Cursor = Cursors.Hand;
         }
 
-        ForeColor = Enabled ? UiTheme.SecondaryButtonText : UiTheme.ButtonDisabledText;
         base.OnEnabledChanged(e);
         Invalidate();
     }
@@ -92,38 +90,30 @@ public sealed class ModernOutlineButton : Button
         using var path = UiChrome.CreateRoundRectPath(rect, radius);
 
         Color fill;
-        Color border;
         Color textColor;
         if (!Enabled)
         {
             fill = UiTheme.ButtonDisabledFill;
-            border = UiTheme.ButtonDisabledBorder;
             textColor = UiTheme.ButtonDisabledText;
         }
         else if (_pressed)
         {
-            fill = UiTheme.SecondaryButtonPressed;
-            border = UiTheme.SecondaryButtonBorder;
-            textColor = UiTheme.SecondaryButtonText;
+            fill = UiTheme.DangerButtonPressed;
+            textColor = UiTheme.PrimaryButtonText;
         }
         else if (_hover)
         {
-            fill = UiTheme.SecondaryButtonHover;
-            border = UiTheme.SecondaryButtonBorder;
-            textColor = UiTheme.SecondaryButtonText;
+            fill = UiTheme.DangerButtonHover;
+            textColor = UiTheme.PrimaryButtonText;
         }
         else
         {
-            fill = UiTheme.SecondaryButtonBackground;
-            border = UiTheme.SecondaryButtonBorder;
-            textColor = UiTheme.SecondaryButtonText;
+            fill = UiTheme.DangerButton;
+            textColor = UiTheme.PrimaryButtonText;
         }
 
         using (var b = new SolidBrush(fill))
             g.FillPath(b, path);
-
-        using var pen = new Pen(border, 1f);
-        g.DrawPath(pen, path);
 
         g.SetClip(path);
         using var format = new StringFormat

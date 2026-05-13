@@ -2,30 +2,71 @@ using System.Drawing.Drawing2D;
 
 namespace ClinicVets.Desktop.UI;
 
-/// <summary>Owner-drawn primary action with rounded corners and hover states.</summary>
+/// <summary>Owner-drawn primary action: deep teal, white label, rounded corners, hover/press/disabled states.</summary>
 public sealed class ModernPrimaryButton : Button
 {
     private bool _hover;
+    private bool _pressed;
 
     public ModernPrimaryButton()
     {
         FlatStyle = FlatStyle.Flat;
         FlatAppearance.BorderSize = 0;
-        ForeColor = Color.White;
-        Font = new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point);
+        ForeColor = UiTheme.PrimaryButtonText;
+        Font = UiStyles.PrimaryButtonFont;
         Cursor = Cursors.Hand;
         Height = UiTheme.PrimaryButtonHeight;
-        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
         TabStop = true;
-        MouseEnter += (_, _) => { _hover = true; Invalidate(); };
-        MouseLeave += (_, _) => { _hover = false; Invalidate(); };
+        SetStyle(
+            ControlStyles.AllPaintingInWmPaint |
+            ControlStyles.UserPaint |
+            ControlStyles.OptimizedDoubleBuffer |
+            ControlStyles.ResizeRedraw,
+            true);
+        UpdateStyles();
+
+        MouseEnter += (_, _) =>
+        {
+            if (!Enabled)
+                return;
+            _hover = true;
+            Invalidate();
+        };
+        MouseLeave += (_, _) =>
+        {
+            _hover = false;
+            Invalidate();
+        };
     }
 
-    private bool _pressed;
+    protected override void OnEnabledChanged(EventArgs e)
+    {
+        if (!Enabled)
+        {
+            _hover = false;
+            _pressed = false;
+            Cursor = Cursors.Default;
+        }
+        else
+        {
+            Cursor = Cursors.Hand;
+        }
+
+        base.OnEnabledChanged(e);
+        Invalidate();
+    }
+
+    protected override void OnLostFocus(EventArgs e)
+    {
+        _pressed = false;
+        base.OnLostFocus(e);
+        Invalidate();
+    }
 
     protected override void OnMouseDown(MouseEventArgs mevent)
     {
-        _pressed = true;
+        if (Enabled && mevent.Button == MouseButtons.Left)
+            _pressed = true;
         base.OnMouseDown(mevent);
         Invalidate();
     }
@@ -41,24 +82,53 @@ public sealed class ModernPrimaryButton : Button
     {
         var g = e.Graphics;
         g.SmoothingMode = SmoothingMode.AntiAlias;
+        g.PixelOffsetMode = PixelOffsetMode.HighQuality;
         g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-        var rect = new Rectangle(1, 1, Width - 3, Height - 3);
-        using var path = UiChrome.CreateRoundRectPath(rect, UiTheme.ButtonCornerRadius);
+
+        var rect = new Rectangle(0, 0, Width - 1, Height - 1);
+        var radius = Math.Min(UiTheme.ButtonCornerRadius, Math.Min(rect.Width, rect.Height) / 2);
+        using var path = UiChrome.CreateRoundRectPath(rect, radius);
+
         Color fill;
+        Color textColor;
         if (!Enabled)
-            fill = Color.FromArgb(160, 180, 176);
+        {
+            fill = UiTheme.ButtonDisabledFill;
+            textColor = UiTheme.ButtonDisabledText;
+        }
         else if (_pressed)
+        {
             fill = UiTheme.PrimaryButtonPressed;
+            textColor = UiTheme.PrimaryButtonText;
+        }
         else if (_hover)
+        {
             fill = UiTheme.PrimaryButtonHover;
+            textColor = UiTheme.PrimaryButtonText;
+        }
         else
+        {
             fill = UiTheme.PrimaryButton;
+            textColor = UiTheme.PrimaryButtonText;
+        }
 
         using (var b = new SolidBrush(fill))
             g.FillPath(b, path);
 
-        using (var format = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-        using (var brush = new SolidBrush(ForeColor))
-            g.DrawString(Text, Font, brush, ClientRectangle, format);
+        g.SetClip(path);
+        using var format = new StringFormat
+        {
+            Alignment = StringAlignment.Center,
+            LineAlignment = StringAlignment.Center,
+            Trimming = StringTrimming.EllipsisCharacter
+        };
+        using var brush = new SolidBrush(textColor);
+        g.DrawString(Text, Font, brush, ClientRectangle, format);
+        g.ResetClip();
+    }
+
+    protected override void OnPaintBackground(PaintEventArgs pevent)
+    {
+        // Fully custom chrome; avoid default button chrome/borders.
     }
 }
