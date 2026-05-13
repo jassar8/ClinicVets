@@ -28,6 +28,9 @@ public static class RolePermissions
             DashboardSection.Billing => role is EmployeeRole.Admin or EmployeeRole.Secretary,
             DashboardSection.Staff => role == EmployeeRole.Admin,
             DashboardSection.PendingEmployees => role == EmployeeRole.Admin,
+            DashboardSection.CustomerRegistration => role is EmployeeRole.Admin or EmployeeRole.Secretary,
+            DashboardSection.CustomerSearch => role is EmployeeRole.Admin or EmployeeRole.Secretary,
+            DashboardSection.CustomerAnimals => role is EmployeeRole.Admin or EmployeeRole.Secretary,
             _ => false
         };
     }
@@ -43,5 +46,8 @@ public enum DashboardSection
     Patients,
     Billing,
     Staff,
-    PendingEmployees
+    PendingEmployees,
+    CustomerRegistration,
+    CustomerSearch,
+    CustomerAnimals
 }

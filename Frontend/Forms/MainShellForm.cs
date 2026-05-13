@@ -14,18 +14,21 @@ public sealed class MainShellForm : Form
     private readonly EmployeeRegistrationService _registration;
     private readonly EmployeeApprovalService _approvals;
     private readonly IEmployeeRepository _employees;
+    private readonly CustomerDirectoryService _customerDirectory;
     private readonly Panel _host = new() { Dock = DockStyle.Fill };
 
     public MainShellForm(
         EmployeeAuthenticationService auth,
         EmployeeRegistrationService registration,
         EmployeeApprovalService approvals,
-        IEmployeeRepository employees)
+        IEmployeeRepository employees,
+        CustomerDirectoryService customerDirectory)
     {
         _auth = auth;
         _registration = registration;
         _approvals = approvals;
         _employees = employees;
+        _customerDirectory = customerDirectory;
 
         Text = "ClinicVets";
         Icon = AppBranding.CreateWindowIcon();
@@ -64,7 +67,7 @@ public sealed class MainShellForm : Form
     {
         AcceptButton = null;
         CancelButton = null;
-        var page = new DashboardPage(employee, this, _registration, _approvals, _employees);
+        var page = new DashboardPage(employee, this, _registration, _approvals, _employees, _customerDirectory);
         SwapContent(page);
     }
 

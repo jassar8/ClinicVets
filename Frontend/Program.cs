@@ -17,10 +17,12 @@ static class Program
         try
         {
             var repository = new JsonFileEmployeeRepository();
+            var customerStore = new JsonFileCustomerDirectoryRepository();
             var auth = new EmployeeAuthenticationService(repository);
             var registration = new EmployeeRegistrationService(repository);
             var approvals = new EmployeeApprovalService(repository);
-            global::System.Windows.Forms.Application.Run(new MainShellForm(auth, registration, approvals, repository));
+            var customers = new CustomerDirectoryService(customerStore);
+            global::System.Windows.Forms.Application.Run(new MainShellForm(auth, registration, approvals, repository, customers));
         }
         catch (Exception ex)
         {

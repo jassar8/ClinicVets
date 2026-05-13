@@ -15,6 +15,9 @@ public sealed class DashboardPage : UserControl
         DashboardSection.Visits,
         DashboardSection.Patients,
         DashboardSection.Billing,
+        DashboardSection.CustomerRegistration,
+        DashboardSection.CustomerSearch,
+        DashboardSection.CustomerAnimals,
         DashboardSection.Staff,
         DashboardSection.PendingEmployees
     ];
@@ -24,6 +27,7 @@ public sealed class DashboardPage : UserControl
     private readonly EmployeeRegistrationService _registration;
     private readonly EmployeeApprovalService _approvals;
     private readonly IEmployeeRepository _repository;
+    private readonly CustomerDirectoryService _customerDirectory;
     private readonly Panel _sidebar = new();
     private readonly Panel _contentHost = new();
     private readonly Panel _card = new();
@@ -37,13 +41,15 @@ public sealed class DashboardPage : UserControl
         MainShellForm shell,
         EmployeeRegistrationService registration,
         EmployeeApprovalService approvals,
-        IEmployeeRepository repository)
+        IEmployeeRepository repository,
+        CustomerDirectoryService customerDirectory)
     {
         _employee = employee;
         _shell = shell;
         _registration = registration;
         _approvals = approvals;
         _repository = repository;
+        _customerDirectory = customerDirectory;
 
         SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
         UpdateStyles();
@@ -221,6 +227,9 @@ public sealed class DashboardPage : UserControl
             DashboardSection.Home => BuildHomeView(),
             DashboardSection.Staff => new EmployeeStaffPanel(_employee, _repository, _registration),
             DashboardSection.PendingEmployees => new PendingEmployeesPanel(_employee, _approvals),
+            DashboardSection.CustomerRegistration => new CustomerRegistrationPanel(_customerDirectory),
+            DashboardSection.CustomerSearch => new CustomerSearchPanel(_customerDirectory),
+            DashboardSection.CustomerAnimals => new CustomerAnimalsPanel(_customerDirectory),
             _ => BuildPlaceholderView(section)
         };
 
@@ -351,6 +360,9 @@ public sealed class DashboardPage : UserControl
             DashboardSection.Visits => "Visits",
             DashboardSection.Patients => "Patients",
             DashboardSection.Billing => "Billing",
+            DashboardSection.CustomerRegistration => "New customer",
+            DashboardSection.CustomerSearch => "Find customer",
+            DashboardSection.CustomerAnimals => "Pet records",
             DashboardSection.Staff => "Staff",
             DashboardSection.PendingEmployees => "Pending Employees",
             _ => "Home"
@@ -472,6 +484,14 @@ public sealed class DashboardPage : UserControl
                     c.Width = inner;
                 }
 
+                break;
+            }
+            default:
+            {
+                if (view is DataGridView)
+                    break;
+                foreach (Control ch in view.Controls)
+                    ApplyInnerWidth(ch, inner);
                 break;
             }
         }
