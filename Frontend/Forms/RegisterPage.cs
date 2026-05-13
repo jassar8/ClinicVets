@@ -64,7 +64,7 @@ public sealed class RegisterPage : UserControl
 
         _fullNameHost = new RoundedInputHost(_fullName);
         _emailHost = new RoundedInputHost(_email);
-        _passwordHost = new RoundedInputHost(_password);
+        _passwordHost = new RoundedInputHost(_password, showPasswordRevealToggle: true);
 
         _role.DropDownStyle = ComboBoxStyle.DropDownList;
         _role.Items.AddRange(new object[] { "Secretary", "Veterinarian" });
