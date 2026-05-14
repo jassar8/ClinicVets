@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using ClinicVetsAvalonia.Data;
+using ClinicVetsAvalonia.Helpers;
 using ClinicVetsAvalonia.Models;
 using ClinicVetsAvalonia.Views;
 
@@ -87,6 +88,9 @@ namespace ClinicVetsAvalonia
 
         private void ShowClients()
         {
+            if (!CanOpenScreen("Clients"))
+                return;
+
             var clientsView = new ClientsView();
 
             clientsView.BackToMainMenu += ShowMainMenu;
@@ -96,6 +100,9 @@ namespace ClinicVetsAvalonia
 
         private void ShowAnimals()
         {
+            if (!CanOpenScreen("Animals"))
+                return;
+
             var animalsView = new AnimalsView();
 
             animalsView.BackToMainMenu += ShowMainMenu;
@@ -105,6 +112,9 @@ namespace ClinicVetsAvalonia
 
         private void ShowVisits()
         {
+            if (!CanOpenScreen("Visits"))
+                return;
+
             var visitsView = new VisitsView();
 
             visitsView.BackToMainMenu += ShowMainMenu;
@@ -114,6 +124,9 @@ namespace ClinicVetsAvalonia
 
         private void ShowMedications()
         {
+            if (!CanOpenScreen("Medications"))
+                return;
+
             var medicationsView = new MedicationsView();
 
             medicationsView.BackToMainMenu += ShowMainMenu;
@@ -126,6 +139,31 @@ namespace ClinicVetsAvalonia
             page.Opacity = 0.98;
             MainContent.Child = page;
             page.Focus();
+        }
+
+        private bool CanOpenScreen(string screenName)
+        {
+            if (currentEmployee == null)
+            {
+                ShowLogin();
+                return false;
+            }
+
+            bool allowed = currentEmployee.Role switch
+            {
+                "Secretary" => screenName is "Clients" or "Animals",
+                "Vet" => screenName is "Animals" or "Visits" or "Medications",
+                _ => false
+            };
+
+            if (!allowed)
+            {
+                UIHelper.ShowMessage(this, "אין הרשאה לפתוח מסך זה לפי התפקיד שלך");
+                ShowMainMenu();
+                return false;
+            }
+
+            return true;
         }
     }
 }

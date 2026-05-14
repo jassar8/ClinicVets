@@ -3,34 +3,36 @@
              x:Class="ClinicVetsAvalonia.Views.AnimalsView"
              FlowDirection="RightToLeft">
 
-    <Grid Width="900" Height="650" Margin="20" Background="#BFEFF7">
+    <Grid Background="#EAF8FB">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="360"/>
+            <ColumnDefinition Width="390"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0"
                 Background="White"
-                BorderBrush="#69C5D8"
-                BorderThickness="3"
-                CornerRadius="18"
+                BorderBrush="#D3EEF4"
+                BorderThickness="1"
+                CornerRadius="28"
                 Padding="18"
-                VerticalAlignment="Top">
+                Margin="18,22,0,22">
 
-        <StackPanel Spacing="10">
-            <Button Content="חזרה לתפריט"
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="10"
+                    HorizontalAlignment="Center">
+            <Button Content="← חזרה לתפריט"
                     Width="150"
-                    Height="36"
+                    Height="38"
                     HorizontalAlignment="Left"
-                    Background="#476A88"
-                    BorderBrush="#476A88"
+                    Background="#12344D"
+                    BorderBrush="#12344D"
                     ToolTip.Tip="חזרה לתפריט הראשי"
                     Click="Back_Click"/>
 
             <TextBlock Text="ניהול בעלי חיים"
                        FontSize="28"
                        FontWeight="Bold"
-                       Foreground="#2D3748"
+                       Foreground="#13293D"
                        TextAlignment="Center"
                        HorizontalAlignment="Center"
                        Margin="0,0,0,15"/>
@@ -42,108 +44,210 @@
                        TextWrapping="Wrap"
                        Margin="0,-8,0,6"/>
 
-            <TextBox x:Name="NameInput"
-                     PlaceholderText="שם החיה"
-                     Width="260"
-                     TextChanged="ValidateInputs_Changed"/>
+            <Border x:Name="AnimalStartPanel"
+                    Background="#F8FCFD"
+                    BorderBrush="#D3EEF4"
+                    BorderThickness="1"
+                    CornerRadius="22"
+                    Padding="18"
+                    Width="310">
+                <StackPanel Spacing="14">
+                    <TextBlock Text="בחר פעולה"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Foreground="#007EA7"
+                               TextAlignment="Center"/>
 
-            <ComboBox x:Name="SpeciesDropdown"
-                      Width="260"
-                      SelectedIndex="0">
-                <ComboBoxItem Content="כלב"/>
-                <ComboBoxItem Content="חתול"/>
-                <ComboBoxItem Content="זוחל"/>
-                <ComboBoxItem Content="ציפור"/>
-            </ComboBox>
+                    <Button Content="הוסף חיה חדשה"
+                            Height="44"
+                            Click="StartAddAnimal_Click"/>
 
-            <TextBox x:Name="ChipNumberInput"
-                     PlaceholderText="מספר שבב"
-                     Width="260"
-                     FlowDirection="LeftToRight"
-                     TextChanged="ValidateInputs_Changed"/>
+                    <TextBlock Text="לעריכה: לחץ על כרטיס חיה מתוך המאגר"
+                               FontSize="12"
+                               FontWeight="Bold"
+                               Foreground="#007EA7"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
 
-            <TextBox x:Name="WeightInput"
-                     PlaceholderText="משקל בקג"
-                     Width="260"
-                     FlowDirection="LeftToRight"
-                     TextChanged="ValidateInputs_Changed"/>
+            <StackPanel x:Name="AnimalFormPanel"
+                        Spacing="10"
+                        IsVisible="False">
+                <Border Background="#E9F8FC"
+                        CornerRadius="20"
+                        Padding="12"
+                        Width="310">
+                    <StackPanel Spacing="4">
+                        <TextBlock x:Name="AnimalFormTitle"
+                                   Text="פרטי החיה"
+                                   FontSize="17"
+                                   FontWeight="Bold"
+                                   Foreground="#007EA7"
+                                   TextAlignment="Center"/>
+                        <TextBlock x:Name="AnimalFormHint"
+                                   Text="מלא פרטים ושמור"
+                                   FontSize="12"
+                                   Foreground="#526172"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
 
-            <TextBlock Text="תאריך לידה"
-                       HorizontalAlignment="Center"/>
+                <TextBox x:Name="NameInput"
+                         PlaceholderText="שם החיה"
+                         Width="310"
+                         TextChanged="ValidateInputs_Changed"/>
 
-            <DatePicker x:Name="BirthDatePicker"
-                        Width="260"/>
+                <ComboBox x:Name="SpeciesDropdown"
+                          Width="310"
+                          SelectedIndex="0">
+                    <ComboBoxItem Content="כלב"/>
+                    <ComboBoxItem Content="חתול"/>
+                    <ComboBoxItem Content="זוחל"/>
+                    <ComboBoxItem Content="ציפור"/>
+                </ComboBox>
 
-            <TextBox x:Name="OwnerIdInput"
-                     PlaceholderText="תעודת זהות בעלים"
-                     Width="260"
-                     FlowDirection="LeftToRight"
-                     TextChanged="ValidateInputs_Changed"/>
+                <Grid Width="310"
+                      ColumnDefinitions="Auto,*"
+                      ColumnSpacing="8"
+                      FlowDirection="LeftToRight">
+                    <Border Grid.Column="0"
+                            Background="#E9F8FC"
+                            BorderBrush="#B7D6E3"
+                            BorderThickness="1"
+                            CornerRadius="14"
+                            Padding="12,8">
+                        <TextBlock Text="376"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Foreground="#12344D"
+                                   VerticalAlignment="Center"/>
+                    </Border>
 
-            <TextBlock Text="תאריך חיסון אחרון"
-                       HorizontalAlignment="Center"/>
+                    <TextBox x:Name="ChipNumberInput"
+                             Grid.Column="1"
+                             PlaceholderText="4 ספרות"
+                             MaxLength="4"
+                             FlowDirection="LeftToRight"
+                             TextChanged="ValidateInputs_Changed"/>
+                </Grid>
 
-            <DatePicker x:Name="VaccinationDatePicker"
-                        Width="260"/>
+                <TextBlock Text="הקידומת 376 קבועה. יש להזין 4 ספרות נוספות, והשבב חייב להיות ייחודי."
+                           FontSize="12"
+                           Foreground="#007EA7"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           Width="300"/>
 
-            <TextBlock x:Name="ValidationText"
-                       Text=""
-                       Foreground="#C62828"
-                       FontSize="13"
-                       TextAlignment="Center"
-                       TextWrapping="Wrap"
-                       MinHeight="20"/>
+                <TextBox x:Name="WeightInput"
+                         PlaceholderText="משקל בקג"
+                         Width="310"
+                         FlowDirection="LeftToRight"
+                         TextChanged="ValidateInputs_Changed"/>
 
-            <WrapPanel HorizontalAlignment="Center">
-                <Button Content="הוסף חיה"
-                        Width="110"
-                        Margin="5"
-                        Click="AddAnimal_Click"/>
+                <TextBlock Text="תאריך לידה"
+                           HorizontalAlignment="Center"/>
 
-                <Button Content="חפש חיה"
-                        Width="110"
-                        Margin="5"
-                        Click="SearchAnimal_Click"/>
+                <DatePicker x:Name="BirthDatePicker"
+                            Width="310"/>
 
-                <Button Content="עדכן חיה"
-                        Width="110"
-                        Margin="5"
-                        Click="UpdateAnimal_Click"/>
+                <TextBox x:Name="OwnerIdInput"
+                         PlaceholderText="תעודת זהות בעלים"
+                         Width="310"
+                         FlowDirection="LeftToRight"
+                         TextChanged="ValidateInputs_Changed"/>
 
-                <Button Content="מחק חיה"
-                        Width="110"
-                        Margin="5"
-                        Click="DeleteAnimal_Click"/>
+                <TextBlock Text="תאריך חיסון אחרון"
+                           HorizontalAlignment="Center"/>
 
-                <Button Content="נקה שדות"
-                        Width="110"
-                        Margin="5"
-                        Click="ClearFields_Click"/>
-            </WrapPanel>
+                <DatePicker x:Name="VaccinationDatePicker"
+                            Width="310"/>
 
-            <Button Content="חזרה"
-                    Width="240"
-                    Height="40"
-                    HorizontalAlignment="Center"
-                    Margin="0,15,0,0"
-                    Click="Back_Click"/>
+                <TextBlock x:Name="ValidationText"
+                           Text=""
+                           Foreground="#C62828"
+                           FontSize="13"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           MinHeight="20"/>
+
+                <Border Background="#F8FCFD"
+                        BorderBrush="#D3EEF4"
+                        BorderThickness="1"
+                        CornerRadius="22"
+                        Padding="12"
+                        Width="310"
+                        HorizontalAlignment="Left">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="פעולות"
+                                   FontSize="15"
+                                   FontWeight="Bold"
+                                   Foreground="#007EA7"
+                                   TextAlignment="Center"/>
+
+                        <Grid ColumnDefinitions="*,*"
+                              RowDefinitions="Auto,Auto,Auto,Auto"
+                              ColumnSpacing="10"
+                              RowSpacing="10"
+                              FlowDirection="LeftToRight">
+                            <Button x:Name="SaveAnimalButton"
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Content="שמור חיה"
+                                    Height="40"
+                                    Grid.ColumnSpan="2"
+                                    Click="AddAnimal_Click"/>
+
+                            <Button Grid.Row="1"
+                                    Grid.ColumnSpan="2"
+                                    Content="נקה שדות"
+                                    Height="40"
+                                    Background="#12344D"
+                                    BorderBrush="#12344D"
+                                    Click="ClearFields_Click"/>
+
+                            <Button x:Name="DeleteAnimalButton"
+                                    Grid.Row="2"
+                                    Grid.ColumnSpan="2"
+                                    Content="מחק חיה"
+                                    Height="40"
+                                    IsVisible="False"
+                                    Background="#D64545"
+                                    BorderBrush="#D64545"
+                                    Click="DeleteAnimal_Click"/>
+
+                            <Button Grid.Row="3"
+                                    Grid.ColumnSpan="2"
+                                    Content="סגור פרטים"
+                                    Height="40"
+                                    Background="#EEF6F8"
+                                    BorderBrush="#D3EEF4"
+                                    Foreground="#12344D"
+                                    Click="CloseAnimalForm_Click"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
         </StackPanel>
+        </ScrollViewer>
         </Border>
 
         <Border Grid.Column="1"
                 BorderThickness="1"
-                BorderBrush="#69C5D8"
+                BorderBrush="#D3EEF4"
                 Background="White"
-                CornerRadius="18"
+                CornerRadius="28"
                 Padding="16"
-                Margin="20,60,20,40">
+                Margin="18,22,18,22">
             <Grid RowDefinitions="Auto,*">
                 <StackPanel Spacing="10"
                             Margin="0,0,0,12">
                     <TextBlock Text="מאגר בעלי החיים"
                                FontSize="24"
                                FontWeight="Bold"
-                               Foreground="#2D3748"
+                               Foreground="#13293D"
                                TextAlignment="Center"/>
 
                     <TextBlock x:Name="AnimalResultsText"
@@ -152,17 +256,18 @@
                                Foreground="#526172"
                                TextAlignment="Center"/>
 
-                    <WrapPanel HorizontalAlignment="Center">
+                    <Grid MaxWidth="620"
+                          HorizontalAlignment="Center"
+                          ColumnDefinitions="*,150,82"
+                          ColumnSpacing="10">
                         <TextBox x:Name="AnimalSearchInput"
-                                 Width="210"
-                                 Margin="5"
+                                 Grid.Column="0"
                                  PlaceholderText="חפש לפי שם או שבב"
                                  TextChanged="AnimalSearch_Changed"
                                  ToolTip.Tip="הקלד שם חיה או מספר שבב"/>
 
                         <ComboBox x:Name="AnimalFilterDropdown"
-                                  Width="145"
-                                  Margin="5"
+                                  Grid.Column="1"
                                   SelectedIndex="0"
                                   SelectionChanged="AnimalFilter_SelectionChanged">
                             <ComboBoxItem Content="הכל"/>
@@ -174,20 +279,24 @@
                         </ComboBox>
 
                         <Button Content="נקה"
-                                Width="75"
-                                Height="36"
-                                Margin="5"
-                                Background="#476A88"
-                                BorderBrush="#476A88"
+                                Grid.Column="2"
+                                Height="40"
+                                Background="#12344D"
+                                BorderBrush="#12344D"
                                 Click="ClearAnimalSearch_Click"/>
-                    </WrapPanel>
+                    </Grid>
                 </StackPanel>
 
                 <ScrollViewer Grid.Row="1"
-                              VerticalScrollBarVisibility="Auto">
-                    <WrapPanel x:Name="AnimalCardsPanel"
-                               Orientation="Horizontal"
-                               HorizontalAlignment="Center"/>
+                              VerticalScrollBarVisibility="Auto"
+                              FlowDirection="LeftToRight">
+                    <Grid FlowDirection="LeftToRight"
+                          HorizontalAlignment="Stretch">
+                        <WrapPanel x:Name="AnimalCardsPanel"
+                                   Orientation="Horizontal"
+                                   HorizontalAlignment="Left"
+                                   FlowDirection="LeftToRight"/>
+                    </Grid>
                 </ScrollViewer>
             </Grid>
         </Border>

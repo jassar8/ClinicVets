@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -130,6 +131,73 @@ namespace ClinicVetsAvalonia.Helpers
                 await window.ShowDialog(parentWindow);
             else
                 window.Show();
+        }
+
+        public static async Task<bool> ShowConfirmation(Control owner, string message)
+        {
+            var yesButton = new Button
+            {
+                Content = "כן",
+                Width = 90,
+                Background = Brushes.Firebrick,
+                BorderBrush = Brushes.Firebrick,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(8)
+            };
+
+            var noButton = new Button
+            {
+                Content = "לא",
+                Width = 90,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(8)
+            };
+
+            var window = new Window
+            {
+                Title = "אישור פעולה",
+                Width = 390,
+                Height = 190,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Content = new StackPanel
+                {
+                    Margin = new Thickness(22),
+                    Spacing = 12,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Children =
+                    {
+                        new TextBlock
+                        {
+                            Text = message,
+                            TextWrapping = TextWrapping.Wrap,
+                            TextAlignment = TextAlignment.Center,
+                            FontSize = 16,
+                            Margin = new Thickness(5)
+                        },
+                        new StackPanel
+                        {
+                            Orientation = Orientation.Horizontal,
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            Children =
+                            {
+                                yesButton,
+                                noButton
+                            }
+                        }
+                    }
+                }
+            };
+
+            yesButton.Click += (_, _) => window.Close(true);
+            noButton.Click += (_, _) => window.Close(false);
+
+            var parentWindow = TopLevel.GetTopLevel(owner) as Window;
+
+            if (parentWindow != null)
+                return await window.ShowDialog<bool>(parentWindow);
+
+            window.Show();
+            return false;
         }
     }
 }

@@ -15,5 +15,7 @@ namespace ClinicVetsAvalonia.Models
         public string MedicationName { get; set; } = "";
         public int MedicationQuantity { get; set; }
         public double TotalCost { get; set; }
+        public string ArrivalStatus { get; set; } = "Scheduled";
+        public string ArrivalNote { get; set; } = "";
     }
 }

@@ -67,7 +67,8 @@ namespace ClinicVetsAvalonia.Data
                     IdNumber TEXT PRIMARY KEY,
                     FullName TEXT NOT NULL,
                     Phone TEXT NOT NULL,
-                    Email TEXT NOT NULL
+                    Email TEXT NOT NULL,
+                    Gender TEXT NOT NULL DEFAULT 'זכר'
                 );
             ";
 
@@ -109,6 +110,8 @@ namespace ClinicVetsAvalonia.Data
                     MedicationName TEXT NOT NULL,
                     MedicationQuantity INTEGER NOT NULL,
                     TotalCost REAL NOT NULL,
+                    ArrivalStatus TEXT NOT NULL DEFAULT 'Scheduled',
+                    ArrivalNote TEXT NOT NULL DEFAULT '',
                     FOREIGN KEY (AnimalChipNumber) REFERENCES Animals(ChipNumber)
                 );
             ";
@@ -118,6 +121,7 @@ namespace ClinicVetsAvalonia.Data
 
             using var clientsCommand = new SqliteCommand(createClientsTable, connection);
             clientsCommand.ExecuteNonQuery();
+            EnsureColumnExists(connection, "Clients", "Gender", "TEXT NOT NULL DEFAULT 'זכר'");
 
             using var animalsCommand = new SqliteCommand(createAnimalsTable, connection);
             animalsCommand.ExecuteNonQuery();
@@ -127,6 +131,35 @@ namespace ClinicVetsAvalonia.Data
 
             using var visitsCommand = new SqliteCommand(createVisitsTable, connection);
             visitsCommand.ExecuteNonQuery();
+            EnsureColumnExists(connection, "Visits", "ArrivalStatus", "TEXT NOT NULL DEFAULT 'Scheduled'");
+            EnsureColumnExists(connection, "Visits", "ArrivalNote", "TEXT NOT NULL DEFAULT ''");
+        }
+
+        private static void EnsureColumnExists(SqliteConnection connection, string tableName, string columnName, string columnDefinition)
+        {
+            bool columnExists = false;
+
+            using var infoCommand = new SqliteCommand($"PRAGMA table_info({tableName});", connection);
+            {
+                using var reader = infoCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    if (reader.GetString(1) == columnName)
+                    {
+                        columnExists = true;
+                        break;
+                    }
+                }
+            }
+
+            if (columnExists)
+                return;
+
+            using var alterCommand = new SqliteCommand(
+                $"ALTER TABLE {tableName} ADD COLUMN {columnName} {columnDefinition};",
+                connection);
+            alterCommand.ExecuteNonQuery();
         }
 
         private static void AddDefaultEmployees()
@@ -219,7 +252,7 @@ namespace ClinicVetsAvalonia.Data
             connection.Open();
 
             string query = @"
-                SELECT FullName, IdNumber, Phone, Email
+                SELECT FullName, IdNumber, Phone, Email, Gender
                 FROM Clients;
             ";
 
@@ -233,7 +266,8 @@ namespace ClinicVetsAvalonia.Data
                     FullName = reader.GetString(0),
                     IdNumber = reader.GetString(1),
                     Phone = reader.GetString(2),
-                    Email = reader.GetString(3)
+                    Email = reader.GetString(3),
+                    Gender = reader.GetString(4)
                 });
             }
         }
@@ -243,27 +277,62 @@ namespace ClinicVetsAvalonia.Data
             using var connection = new SqliteConnection(ConnectionString);
             connection.Open();
 
-            using var deleteCommand = new SqliteCommand("DELETE FROM Clients", connection);
-            deleteCommand.ExecuteNonQuery();
+            using var transaction = connection.BeginTransaction();
 
             foreach (var client in Clients)
             {
                 string insertQuery = @"
                     INSERT INTO Clients
-                    (IdNumber, FullName, Phone, Email)
+                    (IdNumber, FullName, Phone, Email, Gender)
                     VALUES
-                    (@IdNumber, @FullName, @Phone, @Email);
+                    (@IdNumber, @FullName, @Phone, @Email, @Gender)
+                    ON CONFLICT(IdNumber) DO UPDATE SET
+                        FullName = excluded.FullName,
+                        Phone = excluded.Phone,
+                        Email = excluded.Email,
+                        Gender = excluded.Gender;
                 ";
 
                 using var command = new SqliteCommand(insertQuery, connection);
+                command.Transaction = transaction;
 
                 command.Parameters.AddWithValue("@IdNumber", client.IdNumber);
                 command.Parameters.AddWithValue("@FullName", client.FullName);
                 command.Parameters.AddWithValue("@Phone", client.Phone);
                 command.Parameters.AddWithValue("@Email", client.Email);
+                command.Parameters.AddWithValue("@Gender", client.Gender);
 
                 command.ExecuteNonQuery();
             }
+
+            var savedIdNumbers = new HashSet<string>();
+            foreach (var client in Clients)
+                savedIdNumbers.Add(client.IdNumber);
+
+            var databaseIdNumbers = new List<string>();
+            using (var selectCommand = new SqliteCommand("SELECT IdNumber FROM Clients;", connection))
+            {
+                selectCommand.Transaction = transaction;
+                using var reader = selectCommand.ExecuteReader();
+
+                while (reader.Read())
+                    databaseIdNumbers.Add(reader.GetString(0));
+            }
+
+            foreach (string idNumber in databaseIdNumbers)
+            {
+                if (savedIdNumbers.Contains(idNumber))
+                    continue;
+
+                using var deleteCommand = new SqliteCommand(
+                    "DELETE FROM Clients WHERE IdNumber = @IdNumber;",
+                    connection);
+                deleteCommand.Transaction = transaction;
+                deleteCommand.Parameters.AddWithValue("@IdNumber", idNumber);
+                deleteCommand.ExecuteNonQuery();
+            }
+
+            transaction.Commit();
         }
 
         public static void LoadAnimals()
@@ -302,8 +371,7 @@ namespace ClinicVetsAvalonia.Data
             using var connection = new SqliteConnection(ConnectionString);
             connection.Open();
 
-            using var deleteCommand = new SqliteCommand("DELETE FROM Animals", connection);
-            deleteCommand.ExecuteNonQuery();
+            using var transaction = connection.BeginTransaction();
 
             foreach (var animal in Animals)
             {
@@ -311,10 +379,18 @@ namespace ClinicVetsAvalonia.Data
                     INSERT INTO Animals
                     (Name, Species, ChipNumber, Weight, BirthDate, OwnerIdNumber, LastVaccinationDate)
                     VALUES
-                    (@Name, @Species, @ChipNumber, @Weight, @BirthDate, @OwnerIdNumber, @LastVaccinationDate);
+                    (@Name, @Species, @ChipNumber, @Weight, @BirthDate, @OwnerIdNumber, @LastVaccinationDate)
+                    ON CONFLICT(ChipNumber) DO UPDATE SET
+                        Name = excluded.Name,
+                        Species = excluded.Species,
+                        Weight = excluded.Weight,
+                        BirthDate = excluded.BirthDate,
+                        OwnerIdNumber = excluded.OwnerIdNumber,
+                        LastVaccinationDate = excluded.LastVaccinationDate;
                 ";
 
                 using var command = new SqliteCommand(insertQuery, connection);
+                command.Transaction = transaction;
 
                 command.Parameters.AddWithValue("@Name", animal.Name);
                 command.Parameters.AddWithValue("@Species", animal.Species);
@@ -326,6 +402,35 @@ namespace ClinicVetsAvalonia.Data
 
                 command.ExecuteNonQuery();
             }
+
+            var savedChipNumbers = new HashSet<string>();
+            foreach (var animal in Animals)
+                savedChipNumbers.Add(animal.ChipNumber);
+
+            var databaseChipNumbers = new List<string>();
+            using (var selectCommand = new SqliteCommand("SELECT ChipNumber FROM Animals;", connection))
+            {
+                selectCommand.Transaction = transaction;
+                using var reader = selectCommand.ExecuteReader();
+
+                while (reader.Read())
+                    databaseChipNumbers.Add(reader.GetString(0));
+            }
+
+            foreach (string chipNumber in databaseChipNumbers)
+            {
+                if (savedChipNumbers.Contains(chipNumber))
+                    continue;
+
+                using var deleteCommand = new SqliteCommand(
+                    "DELETE FROM Animals WHERE ChipNumber = @ChipNumber;",
+                    connection);
+                deleteCommand.Transaction = transaction;
+                deleteCommand.Parameters.AddWithValue("@ChipNumber", chipNumber);
+                deleteCommand.ExecuteNonQuery();
+            }
+
+            transaction.Commit();
         }
 
         public static void LoadMedications()
@@ -396,7 +501,8 @@ namespace ClinicVetsAvalonia.Data
 
             string query = @"
                 SELECT Id, AnimalChipNumber, VisitDate, Reason, Symptoms, Diagnosis,
-                       VeterinarianName, BaseCost, MedicationName, MedicationQuantity, TotalCost
+                       VeterinarianName, BaseCost, MedicationName, MedicationQuantity, TotalCost,
+                       ArrivalStatus, ArrivalNote
                 FROM Visits;
             ";
 
@@ -417,7 +523,9 @@ namespace ClinicVetsAvalonia.Data
                     BaseCost = reader.GetDouble(7),
                     MedicationName = reader.GetString(8),
                     MedicationQuantity = reader.GetInt32(9),
-                    TotalCost = reader.GetDouble(10)
+                    TotalCost = reader.GetDouble(10),
+                    ArrivalStatus = reader.GetString(11),
+                    ArrivalNote = reader.GetString(12)
                 });
             }
         }
@@ -435,10 +543,10 @@ namespace ClinicVetsAvalonia.Data
                 string insertQuery = @"
                     INSERT INTO Visits
                     (Id, AnimalChipNumber, VisitDate, Reason, Symptoms, Diagnosis, VeterinarianName,
-                     BaseCost, MedicationName, MedicationQuantity, TotalCost)
+                     BaseCost, MedicationName, MedicationQuantity, TotalCost, ArrivalStatus, ArrivalNote)
                     VALUES
                     (@Id, @AnimalChipNumber, @VisitDate, @Reason, @Symptoms, @Diagnosis, @VeterinarianName,
-                     @BaseCost, @MedicationName, @MedicationQuantity, @TotalCost);
+                     @BaseCost, @MedicationName, @MedicationQuantity, @TotalCost, @ArrivalStatus, @ArrivalNote);
                 ";
 
                 using var command = new SqliteCommand(insertQuery, connection);
@@ -454,6 +562,8 @@ namespace ClinicVetsAvalonia.Data
                 command.Parameters.AddWithValue("@MedicationName", visit.MedicationName);
                 command.Parameters.AddWithValue("@MedicationQuantity", visit.MedicationQuantity);
                 command.Parameters.AddWithValue("@TotalCost", visit.TotalCost);
+                command.Parameters.AddWithValue("@ArrivalStatus", visit.ArrivalStatus);
+                command.Parameters.AddWithValue("@ArrivalNote", visit.ArrivalNote);
 
                 command.ExecuteNonQuery();
             }

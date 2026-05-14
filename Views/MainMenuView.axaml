@@ -3,187 +3,574 @@
              x:Class="ClinicVetsAvalonia.Views.MainMenuView"
              FlowDirection="RightToLeft">
 
-    <Grid Width="900" Height="650" Background="#BFEFF7">
-        <Grid ColumnDefinitions="220,*">
+    <Grid Background="#EAF8FB">
+        <Grid ColumnDefinitions="260,*">
             <Border Grid.Column="0"
-                    Background="#2F4E6B"
-                    Padding="18">
+                    Background="#12344D"
+                    Padding="20"
+                    CornerRadius="0,34,34,0">
                 <Grid RowDefinitions="*,Auto">
-                    <StackPanel Spacing="18">
+                    <StackPanel Spacing="16">
                         <Border Width="138"
                                 Height="138"
-                                Background="#FFFFFF"
+                                Background="#E7FAFF"
                                 CornerRadius="69"
                                 HorizontalAlignment="Center"
-                                Margin="0,22,0,4">
+                                Margin="0,18,0,4">
                             <Grid>
-                                <Ellipse Width="94"
-                                         Height="94"
-                                         Fill="#0797C9"
+                                <Ellipse Width="104"
+                                         Height="104"
+                                         Fill="#00B7D7"
                                          HorizontalAlignment="Center"
                                          VerticalAlignment="Center"/>
-                                <TextBlock Text="VC"
-                                           FontSize="30"
+                                <Ellipse Width="72"
+                                         Height="72"
+                                         Fill="#FFE08A"
+                                         Opacity="0.9"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"/>
+                                <TextBlock Text="🐾"
+                                           FontSize="34"
                                            FontWeight="Bold"
-                                           Foreground="White"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"/>
                             </Grid>
                         </Border>
 
                         <TextBlock Text="Clinic Vets"
-                                   FontSize="23"
+                                   FontSize="27"
                                    FontWeight="Bold"
                                    Foreground="White"
                                    TextAlignment="Center"/>
 
+                        <TextBlock Text="מערכת ניהול מרפאה וטרינרית"
+                                   FontSize="13"
+                                   Foreground="#AEEAF3"
+                                   TextAlignment="Center"
+                                   Margin="0,-8,0,4"/>
+
                         <TextBlock x:Name="LoggedInText"
                                    Text="מחובר כ:"
                                    FontSize="14"
-                                   Foreground="#D7EEF5"
+                                   Foreground="#D8F6FA"
                                    TextAlignment="Center"
                                    TextWrapping="Wrap"
-                                   Margin="0,0,0,16"/>
+                                   Margin="0,0,0,10"/>
+
+                        <Border Background="#1E4966"
+                                CornerRadius="18"
+                                Padding="12"
+                                Margin="0,0,0,6">
+                            <TextBlock Text="תפריט מערכת"
+                                       FontSize="15"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       TextAlignment="Center"/>
+                        </Border>
 
                         <Button x:Name="ClientsButton"
-                                Content="לקוחות"
-                                Height="46"
+                                Content="👥  לקוחות"
+                                Height="50"
+                                Background="#F8FEFF"
+                                Foreground="#12344D"
+                                BorderBrush="#F8FEFF"
                                 Click="Clients_Click"/>
 
                         <Button x:Name="AnimalsButton"
-                                Content="בעלי חיים"
-                                Height="46"
+                                Content="🐾  בעלי חיים"
+                                Height="50"
+                                Background="#214F70"
+                                BorderBrush="#214F70"
                                 Click="Animals_Click"/>
 
                         <Button x:Name="VisitsButton"
-                                Content="ביקורים וטיפולים"
-                                Height="46"
+                                Content="🩺  ביקורים וטיפולים"
+                                Height="50"
+                                Background="#214F70"
+                                BorderBrush="#214F70"
                                 Click="Visits_Click"/>
 
                         <Button x:Name="MedicinesButton"
-                                Content="תרופות ומלאי"
-                                Height="46"
+                                Content="💊  תרופות ומלאי"
+                                Height="50"
+                                Background="#214F70"
+                                BorderBrush="#214F70"
                                 Click="Medicines_Click"/>
                     </StackPanel>
 
                     <Button Grid.Row="1"
-                            Content="התנתקות"
-                            Height="44"
-                            Background="#476A88"
-                            BorderBrush="#476A88"
+                            Content="יציאה מהמערכת"
+                            Height="48"
+                            Background="#F56B6B"
+                            BorderBrush="#F56B6B"
                             Click="Logout_Click"/>
                 </Grid>
             </Border>
 
-            <Grid Grid.Column="1"
-                  Margin="24"
-                  RowDefinitions="Auto,*">
-                <Border Background="White"
-                        CornerRadius="20"
-                        BorderBrush="#69C5D8"
-                        BorderThickness="3"
-                        Padding="24"
-                        Margin="0,0,0,18">
-                    <StackPanel>
-                        <TextBlock Text="ברוכים הבאים למערכת המרפאה"
-                                   FontSize="34"
-                                   FontWeight="Bold"
-                                   Foreground="#2D3748"
-                                   TextAlignment="Center"/>
-                        <TextBlock Text="בחר פעולה מהכרטיסים או מהתפריט הצדדי"
-                                   FontSize="16"
-                                   Foreground="#526172"
-                                   TextAlignment="Center"
-                                   Margin="0,8,0,0"/>
-                    </StackPanel>
-                </Border>
-
-                <Grid Grid.Row="1"
-                      ColumnDefinitions="*,*"
-                      RowDefinitions="*,*"
-                      ColumnSpacing="18"
-                      RowSpacing="18">
-                    <Button x:Name="ClientsCardButton"
-                            Grid.Row="0"
-                            Grid.Column="0"
+            <ScrollViewer Grid.Column="1"
+                          HorizontalScrollBarVisibility="Disabled">
+                <Grid Margin="18"
+                      RowDefinitions="Auto,Auto,Auto,*">
+                    <Border CornerRadius="30"
+                            Padding="22"
+                            Margin="0,0,0,14"
                             Background="#FFFFFF"
-                            BorderBrush="#69C5D8"
-                            BorderThickness="3"
-                            Foreground="#2D3748"
-                            Click="Clients_Click">
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="לקוחות"
-                                       FontSize="26"
-                                       FontWeight="Bold"
-                                       TextAlignment="Center"/>
-                            <TextBlock Text="רישום, חיפוש ועדכון לקוחות"
-                                       FontSize="14"
-                                       Foreground="#526172"
-                                       TextAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                            BorderBrush="#D3EEF4"
+                            BorderThickness="1">
+                        <Grid ColumnDefinitions="*,Auto"
+                              ColumnSpacing="16">
+                            <StackPanel Spacing="8">
+                                <Border Background="#E8F9FD"
+                                        CornerRadius="999"
+                                        Padding="12,6"
+                                        HorizontalAlignment="Right">
+                                    <TextBlock x:Name="RoleBadgeText"
+                                               Text="פרויקט גמר 2026"
+                                               FontWeight="Bold"
+                                               Foreground="#007EA7"/>
+                                </Border>
+                                <Border Background="#F8FCFD"
+                                        BorderBrush="#D3EEF4"
+                                        BorderThickness="1"
+                                        CornerRadius="18"
+                                        Padding="12,7"
+                                        HorizontalAlignment="Right">
+                                    <TextBlock x:Name="LiveClockText"
+                                               Text="--/--/---- --:--:--"
+                                               FontSize="14"
+                                               FontWeight="Bold"
+                                               Foreground="#12344D"/>
+                                </Border>
+                                <TextBlock x:Name="HeroTitleText"
+                                           Text="ברוכים הבאים למערכת המרפאה"
+                                           FontSize="30"
+                                           FontWeight="Bold"
+                                           Foreground="#13293D"
+                                           TextAlignment="Right"
+                                           TextWrapping="Wrap"/>
+                                <TextBlock x:Name="HeroSubtitleText"
+                                           Text="ניהול לקוחות, בעלי חיים, ביקורים ותרופות במקום אחד - ברור, מהיר ומעוצב כמו מערכת אמיתית."
+                                           FontSize="15"
+                                           Foreground="#536B7D"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Right"/>
+                            </StackPanel>
 
-                    <Button x:Name="AnimalsCardButton"
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            Background="#FFFFFF"
-                            BorderBrush="#69C5D8"
-                            BorderThickness="3"
-                            Foreground="#2D3748"
-                            Click="Animals_Click">
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="בעלי חיים"
-                                       FontSize="26"
-                                       FontWeight="Bold"
-                                       TextAlignment="Center"/>
-                            <TextBlock Text="כרטיסי חיות, שבבים וחיסונים"
-                                       FontSize="14"
-                                       Foreground="#526172"
-                                       TextAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                            <Border Grid.Column="1"
+                                    Width="118"
+                                    Height="118"
+                                    Background="#00B7D7"
+                                    CornerRadius="28"
+                                    VerticalAlignment="Center">
+                                <Grid>
+                                    <Ellipse Width="88"
+                                             Height="88"
+                                             Fill="#FFE08A"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"/>
+                                    <TextBlock Text="🐶"
+                                               FontSize="42"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
 
-                    <Button x:Name="VisitsCardButton"
-                            Grid.Row="1"
-                            Grid.Column="0"
+                    <Border Grid.Row="1"
                             Background="#FFFFFF"
-                            BorderBrush="#69C5D8"
-                            BorderThickness="3"
-                            Foreground="#2D3748"
-                            Click="Visits_Click">
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="ביקורים"
-                                       FontSize="26"
-                                       FontWeight="Bold"
-                                       TextAlignment="Center"/>
-                            <TextBlock Text="טיפולים, אבחנות ועלויות"
-                                       FontSize="14"
-                                       Foreground="#526172"
-                                       TextAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                            CornerRadius="30"
+                            BorderBrush="#D3EEF4"
+                            BorderThickness="1"
+                            Padding="20"
+                            Margin="0,0,0,14">
+                        <Grid ColumnDefinitions="*,*"
+                              RowDefinitions="Auto,Auto"
+                              ColumnSpacing="14"
+                              RowSpacing="14">
+                            <StackPanel Grid.Row="0"
+                                        Grid.ColumnSpan="2"
+                                        Spacing="6">
+                                <TextBlock x:Name="RoleGuideTitle"
+                                           Text="מה עושים עכשיו?"
+                                           FontSize="22"
+                                           FontWeight="Bold"
+                                           Foreground="#13293D"
+                                           TextWrapping="Wrap"/>
+                                <TextBlock x:Name="RoleGuideText"
+                                           Text="בחר פעולה אחת לפי התפקיד שלך והתקדם שלב אחרי שלב."
+                                           FontSize="14"
+                                           Foreground="#536B7D"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
 
-                    <Button x:Name="MedicinesCardButton"
-                            Grid.Row="1"
-                            Grid.Column="1"
+                            <Border Grid.Row="1"
+                                    Grid.Column="0"
+                                    Background="#E8F9FD"
+                                    CornerRadius="24"
+                                    Padding="16">
+                                <StackPanel Spacing="7">
+                                    <Border Width="34"
+                                            Height="34"
+                                            Background="#0097C7"
+                                            CornerRadius="17">
+                                        <TextBlock Text="1"
+                                                   Foreground="White"
+                                                   FontWeight="Bold"
+                                                   TextAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock x:Name="StepOneTitle"
+                                               Text="בחר מסך מתאים"
+                                               FontSize="18"
+                                               FontWeight="Bold"
+                                               Foreground="#13293D"
+                                               TextWrapping="Wrap"/>
+                                    <TextBlock x:Name="StepOneText"
+                                               Text="השתמש בכרטיסים למטה או בתפריט הצדדי."
+                                               FontSize="13"
+                                               Foreground="#536B7D"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Row="1"
+                                    Grid.Column="1"
+                                    Background="#EAF9F1"
+                                    CornerRadius="24"
+                                    Padding="16">
+                                <StackPanel Spacing="7">
+                                    <Border Width="34"
+                                            Height="34"
+                                            Background="#22A06B"
+                                            CornerRadius="17">
+                                        <TextBlock Text="2"
+                                                   Foreground="White"
+                                                   FontWeight="Bold"
+                                                   TextAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock x:Name="StepTwoTitle"
+                                               Text="בצע פעולה אחת"
+                                               FontSize="18"
+                                               FontWeight="Bold"
+                                               Foreground="#13293D"
+                                               TextWrapping="Wrap"/>
+                                    <TextBlock x:Name="StepTwoText"
+                                               Text="הוסף, חפש או עדכן לפי הנתונים של המרפאה."
+                                               FontSize="13"
+                                               Foreground="#536B7D"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <WrapPanel Grid.Row="2"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,18">
+                        <Border x:Name="ClientsStatCard"
+                                Background="#FFFFFF"
+                                CornerRadius="24"
+                                BorderBrush="#D3EEF4"
+                                BorderThickness="1"
+                                Padding="18"
+                                Width="190"
+                                MinHeight="98"
+                                Margin="7">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel>
+                                    <TextBlock Text="לקוחות"
+                                               FontWeight="Bold"
+                                               Foreground="#536B7D"/>
+                                    <TextBlock x:Name="ClientsCountText"
+                                               Text="0"
+                                               FontSize="30"
+                                               FontWeight="Bold"
+                                               Foreground="#0097C7"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1"
+                                           Text="👥"
+                                           FontSize="30"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <Border x:Name="AnimalsStatCard"
+                                Background="#FFFFFF"
+                                CornerRadius="24"
+                                BorderBrush="#D3EEF4"
+                                BorderThickness="1"
+                                Padding="18"
+                                Width="190"
+                                MinHeight="98"
+                                Margin="7">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel>
+                                    <TextBlock Text="בעלי חיים"
+                                               FontWeight="Bold"
+                                               Foreground="#536B7D"/>
+                                    <TextBlock x:Name="AnimalsCountText"
+                                               Text="0"
+                                               FontSize="30"
+                                               FontWeight="Bold"
+                                               Foreground="#22A06B"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1"
+                                           Text="🐾"
+                                           FontSize="30"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <Border x:Name="VisitsStatCard"
+                                Background="#FFFFFF"
+                                CornerRadius="24"
+                                BorderBrush="#D3EEF4"
+                                BorderThickness="1"
+                                Padding="18"
+                                Width="190"
+                                MinHeight="98"
+                                Margin="7">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel>
+                                    <TextBlock Text="ביקורים"
+                                               FontWeight="Bold"
+                                               Foreground="#536B7D"/>
+                                    <TextBlock x:Name="VisitsCountText"
+                                               Text="0"
+                                               FontSize="30"
+                                               FontWeight="Bold"
+                                               Foreground="#F59E0B"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1"
+                                           Text="🩺"
+                                           FontSize="30"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <Border x:Name="MedicationsStatCard"
+                                Background="#FFFFFF"
+                                CornerRadius="24"
+                                BorderBrush="#D3EEF4"
+                                BorderThickness="1"
+                                Padding="18"
+                                Width="190"
+                                MinHeight="98"
+                                Margin="7">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel>
+                                    <TextBlock Text="תרופות"
+                                               FontWeight="Bold"
+                                               Foreground="#536B7D"/>
+                                    <TextBlock x:Name="MedicationsCountText"
+                                               Text="0"
+                                               FontSize="30"
+                                               FontWeight="Bold"
+                                               Foreground="#8B5CF6"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1"
+                                           Text="💊"
+                                           FontSize="30"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </WrapPanel>
+
+                    <Border Grid.Row="3"
                             Background="#FFFFFF"
-                            BorderBrush="#69C5D8"
-                            BorderThickness="3"
-                            Foreground="#2D3748"
-                            Click="Medicines_Click">
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="תרופות"
-                                       FontSize="26"
-                                       FontWeight="Bold"
-                                       TextAlignment="Center"/>
-                            <TextBlock Text="מלאי, מחיר ותוקף"
-                                       FontSize="14"
-                                       Foreground="#526172"
-                                       TextAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                            CornerRadius="30"
+                            BorderBrush="#D3EEF4"
+                            BorderThickness="1"
+                            Padding="26">
+                        <Grid RowDefinitions="Auto,*">
+                            <StackPanel Spacing="4"
+                                        Margin="0,0,0,20">
+                                <TextBlock x:Name="QuickActionsTitle"
+                                           Text="המסכים שלך"
+                                           FontSize="26"
+                                           FontWeight="Bold"
+                                           Foreground="#13293D"
+                                           TextAlignment="Right"/>
+                                <TextBlock x:Name="QuickActionsSubtitle"
+                                           Text="מוצגים כאן רק המסכים שמתאימים לתפקיד שלך"
+                                           FontSize="14"
+                                           Foreground="#536B7D"
+                                           TextAlignment="Right"/>
+                            </StackPanel>
+
+                            <WrapPanel x:Name="QuickActionsPanel"
+                                       Grid.Row="1"
+                                       HorizontalAlignment="Center">
+                                <Button x:Name="ClientsCardButton"
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        Classes="dataCard"
+                                        Background="#E8F9FD"
+                                        BorderBrush="#BFEAF2"
+                                        BorderThickness="1"
+                                        Foreground="#13293D"
+                                        Width="350"
+                                        Height="170"
+                                        Margin="8"
+                                        Click="Clients_Click">
+                                    <Grid ColumnDefinitions="*,Auto"
+                                          Margin="8">
+                                        <StackPanel Spacing="7"
+                                                    VerticalAlignment="Center">
+                                            <TextBlock Text="לקוחות"
+                                                       FontSize="27"
+                                                       FontWeight="Bold"/>
+                                            <TextBlock Text="רישום, חיפוש ועדכון לקוחות"
+                                                       FontSize="14"
+                                                       Foreground="#536B7D"
+                                                       TextWrapping="Wrap"/>
+                                            <TextBlock Text="פתח מסך לקוחות ←"
+                                                       FontSize="13"
+                                                       FontWeight="Bold"
+                                                       Foreground="#0097C7"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="1"
+                                                Width="86"
+                                                Height="86"
+                                                CornerRadius="28"
+                                                Background="#FFFFFF">
+                                            <TextBlock Text="👥"
+                                                       FontSize="38"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+                                    </Grid>
+                                </Button>
+
+                                <Button x:Name="AnimalsCardButton"
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Classes="dataCard"
+                                        Background="#EAF9F1"
+                                        BorderBrush="#C9EEDB"
+                                        BorderThickness="1"
+                                        Foreground="#13293D"
+                                        Width="350"
+                                        Height="170"
+                                        Margin="8"
+                                        Click="Animals_Click">
+                                    <Grid ColumnDefinitions="*,Auto"
+                                          Margin="8">
+                                        <StackPanel Spacing="7"
+                                                    VerticalAlignment="Center">
+                                            <TextBlock Text="בעלי חיים"
+                                                       FontSize="27"
+                                                       FontWeight="Bold"/>
+                                            <TextBlock Text="כרטיסי חיות, שבבים וחיסונים"
+                                                       FontSize="14"
+                                                       Foreground="#536B7D"
+                                                       TextWrapping="Wrap"/>
+                                            <TextBlock Text="פתח מסך בעלי חיים ←"
+                                                       FontSize="13"
+                                                       FontWeight="Bold"
+                                                       Foreground="#22A06B"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="1"
+                                                Width="86"
+                                                Height="86"
+                                                CornerRadius="28"
+                                                Background="#FFFFFF">
+                                            <TextBlock Text="🐾"
+                                                       FontSize="38"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+                                    </Grid>
+                                </Button>
+
+                                <Button x:Name="VisitsCardButton"
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Classes="dataCard"
+                                        Background="#FFF7E6"
+                                        BorderBrush="#F7DFA8"
+                                        BorderThickness="1"
+                                        Foreground="#13293D"
+                                        Width="350"
+                                        Height="170"
+                                        Margin="8"
+                                        Click="Visits_Click">
+                                    <Grid ColumnDefinitions="*,Auto"
+                                          Margin="8">
+                                        <StackPanel Spacing="7"
+                                                    VerticalAlignment="Center">
+                                            <TextBlock Text="ביקורים"
+                                                       FontSize="27"
+                                                       FontWeight="Bold"/>
+                                            <TextBlock Text="טיפולים, אבחנות ועלויות"
+                                                       FontSize="14"
+                                                       Foreground="#536B7D"
+                                                       TextWrapping="Wrap"/>
+                                            <TextBlock Text="פתח מסך ביקורים ←"
+                                                       FontSize="13"
+                                                       FontWeight="Bold"
+                                                       Foreground="#D97706"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="1"
+                                                Width="86"
+                                                Height="86"
+                                                CornerRadius="28"
+                                                Background="#FFFFFF">
+                                            <TextBlock Text="🩺"
+                                                       FontSize="38"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+                                    </Grid>
+                                </Button>
+
+                                <Button x:Name="MedicinesCardButton"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Classes="dataCard"
+                                        Background="#F4EEFF"
+                                        BorderBrush="#DED0FA"
+                                        BorderThickness="1"
+                                        Foreground="#13293D"
+                                        Width="350"
+                                        Height="170"
+                                        Margin="8"
+                                        Click="Medicines_Click">
+                                    <Grid ColumnDefinitions="*,Auto"
+                                          Margin="8">
+                                        <StackPanel Spacing="7"
+                                                    VerticalAlignment="Center">
+                                            <TextBlock Text="תרופות"
+                                                       FontSize="27"
+                                                       FontWeight="Bold"/>
+                                            <TextBlock Text="מלאי, מחיר ותוקף"
+                                                       FontSize="14"
+                                                       Foreground="#536B7D"
+                                                       TextWrapping="Wrap"/>
+                                            <TextBlock Text="פתח מסך תרופות ←"
+                                                       FontSize="13"
+                                                       FontWeight="Bold"
+                                                       Foreground="#7C3AED"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="1"
+                                                Width="86"
+                                                Height="86"
+                                                CornerRadius="28"
+                                                Background="#FFFFFF">
+                                            <TextBlock Text="💊"
+                                                       FontSize="38"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+                                    </Grid>
+                                </Button>
+                            </WrapPanel>
+                        </Grid>
+                    </Border>
                 </Grid>
-            </Grid>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </UserControl>

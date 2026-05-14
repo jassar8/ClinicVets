@@ -118,12 +118,20 @@ namespace ClinicVetsAvalonia.Services
         public static bool IsValidChipNumber(string chipNumber)
         {
             return !string.IsNullOrWhiteSpace(chipNumber) &&
+                   chipNumber.Length == 7 &&
+                   chipNumber.StartsWith("376", StringComparison.Ordinal) &&
                    chipNumber.All(char.IsDigit);
         }
 
         public static bool IsValidVaccinationDate(DateTime vaccinationDate)
         {
             return vaccinationDate.Date <= DateTime.Today;
+        }
+
+        public static bool IsValidVaccinationDateForBirthDate(DateTime vaccinationDate, DateTime birthDate)
+        {
+            return vaccinationDate.Date >= birthDate.Date &&
+                   IsValidVaccinationDate(vaccinationDate);
         }
 
         // ---------- Visit / Medication Validation ----------
@@ -135,7 +143,7 @@ namespace ClinicVetsAvalonia.Services
 
         public static bool IsValidVisitDate(DateTime visitDate)
         {
-            return visitDate.Date <= DateTime.Today;
+            return visitDate.Year >= 2000;
         }
 
         public static bool IsValidMoney(double value)

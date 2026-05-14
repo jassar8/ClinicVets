@@ -1900,7 +1900,7 @@
     ]
   },
   "packageFolders": {
-    "/Users/fares/.nuget/packages/": {}
+    "/var/folders/25/r13vnh2s1_3gn_tbs3s2rsmc0000gn/T/cursor-sandbox-cache/c1531067e992c95922a738e42fbbec35/nuget": {}
   },
   "project": {
     "version": "1.0.0",
@@ -1908,7 +1908,7 @@
       "projectUniqueName": "/Users/fares/ClinicVetsAvalonia/ClinicVetsAvalonia.csproj",
       "projectName": "ClinicVetsAvalonia",
       "projectPath": "/Users/fares/ClinicVetsAvalonia/ClinicVetsAvalonia.csproj",
-      "packagesPath": "/Users/fares/.nuget/packages/",
+      "packagesPath": "/var/folders/25/r13vnh2s1_3gn_tbs3s2rsmc0000gn/T/cursor-sandbox-cache/c1531067e992c95922a738e42fbbec35/nuget",
       "outputPath": "/Users/fares/ClinicVetsAvalonia/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [

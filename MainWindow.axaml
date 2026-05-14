@@ -9,9 +9,9 @@
         WindowStartupLocation="CenterScreen"
         Background="#F3F6FB">
 
-    <Border x:Name="MainContent"
-            Width="900"
-            Height="650"
-            Background="#F3F6FB"/>
+    <Grid>
+        <Border x:Name="MainContent"
+                Background="#F3F6FB"/>
+    </Grid>
 
 </Window>

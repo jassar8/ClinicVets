@@ -3,32 +3,32 @@
              x:Class="ClinicVetsAvalonia.Views.RegisterEmployeeView"
              FlowDirection="RightToLeft">
 
-    <Grid Width="900" Height="650" Background="#BFEFF7">
+    <Grid Background="#EAF8FB">
         <Border Width="760"
                 Height="560"
                 Background="White"
-                CornerRadius="28"
-                BorderBrush="#69C5D8"
-                BorderThickness="3"
+                CornerRadius="34"
+                BorderBrush="#D3EEF4"
+                BorderThickness="1"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
 
         <Grid ColumnDefinitions="260,*">
             <Border Grid.Column="0"
-                    Background="#8ADAE8"
-                    CornerRadius="24,0,0,24"
+                    Background="#12344D"
+                    CornerRadius="32,0,0,32"
                     Padding="22">
                 <StackPanel VerticalAlignment="Center"
                             Spacing="16">
                     <Border Width="150"
                             Height="150"
-                            Background="#FFFFFF"
+                            Background="#E7FAFF"
                             CornerRadius="75"
                             HorizontalAlignment="Center">
                         <Grid>
                             <Ellipse Width="104"
                                      Height="104"
-                                     Fill="#0797C9"
+                                     Fill="#00B7D7"
                                      HorizontalAlignment="Center"
                                      VerticalAlignment="Center"/>
                             <TextBlock Text="+"
@@ -43,12 +43,12 @@
                     <TextBlock Text="עובד חדש"
                                FontSize="28"
                                FontWeight="Bold"
-                               Foreground="#114D5E"
+                               Foreground="White"
                                TextAlignment="Center"/>
 
                     <TextBlock Text="רישום מאובטח לצוות המרפאה"
                                FontSize="15"
-                               Foreground="#225D6B"
+                               Foreground="#BCEFF6"
                                TextAlignment="Center"
                                TextWrapping="Wrap"/>
                 </StackPanel>
@@ -63,7 +63,7 @@
             <TextBlock Text="רישום עובד חדש"
                        FontSize="30"
                        FontWeight="Bold"
-                       Foreground="#2D3748"
+                       Foreground="#13293D"
                        TextAlignment="Center"
                        HorizontalAlignment="Center"
                        Margin="0,0,0,10"/>
@@ -102,9 +102,9 @@
                         Width="40"
                         Height="36"
                         Margin="4,0,0,0"
-                        Background="#E9F8FC"
-                        BorderBrush="#69C5D8"
-                        Foreground="#2F4E6B"
+                        Background="#E8F9FD"
+                        BorderBrush="#BFEAF2"
+                        Foreground="#12344D"
                         ToolTip.Tip="הצג או הסתר סיסמה"
                         Click="TogglePasswordVisibility"/>
             </Grid>
@@ -157,9 +157,11 @@
                         Height="40"
                         Click="SaveEmployee_Click"/>
 
-                <Button Content="חזרה"
-                        Width="120"
+                <Button Content="← חזרה להתחברות"
+                        Width="150"
                         Height="40"
+                        Background="#12344D"
+                        BorderBrush="#12344D"
                         Click="Back_Click"/>
             </StackPanel>
 

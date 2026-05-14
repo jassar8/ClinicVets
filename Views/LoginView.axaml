@@ -3,75 +3,85 @@
              x:Class="ClinicVetsAvalonia.Views.LoginView"
              FlowDirection="RightToLeft">
 
-    <Grid Width="900" Height="650" Background="#BFEFF7">
-        <Border Width="760"
-                Height="540"
+    <Grid Background="#EAF8FB">
+        <Border Width="860"
+                Height="560"
                 Background="White"
-                CornerRadius="28"
-                BorderBrush="#69C5D8"
-                BorderThickness="3"
+                CornerRadius="34"
+                BorderBrush="#D3EEF4"
+                BorderThickness="1"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
 
-        <Grid ColumnDefinitions="320,*">
+        <Grid ColumnDefinitions="340,*">
             <Border Grid.Column="0"
-                    Background="#8ADAE8"
-                    CornerRadius="24,0,0,24"
-                    Padding="24">
+                    Background="#12344D"
+                    CornerRadius="32,0,0,32"
+                    Padding="28">
                 <StackPanel VerticalAlignment="Center"
                             Spacing="18">
-                    <Border Width="190"
-                            Height="190"
-                            Background="#FFFFFF"
-                            CornerRadius="95"
+                    <Border Width="206"
+                            Height="206"
+                            Background="#E7FAFF"
+                            CornerRadius="103"
                             HorizontalAlignment="Center">
                         <Grid>
-                            <Ellipse Width="132"
-                                     Height="132"
-                                     Fill="#0797C9"
+                            <Ellipse Width="152"
+                                     Height="152"
+                                     Fill="#00B7D7"
                                      HorizontalAlignment="Center"
                                      VerticalAlignment="Center"/>
-                            <Ellipse Width="78"
-                                     Height="78"
-                                     Fill="#F5C85A"
+                            <Ellipse Width="94"
+                                     Height="94"
+                                     Fill="#FFE08A"
                                      HorizontalAlignment="Center"
-                                     VerticalAlignment="Center"
-                                     Margin="0,-18,0,0"/>
-                            <TextBlock Text="VC"
-                                       FontSize="38"
+                                     VerticalAlignment="Center"/>
+                            <TextBlock Text="🐾"
+                                       FontSize="52"
                                        FontWeight="Bold"
-                                       Foreground="White"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"/>
                         </Grid>
                     </Border>
 
                     <TextBlock Text="Clinic Vets"
-                               FontSize="30"
+                               FontSize="34"
                                FontWeight="Bold"
-                               Foreground="#114D5E"
+                               Foreground="White"
                                TextAlignment="Center"
                                HorizontalAlignment="Center"/>
 
-                    <TextBlock Text="ניהול מרפאה וטרינרית חכם, צבעוני ונוח"
+                    <TextBlock Text="מערכת ניהול מרפאה וטרינרית לשנת 2026"
                                FontSize="15"
-                               Foreground="#225D6B"
+                               Foreground="#BCEFF6"
                                TextAlignment="Center"
                                TextWrapping="Wrap"
                                HorizontalAlignment="Center"/>
+
+                    <Border Background="#1E4966"
+                            CornerRadius="22"
+                            Padding="16"
+                            Margin="0,16,0,0">
+                        <TextBlock Text="לקוחות • בעלי חיים • ביקורים • תרופות"
+                                   Foreground="#E7FAFF"
+                                   FontSize="14"
+                                   FontWeight="Bold"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"/>
+                    </Border>
                 </StackPanel>
             </Border>
 
         <StackPanel Grid.Column="1"
-                    Width="340"
+                    Width="365"
                     Spacing="14"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
 
             <TextBlock Text="ברוכים הבאים"
-                       FontSize="34"
+                       FontSize="38"
                        FontWeight="Bold"
-                       Foreground="#2D3748"
+                       Foreground="#13293D"
                        TextAlignment="Center"
                        HorizontalAlignment="Center"/>
 
@@ -115,9 +125,9 @@
                         Width="40"
                         Height="36"
                         Margin="4,0,0,0"
-                        Background="#E9F8FC"
-                        BorderBrush="#69C5D8"
-                        Foreground="#2F4E6B"
+                        Background="#E8F9FD"
+                        BorderBrush="#BFEAF2"
+                        Foreground="#12344D"
                         ToolTip.Tip="הצג או הסתר סיסמה"
                         Click="TogglePasswordVisibility"/>
             </Grid>
@@ -127,7 +137,7 @@
                     Height="34"
                     Background="Transparent"
                     BorderBrush="Transparent"
-                    Foreground="#057DA7"
+                    Foreground="#007EA7"
                     HorizontalAlignment="Center"
                     ToolTip.Tip="איפוס סיסמה לפי אימייל וקוד"
                     Click="ForgotPassword_Click"/>
@@ -149,36 +159,18 @@
                        TextWrapping="Wrap"
                        MinHeight="20"/>
 
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        Spacing="12"
-                        FlowDirection="LeftToRight">
+            <Button Content="התחברות"
+                    Width="310"
+                    Height="48"
+                    Click="Login_Click"/>
 
-                <Button Content="התחברות"
-                        Width="145"
-                        Height="44"
-                        Click="Login_Click"/>
-
-                <Button Content="רישום עובד"
-                        Width="155"
-                        Height="44"
-                        Click="Register_Click"/>
-            </StackPanel>
-
-            <TextBlock Text="משתמשים לבדיקה:"
-                       TextAlignment="Center"
-                       HorizontalAlignment="Center"
-                       Margin="0,25,0,0"/>
-
-            <TextBlock Text="מזכירה: admin / 1234"
-                       TextAlignment="Center"
-                       HorizontalAlignment="Center"
-                       FlowDirection="LeftToRight"/>
-
-            <TextBlock Text="וטרינר: vet / 1234"
-                       TextAlignment="Center"
-                       HorizontalAlignment="Center"
-                       FlowDirection="LeftToRight"/>
+            <Button Content="רישום עובד חדש"
+                    Width="310"
+                    Height="48"
+                    Background="White"
+                    BorderBrush="#0097C7"
+                    Foreground="#0097C7"
+                    Click="Register_Click"/>
 
         </StackPanel>
         </Grid>
