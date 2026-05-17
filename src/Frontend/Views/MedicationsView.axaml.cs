@@ -7,6 +7,7 @@ using Avalonia.Media;
 using ClinicVets.Application.Services;
 using ClinicVets.Core.Entities;
 using ClinicVets.Desktop.Helpers;
+using ClinicVets.Desktop.Stability;
 
 namespace ClinicVets.Desktop.Views;
 
@@ -21,8 +22,9 @@ public partial class MedicationsView : UserControl
     public MedicationsView()
     {
         InitializeComponent();
-        ExpirationDatePicker.SelectedDate = DateTime.Today.AddMonths(6);
-        _ = LoadAsync();
+        SafeViewLoader.RunSafe(this, () =>
+            ExpirationDatePicker.SelectedDate = DateTime.Today.AddMonths(6), "Medications.Init");
+        _ = SafeViewLoader.RunSafeAsync(this, LoadAsync, "Medications.Load");
     }
 
     private async Task LoadAsync()

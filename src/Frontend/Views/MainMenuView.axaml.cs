@@ -6,6 +6,7 @@ using ClinicVets.Application.Services;
 using ClinicVets.Application.Shell;
 using ClinicVets.Core;
 using ClinicVets.Core.Entities;
+using ClinicVets.Desktop.Stability;
 
 namespace ClinicVets.Desktop.Views;
 
@@ -24,6 +25,7 @@ public partial class MainMenuView : UserControl
     public Action? OpenAnimals;
     public Action? OpenVisits;
     public Action? OpenMedicines;
+    public Action? OpenBills;
     public Action? Logout;
 
     public MainMenuView(Employee employee)
@@ -40,7 +42,10 @@ public partial class MainMenuView : UserControl
     private void UpdateClock() =>
         LiveClockText.Text = DateTime.Now.ToString("dddd dd/MM/yyyy HH:mm:ss");
 
-    private async Task ApplyEmployeeDataAsync()
+    private async Task ApplyEmployeeDataAsync() =>
+        await SafeViewLoader.RunSafeAsync(this, ApplyEmployeeDataCoreAsync, "MainMenu.LoadDashboard");
+
+    private async Task ApplyEmployeeDataCoreAsync()
     {
         var effective = EffectiveEmployee;
         var display = string.IsNullOrWhiteSpace(_employee.Username) ? _employee.FullName : _employee.Username;
@@ -87,6 +92,7 @@ public partial class MainMenuView : UserControl
         SetSection(AnimalsButton, AnimalsCardButton, AnimalsStatCard, true);
         SetSection(VisitsButton, VisitsCardButton, VisitsStatCard, true);
         SetSection(MedicinesButton, MedicinesCardButton, MedicationsStatCard, true);
+        SetMenuOnly(BillsButton, true);
     }
 
     private void ApplySecretaryDashboard()
@@ -98,6 +104,7 @@ public partial class MainMenuView : UserControl
         SetSection(AnimalsButton, AnimalsCardButton, AnimalsStatCard, true);
         SetSection(VisitsButton, VisitsCardButton, VisitsStatCard, false);
         SetSection(MedicinesButton, MedicinesCardButton, MedicationsStatCard, false);
+        SetMenuOnly(BillsButton, true);
     }
 
     private void ApplyVetDashboard()
@@ -109,6 +116,7 @@ public partial class MainMenuView : UserControl
         SetSection(AnimalsButton, AnimalsCardButton, AnimalsStatCard, true);
         SetSection(VisitsButton, VisitsCardButton, VisitsStatCard, true);
         SetSection(MedicinesButton, MedicinesCardButton, MedicationsStatCard, true);
+        SetMenuOnly(BillsButton, false);
     }
 
     private void ApplyNoAccessDashboard()
@@ -120,6 +128,7 @@ public partial class MainMenuView : UserControl
         SetSection(AnimalsButton, AnimalsCardButton, AnimalsStatCard, false);
         SetSection(VisitsButton, VisitsCardButton, VisitsStatCard, false);
         SetSection(MedicinesButton, MedicinesCardButton, MedicationsStatCard, false);
+        SetMenuOnly(BillsButton, false);
     }
 
     private string GetDisplayName() =>
@@ -130,10 +139,14 @@ public partial class MainMenuView : UserControl
         menu.IsVisible = menu.IsEnabled = card.IsVisible = card.IsEnabled = stat.IsVisible = on;
     }
 
+    private static void SetMenuOnly(Control menu, bool on) =>
+        menu.IsVisible = menu.IsEnabled = on;
+
     private void Clients_Click(object? sender, RoutedEventArgs e) => OpenClients?.Invoke();
     private void Animals_Click(object? sender, RoutedEventArgs e) => OpenAnimals?.Invoke();
     private void Visits_Click(object? sender, RoutedEventArgs e) => OpenVisits?.Invoke();
     private void Medicines_Click(object? sender, RoutedEventArgs e) => OpenMedicines?.Invoke();
+    private void Bills_Click(object? sender, RoutedEventArgs e) => OpenBills?.Invoke();
     private void Logout_Click(object? sender, RoutedEventArgs e) => Logout?.Invoke();
 
     private void ConfigureDemoRolePanel()

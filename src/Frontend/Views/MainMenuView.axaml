@@ -107,6 +107,13 @@
                                 Background="#214F70"
                                 BorderBrush="#214F70"
                                 Click="Medicines_Click"/>
+
+                        <Button x:Name="BillsButton"
+                                Content="💳  חשבונות ותשלומים"
+                                Height="50"
+                                Background="#214F70"
+                                BorderBrush="#214F70"
+                                Click="Bills_Click"/>
                     </StackPanel>
 
                     <Button Grid.Row="1"

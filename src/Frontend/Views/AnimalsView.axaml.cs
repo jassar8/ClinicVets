@@ -5,6 +5,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using ClinicVets.Core.Entities;
 using ClinicVets.Desktop.Helpers;
+using ClinicVets.Desktop.Stability;
 
 namespace ClinicVets.Desktop.Views;
 
@@ -19,7 +20,7 @@ public partial class AnimalsView : UserControl
     public AnimalsView()
     {
         InitializeComponent();
-        _ = LoadAsync();
+        _ = SafeViewLoader.RunSafeAsync(this, LoadAsync, "Animals.Load");
     }
 
     private async Task LoadAsync()
