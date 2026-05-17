@@ -1,0 +1,1 @@
+Application icon source for the WinForms EXE (`ClinicVets.ico`). Embedded by `src/Frontend/ClinicVets.Desktop.csproj` at build time. Regenerate from `assets/branding/ClinicVetsLogo.png` using `tooling/BuildIcon` (see `assets/branding/README.txt`).
