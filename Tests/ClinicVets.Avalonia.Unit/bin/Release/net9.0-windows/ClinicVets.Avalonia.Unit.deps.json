@@ -8,11 +8,10 @@
     ".NETCoreApp,Version=v9.0": {
       "ClinicVets.Avalonia.Unit/1.0.0": {
         "dependencies": {
-          "ClinicVets": "10.0.0",
+          "ClinicVets": "1.0.0",
           "Microsoft.NET.Test.Sdk": "17.12.0",
           "xunit": "2.9.2",
-          "xunit.runner.visualstudio": "2.8.2",
-          "ClinicVets.Reference": "10.0.0.0"
+          "xunit.runner.visualstudio": "2.8.2"
         },
         "runtime": {
           "ClinicVets.Avalonia.Unit.dll": {}
@@ -983,7 +982,7 @@
         }
       },
       "xunit.runner.visualstudio/2.8.2": {},
-      "ClinicVets/10.0.0": {
+      "ClinicVets/1.0.0": {
         "dependencies": {
           "Avalonia": "12.0.3",
           "Avalonia.Desktop": "12.0.3",
@@ -993,15 +992,8 @@
         },
         "runtime": {
           "ClinicVets.dll": {
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "ClinicVets.Reference/10.0.0.0": {
-        "runtime": {
-          "ClinicVets.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.0.0"
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       }
@@ -1349,13 +1341,8 @@
       "path": "xunit.runner.visualstudio/2.8.2",
       "hashPath": "xunit.runner.visualstudio.2.8.2.nupkg.sha512"
     },
-    "ClinicVets/10.0.0": {
+    "ClinicVets/1.0.0": {
       "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "ClinicVets.Reference/10.0.0.0": {
-      "type": "reference",
       "serviceable": false,
       "sha512": ""
     }

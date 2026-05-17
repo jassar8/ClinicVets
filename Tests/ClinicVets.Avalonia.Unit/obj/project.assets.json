@@ -1206,7 +1206,7 @@
           "build/net6.0/xunit.runner.visualstudio.props": {}
         }
       },
-      "ClinicVets/10.0.0": {
+      "ClinicVets/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
@@ -2617,15 +2617,15 @@
         "xunit.runner.visualstudio.nuspec"
       ]
     },
-    "ClinicVets/10.0.0": {
+    "ClinicVets/1.0.0": {
       "type": "project",
-      "path": "../../run testapp/ClinicVetsAvalonia.csproj",
-      "msbuildProject": "../../run testapp/ClinicVetsAvalonia.csproj"
+      "path": "../../RunApp/ClinicVets.csproj",
+      "msbuildProject": "../../RunApp/ClinicVets.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net9.0-windows7.0": [
-      "ClinicVets >= 10.0.0",
+      "ClinicVets >= 1.0.0",
       "Microsoft.NET.Test.Sdk >= 17.12.0",
       "xunit >= 2.9.2",
       "xunit.runner.visualstudio >= 2.8.2"
@@ -2663,8 +2663,8 @@
         "net9.0-windows7.0": {
           "targetAlias": "net9.0-windows",
           "projectReferences": {
-            "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\run testapp\\ClinicVetsAvalonia.csproj": {
-              "projectPath": "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\run testapp\\ClinicVetsAvalonia.csproj"
+            "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\RunApp\\ClinicVets.csproj": {
+              "projectPath": "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\RunApp\\ClinicVets.csproj"
             }
           }
         }

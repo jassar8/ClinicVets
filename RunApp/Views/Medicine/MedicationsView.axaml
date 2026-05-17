@@ -1,0 +1,178 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ClinicVetsAvalonia.Views.Medicine.MedicationsView"
+             FlowDirection="RightToLeft">
+
+    <Grid Width="900" Height="650" Margin="20" Background="{DynamicResource CvPageBackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="340"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0"
+                Background="White"
+                BorderBrush="{DynamicResource CvCardBorderBrush}"
+                BorderThickness="3"
+                CornerRadius="18"
+                Padding="18"
+                VerticalAlignment="Top">
+
+        <StackPanel Spacing="12">
+            <TextBlock Text="ניהול תרופות ומלאי"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="#2D3748"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,20"/>
+
+            <TextBlock Text="מעקב מלאי, מחיר ותאריכי תפוגה"
+                       FontSize="14"
+                       Foreground="#526172"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       Margin="0,-12,0,8"/>
+
+            <TextBlock Text="בחר תרופה קיימת"
+                       FontSize="13"
+                       Foreground="#526172"
+                       HorizontalAlignment="Center"/>
+
+            <ComboBox x:Name="MedicationSelector"
+                      Width="260"
+                      SelectionChanged="MedicationSelector_SelectionChanged"
+                      ToolTip.Tip="בחר תרופה מהרשימה כדי לחפש, לעדכן או למחוק"/>
+
+            <TextBox x:Name="NameInput"
+                     PlaceholderText="שם תרופה"
+                     Width="260"
+                     TextChanged="ValidateInputs_Changed"/>
+
+            <TextBox x:Name="StockInput"
+                     PlaceholderText="כמות במלאי"
+                     Width="260"
+                     FlowDirection="LeftToRight"
+                     TextChanged="ValidateInputs_Changed"/>
+
+            <TextBox x:Name="UnitPriceInput"
+                     PlaceholderText="מחיר ליחידה"
+                     Width="260"
+                     FlowDirection="LeftToRight"
+                     TextChanged="ValidateInputs_Changed"/>
+
+            <TextBlock Text="תאריך תפוגה"
+                       HorizontalAlignment="Center"/>
+
+            <DatePicker x:Name="ExpirationDatePicker"
+                        Width="260"/>
+
+            <TextBox x:Name="NotesInput"
+                     PlaceholderText="הערות"
+                     Width="260"
+                     Height="65"
+                     AcceptsReturn="True"/>
+
+            <TextBlock x:Name="ValidationText"
+                       Text=""
+                       Foreground="#C62828"
+                       FontSize="13"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       MinHeight="20"/>
+
+            <WrapPanel HorizontalAlignment="Center">
+                <Button Content="הוסף תרופה"
+                        Width="110"
+                        Margin="5"
+                        Click="AddMedication_Click"/>
+
+                <Button Content="חפש תרופה"
+                        Width="110"
+                        Margin="5"
+                        Click="SearchMedication_Click"/>
+
+                <Button Content="עדכן תרופה"
+                        Width="110"
+                        Margin="5"
+                        Click="UpdateMedication_Click"/>
+
+                <Button Content="מחק תרופה"
+                        Width="110"
+                        Margin="5"
+                        Click="DeleteMedication_Click"/>
+
+                <Button Content="נקה שדות"
+                        Width="110"
+                        Margin="5"
+                        Click="ClearFields_Click"/>
+            </WrapPanel>
+
+            <Button Content="חזרה"
+                    Width="240"
+                    Height="40"
+                    HorizontalAlignment="Center"
+                    Margin="0,20,0,0"
+                    Classes="secondary"
+                    Click="Back_Click"/>
+        </StackPanel>
+        </Border>
+
+        <Border Grid.Column="1"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource CvCardBorderBrush}"
+                Background="White"
+                CornerRadius="18"
+                Padding="16"
+                Margin="20,60,20,40">
+            <Grid RowDefinitions="Auto,*">
+                <StackPanel Spacing="10"
+                            Margin="0,0,0,12">
+                    <TextBlock Text="מאגר התרופות"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               Foreground="#2D3748"
+                               TextAlignment="Center"/>
+
+                    <TextBlock x:Name="MedicationResultsText"
+                               Text="בחר תרופה כדי לראות פרטים ולעדכן"
+                               FontSize="13"
+                               Foreground="#526172"
+                               TextAlignment="Center"/>
+
+                    <WrapPanel HorizontalAlignment="Center">
+                        <TextBox x:Name="MedicationSearchInput"
+                                 Width="220"
+                                 Margin="5"
+                                 PlaceholderText="חפש תרופה לפי שם"
+                                 TextChanged="MedicationSearch_Changed"
+                                 ToolTip.Tip="הקלד כדי לסנן את כרטיסי התרופות"/>
+
+                        <ComboBox x:Name="MedicationFilterDropdown"
+                                  Width="145"
+                                  Margin="5"
+                                  SelectedIndex="0"
+                                  SelectionChanged="MedicationFilter_SelectionChanged">
+                            <ComboBoxItem Content="הכל"/>
+                            <ComboBoxItem Content="מלאי נמוך"/>
+                            <ComboBoxItem Content="תוקף קרוב"/>
+                        </ComboBox>
+
+                        <Button Content="נקה"
+                                Width="75"
+                                Height="36"
+                                Margin="5"
+                                Classes="secondary"
+                                Click="ClearMedicationSearch_Click"/>
+                    </WrapPanel>
+                </StackPanel>
+
+                <ScrollViewer Grid.Row="1"
+                              VerticalScrollBarVisibility="Auto">
+                    <WrapPanel x:Name="MedicationCardsPanel"
+                               Orientation="Horizontal"
+                               HorizontalAlignment="Center"/>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

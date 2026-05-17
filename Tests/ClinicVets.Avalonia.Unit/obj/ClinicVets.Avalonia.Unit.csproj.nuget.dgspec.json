@@ -4,14 +4,14 @@
     "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\Tests\\ClinicVets.Avalonia.Unit\\ClinicVets.Avalonia.Unit.csproj": {}
   },
   "projects": {
-    "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\run testapp\\ClinicVetsAvalonia.csproj": {
-      "version": "10.0.0",
+    "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\RunApp\\ClinicVets.csproj": {
+      "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\run testapp\\ClinicVetsAvalonia.csproj",
+        "projectUniqueName": "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\RunApp\\ClinicVets.csproj",
         "projectName": "ClinicVets",
-        "projectPath": "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\run testapp\\ClinicVetsAvalonia.csproj",
+        "projectPath": "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\RunApp\\ClinicVets.csproj",
         "packagesPath": "C:\\Users\\jassa\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\run testapp\\obj\\",
+        "outputPath": "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\RunApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -125,8 +125,8 @@
           "net9.0-windows7.0": {
             "targetAlias": "net9.0-windows",
             "projectReferences": {
-              "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\run testapp\\ClinicVetsAvalonia.csproj": {
-                "projectPath": "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\run testapp\\ClinicVetsAvalonia.csproj"
+              "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\RunApp\\ClinicVets.csproj": {
+                "projectPath": "C:\\Users\\jassa\\Desktop\\TestProgict\\ClinicVets\\RunApp\\ClinicVets.csproj"
               }
             }
           }
