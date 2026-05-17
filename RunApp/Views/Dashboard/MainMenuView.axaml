@@ -1,0 +1,188 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ClinicVetsAvalonia.Views.Dashboard.MainMenuView"
+             FlowDirection="RightToLeft">
+
+    <Grid Width="900" Height="650" Background="{DynamicResource CvPageBackgroundBrush}">
+        <Grid ColumnDefinitions="220,*">
+            <Border Grid.Column="0"
+                    Background="#2F4E6B"
+                    Padding="18">
+                <Grid RowDefinitions="*,Auto">
+                    <StackPanel Spacing="18">
+                        <Border Width="138"
+                                Height="138"
+                                Background="#FFFFFF"
+                                CornerRadius="69"
+                                HorizontalAlignment="Center"
+                                Margin="0,22,0,4">
+                            <Grid>
+                                <Ellipse Width="94"
+                                         Height="94"
+                                         Fill="#0797C9"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"/>
+                                <TextBlock Text="VC"
+                                           FontSize="30"
+                                           FontWeight="Bold"
+                                           Foreground="White"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <TextBlock Text="Clinic Vets"
+                                   FontSize="23"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   TextAlignment="Center"/>
+
+                        <TextBlock x:Name="LoggedInText"
+                                   Text="מחובר כ:"
+                                   FontSize="14"
+                                   Foreground="#D7EEF5"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,16"/>
+
+                        <Button x:Name="ClientsButton"
+                                Content="לקוחות"
+                                Height="46"
+                                Click="Clients_Click"/>
+
+                        <Button x:Name="AnimalsButton"
+                                Content="בעלי חיים"
+                                Height="46"
+                                Click="Animals_Click"/>
+
+                        <Button x:Name="VisitsButton"
+                                Content="ביקורים וטיפולים"
+                                Height="46"
+                                Click="Visits_Click"/>
+
+                        <Button x:Name="MedicinesButton"
+                                Content="תרופות ומלאי"
+                                Height="46"
+                                Click="Medicines_Click"/>
+                    </StackPanel>
+
+                    <Button Grid.Row="1"
+                            Content="התנתקות"
+                            Height="44"
+                            Classes="secondary"
+                            Click="Logout_Click"/>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Column="1"
+                  Margin="24"
+                  RowDefinitions="Auto,*">
+                <Border Background="White"
+                        CornerRadius="20"
+                        BorderBrush="{DynamicResource CvCardBorderBrush}"
+                        BorderThickness="3"
+                        Padding="24"
+                        Margin="0,0,0,18">
+                    <StackPanel>
+                        <TextBlock Text="ברוכים הבאים למערכת המרפאה"
+                                   FontSize="34"
+                                   FontWeight="Bold"
+                                   Foreground="#2D3748"
+                                   TextAlignment="Center"/>
+                        <TextBlock Text="בחר פעולה מהכרטיסים או מהתפריט הצדדי"
+                                   FontSize="16"
+                                   Foreground="#526172"
+                                   TextAlignment="Center"
+                                   Margin="0,8,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Grid Grid.Row="1"
+                      ColumnDefinitions="*,*"
+                      RowDefinitions="*,*"
+                      ColumnSpacing="18"
+                      RowSpacing="18">
+                    <Button x:Name="ClientsCardButton"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Background="#FFFFFF"
+                            BorderBrush="{DynamicResource CvCardBorderBrush}"
+                            BorderThickness="3"
+                            Foreground="#2D3748"
+                            Click="Clients_Click">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="לקוחות"
+                                       FontSize="26"
+                                       FontWeight="Bold"
+                                       TextAlignment="Center"/>
+                            <TextBlock Text="רישום, חיפוש ועדכון לקוחות"
+                                       FontSize="14"
+                                       Foreground="#526172"
+                                       TextAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="AnimalsCardButton"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Background="#FFFFFF"
+                            BorderBrush="{DynamicResource CvCardBorderBrush}"
+                            BorderThickness="3"
+                            Foreground="#2D3748"
+                            Click="Animals_Click">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="בעלי חיים"
+                                       FontSize="26"
+                                       FontWeight="Bold"
+                                       TextAlignment="Center"/>
+                            <TextBlock Text="כרטיסי חיות, שבבים וחיסונים"
+                                       FontSize="14"
+                                       Foreground="#526172"
+                                       TextAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="VisitsCardButton"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Background="#FFFFFF"
+                            BorderBrush="{DynamicResource CvCardBorderBrush}"
+                            BorderThickness="3"
+                            Foreground="#2D3748"
+                            Click="Visits_Click">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="ביקורים"
+                                       FontSize="26"
+                                       FontWeight="Bold"
+                                       TextAlignment="Center"/>
+                            <TextBlock Text="טיפולים, אבחנות ועלויות"
+                                       FontSize="14"
+                                       Foreground="#526172"
+                                       TextAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="MedicinesCardButton"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Background="#FFFFFF"
+                            BorderBrush="{DynamicResource CvCardBorderBrush}"
+                            BorderThickness="3"
+                            Foreground="#2D3748"
+                            Click="Medicines_Click">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="תרופות"
+                                       FontSize="26"
+                                       FontWeight="Bold"
+                                       TextAlignment="Center"/>
+                            <TextBlock Text="מלאי, מחיר ותוקף"
+                                       FontSize="14"
+                                       Foreground="#526172"
+                                       TextAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

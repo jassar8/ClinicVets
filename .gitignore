@@ -1,0 +1,12 @@
+bin/
+obj/
+Publish/
+.vs/
+*.user
+*.suo
+.DS_Store
+RunApp/bin/
+RunApp/obj/
+RunApp/Publish/
+Tests/**/bin/
+Tests/**/obj/

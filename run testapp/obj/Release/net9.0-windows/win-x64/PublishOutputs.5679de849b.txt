@@ -1,0 +1,4 @@
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\run testapp\Publish\ClinicVets.pdb
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\run testapp\Publish\libHarfBuzzSharp.pdb
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\run testapp\Publish\libSkiaSharp.pdb
+C:\Users\jassa\Desktop\TestProgict\ClinicVets\run testapp\Publish\ClinicVets.exe
