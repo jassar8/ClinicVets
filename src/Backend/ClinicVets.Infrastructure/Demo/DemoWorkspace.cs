@@ -14,17 +14,19 @@ public static class DemoWorkspace
     public static bool TryInitializeDemoData(
         out IEmployeeRepository employees,
         out CustomerDirectoryService customers,
+        out ICustomerDirectoryRepository customerDirectory,
         out Employee demoAdmin,
         out string errorMessage)
     {
         employees = null!;
         customers = null!;
+        customerDirectory = null!;
         demoAdmin = null!;
         errorMessage = string.Empty;
 
         try
         {
-            InitializeDemoData(out employees, out customers, out demoAdmin);
+            InitializeDemoData(out employees, out customers, out customerDirectory, out demoAdmin);
             return true;
         }
         catch (Exception ex)
@@ -38,6 +40,7 @@ public static class DemoWorkspace
     private static void InitializeDemoData(
         out IEmployeeRepository employees,
         out CustomerDirectoryService customers,
+        out ICustomerDirectoryRepository customerDirectory,
         out Employee demoAdmin)
     {
         var demoAdminId = new Guid("00000000-0000-4000-8000-0000000000D1");
@@ -136,7 +139,7 @@ public static class DemoWorkspace
             new() { CustomerId = c3.Id, Name = "Felix", Species = "Domestic shorthair" }
         };
 
-        var customerRepo = new InMemoryCustomerDirectoryRepository([c1, c2, c3], animals);
-        customers = new CustomerDirectoryService(customerRepo);
+        customerDirectory = new InMemoryCustomerDirectoryRepository([c1, c2, c3], animals);
+        customers = new CustomerDirectoryService(customerDirectory);
     }
 }
