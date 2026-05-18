@@ -1,6 +1,6 @@
 using ClinicVets.Application.Security;
 using ClinicVets.Core.Entities;
-using ClinicVets.Desktop;
+using ClinicVets.Desktop.Services;
 
 namespace ClinicVets.Tests.Navigation;
 
@@ -13,6 +13,9 @@ public class AppRouteCatalogTests
     [Theory]
     [InlineData("Admin", "Clients", true)]
     [InlineData("Admin", "Bills", true)]
+    [InlineData("Admin", "Reports", true)]
+    [InlineData("Admin", "Settings", true)]
+    [InlineData("Vet", "Reports", false)]
     [InlineData("Secretary", "Bills", true)]
     [InlineData("Secretary", "Medications", false)]
     [InlineData("Vet", "Medications", true)]
@@ -37,9 +40,17 @@ public class AppRouteCatalogTests
     }
 
     [Fact]
-    public void PlannedRoutes_AreNotImplementedInShell()
+    public void ReportsAndSettings_AreImplementedInShell()
     {
-        Assert.Contains(AppRouteCatalog.Reports, AppRouteCatalog.PlannedNotImplemented);
-        Assert.DoesNotContain(AppRouteCatalog.Reports, AppRouteCatalog.ImplementedShellRoutes);
+        Assert.Contains(AppRouteCatalog.Reports, AppRouteCatalog.ImplementedShellRoutes);
+        Assert.Contains(AppRouteCatalog.Settings, AppRouteCatalog.ImplementedShellRoutes);
+        Assert.DoesNotContain(AppRouteCatalog.Reports, AppRouteCatalog.PlannedNotImplemented);
+    }
+
+    [Fact]
+    public void Treatments_RemainsPlannedOnly()
+    {
+        Assert.Contains(AppRouteCatalog.Treatments, AppRouteCatalog.PlannedNotImplemented);
+        Assert.DoesNotContain(AppRouteCatalog.Treatments, AppRouteCatalog.ImplementedShellRoutes);
     }
 }

@@ -29,10 +29,12 @@
     <EmbeddedResource Include="..\..\assets\app\AppIcon_v2.ico">
       <LogicalName>ClinicVets.app.ico</LogicalName>
     </EmbeddedResource>
-    <AvaloniaResource Include="..\..\assets\branding\logo-64.png" Link="Assets\logo-64.png" />
-    <AvaloniaResource Include="..\..\assets\branding\logo-128.png" Link="Assets\logo-128.png" />
-    <AvaloniaResource Include="..\..\assets\branding\logo-256.png" Link="Assets\logo-256.png" />
-    <AvaloniaResource Include="..\..\assets\branding\logo-512.png" Link="Assets\logo-512.png" />
+    <AvaloniaResource Include="..\..\assets\branding\logo-64.png" Link="Assets\Images\logo-64.png" />
+    <AvaloniaResource Include="..\..\assets\branding\logo-128.png" Link="Assets\Images\logo-128.png" />
+    <AvaloniaResource Include="..\..\assets\branding\logo-256.png" Link="Assets\Images\logo-256.png" />
+    <AvaloniaResource Include="..\..\assets\branding\logo-512.png" Link="Assets\Images\logo-512.png" />
+    <AvaloniaResource Include="..\..\assets\app\AppIcon_v2.ico" Link="Assets\Icons\AppIcon_v2.ico" />
+    <AvaloniaResource Include="Styles\AppStyles.axaml" />
   </ItemGroup>
 
   <PropertyGroup>

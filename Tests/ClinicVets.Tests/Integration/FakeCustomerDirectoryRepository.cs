@@ -59,6 +59,28 @@ public sealed class FakeCustomerDirectoryRepository : ICustomerDirectoryReposito
         return Task.FromResult<IReadOnlyList<Animal>>(list);
     }
 
+    public Task<IReadOnlyList<Animal>> GetAllAnimalsAsync()
+    {
+        var list = _animals.OrderBy(a => a.Name, StringComparer.OrdinalIgnoreCase).ToList();
+        return Task.FromResult<IReadOnlyList<Animal>>(list);
+    }
+
+    public Task<Animal?> GetAnimalByChipNumberAsync(string chipNumber)
+    {
+        var key = chipNumber.Trim();
+        var m = _animals.FirstOrDefault(a =>
+            string.Equals(a.ChipNumber?.Trim(), key, StringComparison.OrdinalIgnoreCase));
+        return Task.FromResult(m);
+    }
+
+    public Task UpdateAnimalAsync(Animal animal)
+    {
+        var index = _animals.FindIndex(a => a.Id == animal.Id);
+        if (index >= 0)
+            _animals[index] = animal;
+        return Task.CompletedTask;
+    }
+
     public Task AddAnimalAsync(Animal animal)
     {
         _animals.Add(animal);

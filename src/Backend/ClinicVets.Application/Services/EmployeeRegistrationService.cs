@@ -1,5 +1,6 @@
 using ClinicVets.Application.Interfaces;
 using ClinicVets.Application.Security;
+using ClinicVets.Application.Shell;
 using ClinicVets.Application.Validation;
 using ClinicVets.Core;
 using ClinicVets.Core.Entities;
@@ -26,7 +27,8 @@ public class EmployeeRegistrationService
         string role,
         Employee? actingEmployee = null,
         string? username = null,
-        string? fourDigitEmployeeId = null)
+        string? fourDigitEmployeeId = null,
+        bool? autoApproveSelfRegistration = null)
     {
         if (string.IsNullOrWhiteSpace(fullName) ||
             string.IsNullOrWhiteSpace(email) ||
@@ -67,6 +69,13 @@ public class EmployeeRegistrationService
             {
                 return (false, "Self-registration is limited to secretary and veterinarian accounts.");
             }
+
+            var signInName = (username ?? string.Empty).Trim();
+            if (signInName.Length == 0)
+                return (false, "Username is required.");
+
+            if (!EmployeeInputValidation.IsValidUsername(signInName))
+                return (false, "Username must be 6–8 English letters or digits.");
         }
         else if (!RolePermissions.IsAdministrator(actingEmployee))
         {
@@ -127,12 +136,28 @@ public class EmployeeRegistrationService
         string assignedEmployeeId;
         string successMessage;
 
+        var autoApprove = autoApproveSelfRegistration ?? DesktopBuildOptions.AutoApproveSelfRegistration;
+
         if (actingEmployee is null)
         {
-            status = EmployeeAccountStatusNames.Pending;
-            assignedEmployeeId = string.Empty;
-            successMessage =
-                "Registration submitted. An administrator must approve your account and assign an Employee ID before you can sign in.";
+            if (autoApprove)
+            {
+                var allForId = await _employeeRepository.GetAllAsync();
+                var autoId = EmployeeIdAllocation.TryAllocateNext(allForId);
+                if (autoId is null)
+                    return (false, "No available employee IDs in the 1001–9999 range.");
+
+                status = EmployeeAccountStatusNames.Approved;
+                assignedEmployeeId = autoId;
+                successMessage = "Account created and saved. You can sign in with your username or email.";
+            }
+            else
+            {
+                status = EmployeeAccountStatusNames.Pending;
+                assignedEmployeeId = string.Empty;
+                successMessage =
+                    "Registration submitted. An administrator must approve your account and assign an Employee ID before you can sign in.";
+            }
         }
         else
         {
@@ -142,9 +167,13 @@ public class EmployeeRegistrationService
         }
 
         var storedRole = EmployeeRoleNames.ToStoredString(parsedRole);
+        var displayName = fullName.Trim();
+        if (actingEmployee is null && displayName.Length == 0 && normalizedUsername.Length > 0)
+            displayName = normalizedUsername;
+
         var employee = new Employee
         {
-            FullName = fullName.Trim(),
+            FullName = displayName,
             Username = normalizedUsername,
             Email = normalizedEmail,
             Password = password.Trim(),

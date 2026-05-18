@@ -8,4 +8,10 @@ public static class DesktopBuildOptions
     /// Set to <c>false</c> for a final teacher build so Demo Mode is not offered in the UI.
     /// </summary>
     public const bool EnableDemoMode = true;
+
+    /// <summary>
+    /// When <c>true</c>, self-service registration is saved as <c>Approved</c> with an auto-assigned employee ID
+    /// so users can sign in immediately after restart (desktop JSON store).
+    /// </summary>
+    public const bool AutoApproveSelfRegistration = true;
 }

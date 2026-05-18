@@ -25,7 +25,9 @@ public class EmployeeApprovalWorkflowTests
         };
         await repo.AddAsync(admin);
 
-        var (regOk, _) = await registration.RegisterAsync("Pat Lee", "pat@wf.com", "Abcd1234!", "Secretary");
+        var (regOk, _) = await registration.RegisterAsync(
+            "Pat Lee", "pat@wf.com", "Abcd1234!", "Secretary",
+            username: "patlee01", autoApproveSelfRegistration: false);
         Assert.True(regOk);
 
         var (blocked, pendingMsg, _) = await auth.LoginAsync("pat@wf.com", "Abcd1234!");
@@ -70,7 +72,9 @@ public class EmployeeApprovalWorkflowTests
         };
         await repo.AddAsync(admin);
 
-        await registration.RegisterAsync("Rex", "rex@wf.com", "Abcd1234!", "Veterinarian");
+        await registration.RegisterAsync(
+            "Rex", "rex@wf.com", "Abcd1234!", "Veterinarian",
+            username: "rexuser1", autoApproveSelfRegistration: false);
         var pending = (await approvals.GetPendingAsync()).Single();
 
         var (rejOk, _) = await approvals.RejectAsync(pending.Id, admin);

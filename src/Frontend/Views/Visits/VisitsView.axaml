@@ -1,0 +1,477 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ClinicVets.Desktop.Views.Visits.VisitsView"
+             FlowDirection="RightToLeft">
+
+    <Grid Background="#EAF8FB">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0"
+                Background="White"
+                BorderBrush="#D3EEF4"
+                BorderThickness="1"
+                CornerRadius="28"
+                Padding="18"
+                Margin="18,22,0,22">
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="10" VerticalAlignment="Top">
+                <Button Content="ÔåÉ ÎùÎûÎ¿Îö Î£Î¬ÎñÎ¿ÎÖÎÿ"
+                        Width="150"
+                        Height="38"
+                        HorizontalAlignment="Left"
+                        Background="#12344D"
+                        BorderBrush="#12344D"
+                        ToolTip.Tip="ÎùÎûÎ¿Îö Î£Î¬ÎñÎ¿ÎÖÎÿ ÎöÎ¿ÎÉÎ®ÎÖ"
+                        Click="Back_Click"/>
+
+                <TextBlock Text="ÎáÎÖÎöÎòÎ£ ÎæÎÖÎºÎòÎ¿ÎÖÎØ ÎòÎÿÎÖÎñÎòÎ£ÎÖÎØ"
+                           FontSize="28"
+                           FontWeight="Bold"
+                           Foreground="#13293D"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,15"/>
+
+                <TextBlock Text="ÎæÎÖÎºÎòÎ¿, ÎÉÎæÎùÎáÎö, ÎÿÎÖÎñÎòÎ£, Î¬Î¿ÎòÎñÎö ÎòÎóÎ£ÎòÎ¬"
+                           FontSize="14"
+                           Foreground="#526172"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           Margin="0,-8,0,6"/>
+
+                <Border Background="#F8FCFD"
+                        BorderBrush="#D3EEF4"
+                        BorderThickness="1"
+                        CornerRadius="18"
+                        Padding="10"
+                        Width="270">
+                    <TextBlock x:Name="VisitClockText"
+                               Text="--/--/---- --:--:--"
+                               FontSize="14"
+                               FontWeight="Bold"
+                               Foreground="#12344D"
+                               TextAlignment="Center"/>
+                </Border>
+
+                <TextBox x:Name="AnimalSearchInput"
+                         PlaceholderText="ÎùÎÖÎñÎòÎ® ÎùÎÖÎö Î£ÎñÎÖ Î®ÎØ ÎÉÎò Î®ÎæÎæ"
+                         Width="270"
+                         TextChanged="ValidateInputs_Changed"/>
+
+                <Button Content="ÎùÎñÎ® ÎùÎÖÎö"
+                        Width="130"
+                        Height="35"
+                        HorizontalAlignment="Center"
+                        Click="SearchAnimal_Click"/>
+
+                <TextBox x:Name="AnimalChipInput"
+                         PlaceholderText="Î×ÎíÎñÎ¿ Î®ÎæÎæ 376XXXX"
+                         Width="270"
+                         FlowDirection="LeftToRight"
+                         TextChanged="ValidateInputs_Changed"/>
+
+                <TextBlock Text="Î¬ÎÉÎ¿ÎÖÎÜ ÎæÎÖÎºÎòÎ¿"
+                           HorizontalAlignment="Center"/>
+
+                <DatePicker x:Name="VisitDatePicker"
+                            Width="270"/>
+
+                <TextBlock Text="Î®ÎóÎ¬ ÎæÎÖÎºÎòÎ¿"
+                           HorizontalAlignment="Center"/>
+
+                <Grid Width="270"
+                      ColumnDefinitions="*,Auto,*"
+                      ColumnSpacing="8"
+                      FlowDirection="LeftToRight">
+                    <ComboBox x:Name="VisitHourDropdown"
+                              Grid.Column="0"
+                              SelectionChanged="VisitTimeDropdown_SelectionChanged"/>
+                    <TextBlock Grid.Column="1"
+                               Text=":"
+                               FontSize="22"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                    <ComboBox x:Name="VisitMinuteDropdown"
+                              Grid.Column="2"
+                              SelectionChanged="VisitTimeDropdown_SelectionChanged"/>
+                </Grid>
+
+                <TextBox x:Name="ReasonInput"
+                         PlaceholderText="ÎíÎÖÎæÎ¬ ÎöÎÆÎóÎö"
+                         Width="270"
+                         TextChanged="ValidateInputs_Changed"/>
+
+                <TextBox x:Name="DiagnosisInput"
+                         PlaceholderText="ÎÉÎæÎùÎáÎö / ÎÿÎÖÎñÎòÎ£"
+                         Width="270"
+                         AcceptsReturn="True"
+                         Height="55"
+                         TextChanged="ValidateInputs_Changed"/>
+
+                <TextBox x:Name="BaseCostInput"
+                         PlaceholderText="ÎóÎ£ÎòÎ¬ ÎæÎÖÎºÎòÎ¿"
+                         Width="270"
+                         FlowDirection="LeftToRight"
+                         TextChanged="ValidateInputs_Changed"/>
+
+                <TextBlock Text="ÎíÎòÎÆ ÎÿÎÖÎñÎòÎ£"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"/>
+
+                <ComboBox x:Name="TreatmentModeDropdown"
+                          Width="270"
+                          SelectedIndex="0"
+                          SelectionChanged="TreatmentMode_SelectionChanged">
+                    <ComboBoxItem Content="ÎæÎ£ÎÖ Î¬Î¿ÎòÎñÎö"/>
+                    <ComboBoxItem Content="ÎóÎØ Î¬Î¿ÎòÎñÎö"/>
+                </ComboBox>
+
+                <Border x:Name="MedicationFieldsPanel"
+                        IsVisible="False"
+                        Background="#F8FCFD"
+                        BorderBrush="#D3EEF4"
+                        BorderThickness="1"
+                        CornerRadius="18"
+                        Padding="10"
+                        Width="290">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="ÎñÎ¿ÎÿÎÖ Î¬Î¿ÎòÎñÎö"
+                                   FontWeight="Bold"
+                                   Foreground="#007EA7"
+                                   TextAlignment="Center"/>
+
+                        <ComboBox x:Name="MedicationDropdown"
+                                  Width="260"
+                                  SelectionChanged="MedicationDropdown_SelectionChanged"/>
+
+                        <TextBlock x:Name="MedicationStockText"
+                                   Text=""
+                                   FontSize="13"
+                                   FontWeight="Bold"
+                                   Foreground="#526172"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"/>
+
+                        <TextBox x:Name="MedicationQuantityInput"
+                                 PlaceholderText="ÎøÎ×ÎòÎ¬ Î¬Î¿ÎòÎñÎö"
+                                 Width="260"
+                                 FlowDirection="LeftToRight"
+                                 TextChanged="ValidateInputs_Changed"/>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock x:Name="TotalCostText"
+                           Text="ÎóÎ£ÎòÎ¬ ÎøÎòÎ£Î£Î¬: 0"
+                           FontWeight="Bold"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center"/>
+
+                <Border x:Name="ArrivalPanel"
+                        IsVisible="False"
+                        Background="#F8FCFD"
+                        BorderBrush="#D3EEF4"
+                        BorderThickness="1"
+                        CornerRadius="20"
+                        Padding="12"
+                        Width="290">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="ÎáÎÖÎöÎòÎ£ ÎöÎÆÎóÎö"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Foreground="#007EA7"
+                                   TextAlignment="Center"/>
+
+                        <TextBlock Text="Î×ÎòÎñÎÖÎó Î¿Îº ÎÉÎùÎ¿ÎÖ ÎæÎùÎÖÎ¿Î¬ Î¬ÎòÎ¿ ÎºÎÖÎÖÎØ"
+                                   FontSize="12"
+                                   Foreground="#526172"
+                                   TextAlignment="Center"/>
+
+                        <ComboBox x:Name="ArrivalStatusDropdown"
+                                  Width="260"
+                                  SelectedIndex="0">
+                            <ComboBoxItem Content="Î×Î×Î¬ÎÖÎ Î£ÎöÎÆÎóÎö"/>
+                            <ComboBoxItem Content="ÎöÎÆÎÖÎó"/>
+                            <ComboBoxItem Content="Î£ÎÉ ÎöÎÆÎÖÎó"/>
+                        </ComboBox>
+
+                        <TextBox x:Name="ArrivalNoteInput"
+                                 PlaceholderText="ÎöÎóÎ¿Î¬ ÎòÎÿÎ¿ÎÖÎáÎ¿ / ÎíÎÖÎæÎ¬ ÎÉÎÖ ÎöÎÆÎóÎö"
+                                 Width="260"
+                                 Height="60"
+                                 AcceptsReturn="True"/>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock x:Name="ValidationText"
+                           Text=""
+                           Foreground="#C62828"
+                           FontSize="13"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           MinHeight="20"/>
+
+                <WrapPanel HorizontalAlignment="Left"
+                           FlowDirection="LeftToRight">
+                    <Button x:Name="SaveVisitButton"
+                            Content="Î®Î×ÎòÎ¿ ÎæÎÖÎºÎòÎ¿"
+                            Width="160"
+                            Margin="5"
+                            Click="SaveVisit_Click"/>
+
+                    <Button x:Name="DeleteVisitButton"
+                            Content="Î×ÎùÎº ÎæÎÖÎºÎòÎ¿"
+                            Width="125"
+                            Margin="5"
+                            Background="#D64545"
+                            BorderBrush="#D64545"
+                            Click="DeleteVisit_Click"/>
+
+                    <Button x:Name="MarkArrivedButton"
+                            Content="ÎÉÎ®Î¿ ÎöÎÆÎóÎö"
+                            Width="125"
+                            Margin="5"
+                            Background="#1E8F4D"
+                            BorderBrush="#1E8F4D"
+                            Click="MarkArrived_Click"/>
+
+                    <Button x:Name="MarkNoShowButton"
+                            Content="Î£ÎÉ ÎöÎÆÎÖÎó - Î¬ÎòÎ¿ ÎùÎôÎ®"
+                            Width="125"
+                            Margin="5"
+                            Background="#D97706"
+                            BorderBrush="#D97706"
+                            Click="MarkNoShowAndCreateNew_Click"/>
+
+                    <Button Content="ÎáÎºÎö Î®ÎôÎòÎ¬"
+                            Width="125"
+                            Margin="5"
+                            Background="#12344D"
+                            BorderBrush="#12344D"
+                            Click="ClearFields_Click"/>
+                </WrapPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+        </Border>
+
+        <Border Grid.Column="1"
+                BorderThickness="1"
+                BorderBrush="#D3EEF4"
+                Background="White"
+                CornerRadius="28"
+                Padding="16"
+                Margin="18,22,18,22">
+            <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
+                <StackPanel Spacing="6"
+                            Margin="0,0,0,14">
+                    <TextBlock x:Name="VisitsJournalTitleText"
+                               Text="ÎÖÎòÎ×Î ÎæÎÖÎºÎòÎ¿ÎÖÎØ"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               Foreground="#13293D"
+                               TextAlignment="Center"/>
+                    <TextBlock x:Name="VisitsJournalSubtitleText"
+                               Text="Î¿Î®ÎÖÎ×Î¬ ÎæÎÖÎºÎòÎ¿ÎÖÎØ Î®Î×ÎòÎ¿ÎÖÎØ Î£ÎñÎÖ Î¬ÎÉÎ¿ÎÖÎÜ, ÎùÎÖÎö, ÎÉÎæÎùÎáÎö ÎòÎóÎ£ÎòÎ¬"
+                               FontSize="13"
+                               Foreground="#526172"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <Border Grid.Row="1"
+                        Background="#F8FCFD"
+                        BorderBrush="#D3EEF4"
+                        BorderThickness="1"
+                        CornerRadius="22"
+                        Padding="12"
+                        Margin="0,0,0,12">
+                    <StackPanel Spacing="10"
+                                FlowDirection="RightToLeft">
+                        <WrapPanel HorizontalAlignment="Center"
+                                   FlowDirection="RightToLeft">
+                            <Button Content="­ÉÂ ÎøÎ£ÎæÎÖÎØ"
+                                    Width="150"
+                                    Height="44"
+                                    Margin="5"
+                                    FontSize="15"
+                                    FontWeight="Bold"
+                                    Background="#E9F8FC"
+                                    Foreground="#12344D"
+                                    BorderBrush="#0797C9"
+                                    Click="FilterDogs_Click"/>
+                            <Button Content="­É¦ ÎùÎ¬ÎòÎ£ÎÖÎØ"
+                                    Width="150"
+                                    Height="44"
+                                    Margin="5"
+                                    FontSize="15"
+                                    FontWeight="Bold"
+                                    Background="#FFF1D6"
+                                    Foreground="#12344D"
+                                    BorderBrush="#D9822B"
+                                    Click="FilterCats_Click"/>
+                            <Button Content="­ªÄ ÎûÎòÎùÎ£ÎÖÎØ"
+                                    Width="150"
+                                    Height="44"
+                                    Margin="5"
+                                    FontSize="15"
+                                    FontWeight="Bold"
+                                    Background="#E5F6E8"
+                                    Foreground="#12344D"
+                                    BorderBrush="#2E9D59"
+                                    Click="FilterReptiles_Click"/>
+                            <Button Content="­Éª ÎªÎÖÎñÎòÎ¿ÎÖÎØ"
+                                    Width="150"
+                                    Height="44"
+                                    Margin="5"
+                                    FontSize="15"
+                                    FontWeight="Bold"
+                                    Background="#E8ECFF"
+                                    Foreground="#12344D"
+                                    BorderBrush="#5865C7"
+                                    Click="FilterBirds_Click"/>
+                        </WrapPanel>
+
+                        <Border Background="#EAF8FB"
+                                BorderBrush="#D3EEF4"
+                                BorderThickness="1"
+                                CornerRadius="18"
+                                Padding="10"
+                                HorizontalAlignment="Center"
+                                FlowDirection="RightToLeft">
+                            <StackPanel Spacing="6"
+                                        HorizontalAlignment="Center">
+                                <TextBlock Text="ÎªÎñÎÖÎÖÎö ÎøÎ£Î£ÎÖÎ¬"
+                                           FontSize="13"
+                                           FontWeight="Bold"
+                                           Foreground="#526172"
+                                           TextAlignment="Center"/>
+                                <Button Content="­ôà Î¬ÎòÎ¿ÎÖÎØ ÎóÎ¬ÎÖÎôÎÖÎÖÎØ"
+                                        Width="180"
+                                        Height="38"
+                                        Background="#12344D"
+                                        Foreground="White"
+                                        BorderBrush="#12344D"
+                                        Click="ShowUpcomingVisits_Click"/>
+                            </StackPanel>
+                        </Border>
+
+                        <StackPanel Spacing="8"
+                                    FlowDirection="RightToLeft">
+                            <TextBlock x:Name="AnimalQuickCardsTitleText"
+                                       Text="ÎæÎùÎ¿ ÎíÎòÎÆ ÎùÎÖÎö Î£ÎñÎ¬ÎÖÎùÎ¬ Î¿Î®ÎÖÎ×Î¬ ÎöÎùÎÖÎòÎ¬"
+                                       FontSize="15"
+                                       FontWeight="Bold"
+                                       Foreground="#12344D"
+                                       TextAlignment="Center"/>
+
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          MaxHeight="115">
+                                <WrapPanel x:Name="AnimalQuickCardsPanel"
+                                           HorizontalAlignment="Center"/>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border x:Name="SelectedAnimalPanel"
+                        Grid.Row="2"
+                        IsVisible="False"
+                        Background="#F8FCFD"
+                        BorderBrush="#D3EEF4"
+                        BorderThickness="1"
+                        CornerRadius="24"
+                        Padding="16"
+                        Margin="0,0,0,12">
+                    <Grid ColumnDefinitions="Auto,*,Auto"
+                          ColumnSpacing="14">
+                        <Border Width="96"
+                                Height="96"
+                                Background="#E9F8FC"
+                                CornerRadius="26"
+                                VerticalAlignment="Center">
+                            <TextBlock x:Name="SelectedAnimalIconText"
+                                       Text="­É¥"
+                                       FontSize="44"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+
+                        <StackPanel Grid.Column="1"
+                                    Spacing="4"
+                                    VerticalAlignment="Center">
+                            <TextBlock x:Name="SelectedAnimalNameText"
+                                       Text="Î®ÎØ ÎùÎÖÎö"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       Foreground="#13293D"
+                                       TextWrapping="Wrap"/>
+                            <TextBlock x:Name="SelectedAnimalChipText"
+                                       Text="Î®ÎæÎæ:"
+                                       FontSize="14"
+                                       Foreground="#526172"
+                                       TextWrapping="Wrap"/>
+                            <TextBlock x:Name="SelectedAnimalOwnerText"
+                                       Text="ÎæÎóÎ£ÎÖÎØ:"
+                                       FontSize="14"
+                                       Foreground="#526172"
+                                       TextWrapping="Wrap"/>
+                            <TextBlock x:Name="SelectedAnimalVaccineText"
+                                       Text="ÎùÎÖÎíÎòÎ:"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       Foreground="#007EA7"
+                                       TextWrapping="Wrap"/>
+                            <TextBlock x:Name="SelectedAnimalVisitsCountText"
+                                       Text="ÎæÎÖÎºÎòÎ¿ÎÖÎØ: 0"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       Foreground="#12344D"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <Button x:Name="ShowAllVisitsButton"
+                                Grid.Column="2"
+                                Content="ÎøÎ£ ÎöÎæÎÖÎºÎòÎ¿ÎÖÎØ"
+                                Width="115"
+                                Height="38"
+                                VerticalAlignment="Center"
+                                Background="#12344D"
+                                BorderBrush="#12344D"
+                                Click="ShowAllVisits_Click"/>
+                    </Grid>
+                </Border>
+
+                <ScrollViewer Grid.Row="3"
+                              VerticalScrollBarVisibility="Auto"
+                              FlowDirection="LeftToRight">
+                    <Grid FlowDirection="LeftToRight"
+                          HorizontalAlignment="Stretch">
+                        <WrapPanel x:Name="VisitCardsPanel"
+                                   Orientation="Horizontal"
+                                   HorizontalAlignment="Left"
+                                   FlowDirection="LeftToRight"/>
+                    </Grid>
+                </ScrollViewer>
+
+                <Border Grid.Row="4"
+                        Background="#F3FAFD"
+                        BorderBrush="#D3EEF4"
+                        BorderThickness="1"
+                        CornerRadius="20"
+                        Padding="14"
+                        Margin="0,12,0,0">
+                    <TextBlock x:Name="VisitDetailsText"
+                               Text="Î£ÎùÎÑ ÎóÎ£ ÎøÎ¿ÎÿÎÖÎí ÎæÎÖÎºÎòÎ¿ ÎøÎôÎÖ Î£Î¿ÎÉÎòÎ¬ ÎÉÎ¬ ÎøÎ£ ÎöÎñÎ¿ÎÿÎÖÎØ"
+                               FontSize="15"
+                               Foreground="#2D3748"
+                               TextWrapping="Wrap"/>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

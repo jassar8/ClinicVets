@@ -1,9 +1,10 @@
-﻿using Avalonia;
+﻿using ClinicVets.Desktop.Services;
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using ClinicVets.Desktop.Helpers;
-using ClinicVets.Desktop.Stability;
+using ClinicVets.Desktop.Helpers.Stability;
 
 namespace ClinicVets.Desktop;
 

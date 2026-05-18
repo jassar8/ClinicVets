@@ -1,11 +1,18 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
+using ClinicVets.Desktop.Services;
 using ClinicVets.Application.Security;
 using ClinicVets.Application.Shell;
 using ClinicVets.Core;
 using ClinicVets.Core.Entities;
 using ClinicVets.Desktop.Helpers;
-using ClinicVets.Desktop.Stability;
-using ClinicVets.Desktop.Views;
+using ClinicVets.Desktop.Views.Auth;
+using ClinicVets.Desktop.Views.Dashboard;
+using ClinicVets.Desktop.Views.Customers;
+using ClinicVets.Desktop.Views.Animals;
+using ClinicVets.Desktop.Views.Visits;
+using ClinicVets.Desktop.Views.Medicine;
+using ClinicVets.Desktop.Views.Bills;
+using ClinicVets.Desktop.Helpers.Stability;
 
 namespace ClinicVets.Desktop;
 
@@ -36,7 +43,7 @@ public partial class MainWindow : Window
                 DemoModeSession.Enter();
                 DemoModeSession.SetSimulatedRole(demoRole);
                 _currentEmployee = admin;
-                Title = "ClinicVets — Demo Mode";
+                Title = "ClinicVets ? Demo Mode";
                 ShowMainMenu();
             };
             return loginView;
@@ -72,6 +79,8 @@ public partial class MainWindow : Window
             v.OpenVisits += ShowVisits;
             v.OpenMedicines += ShowMedications;
             v.OpenBills += ShowBills;
+            v.OpenReports += ShowReports;
+            v.OpenSettings += ShowSettings;
             v.Logout += () =>
             {
                 _currentEmployee = null;
@@ -117,6 +126,22 @@ public partial class MainWindow : Window
         NavigateFeature(AppRouteCatalog.Bills, () =>
         {
             var v = new BillsView();
+            v.BackToMainMenu += ShowMainMenu;
+            return v;
+        });
+
+    private void ShowReports() =>
+        NavigateFeature(AppRouteCatalog.Reports, () =>
+        {
+            var v = new ReportsView();
+            v.BackToMainMenu += ShowMainMenu;
+            return v;
+        });
+
+    private void ShowSettings() =>
+        NavigateFeature(AppRouteCatalog.Settings, () =>
+        {
+            var v = new SettingsView();
             v.BackToMainMenu += ShowMainMenu;
             return v;
         });
@@ -170,7 +195,7 @@ public partial class MainWindow : Window
         if (AppRouteCatalog.CanOpenRoute(employee, route))
             return true;
 
-        UIHelper.ShowMessage(this, "אין הרשאה לפתוח מסך זה לפי התפקיד שלך");
+        UIHelper.ShowMessage(this, "??? ????? ????? ??? ?? ??? ?????? ???");
         ShowMainMenu();
         return false;
     }

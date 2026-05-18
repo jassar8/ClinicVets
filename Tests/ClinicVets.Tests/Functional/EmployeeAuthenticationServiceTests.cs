@@ -35,7 +35,7 @@ public class EmployeeAuthenticationServiceTests
     {
         var repo = new FakeEmployeeRepository();
         var registration = new EmployeeRegistrationService(repo);
-        await registration.RegisterAsync("User", "user@x.com", "Correct1!", "Secretary");
+        await registration.RegisterAsync("User", "user@x.com", "Correct1!", "Secretary", username: "userx001");
         var sut = new EmployeeAuthenticationService(repo);
 
         var (ok, _, employee) = await sut.LoginAsync("user@x.com", "wrong");
@@ -49,7 +49,9 @@ public class EmployeeAuthenticationServiceTests
     {
         var repo = new FakeEmployeeRepository();
         var registration = new EmployeeRegistrationService(repo);
-        await registration.RegisterAsync("Jane", "Jane@X.COM", "Valid1!ab", "Secretary");
+        await registration.RegisterAsync(
+            "Jane", "Jane@X.COM", "Valid1!ab", "Secretary",
+            username: "janeusr1", autoApproveSelfRegistration: false);
         var sut = new EmployeeAuthenticationService(repo);
 
         var (ok, message, employee) = await sut.LoginAsync("  jane@x.com  ", "Valid1!ab");
@@ -64,7 +66,7 @@ public class EmployeeAuthenticationServiceTests
     {
         var repo = new FakeEmployeeRepository();
         var registration = new EmployeeRegistrationService(repo);
-        await registration.RegisterAsync("Jane", "Jane@X.COM", "Valid1!ab", "Secretary");
+        await registration.RegisterAsync("Jane", "Jane@X.COM", "Valid1!ab", "Secretary", username: "janeusr2");
         var pending = await repo.GetByEmailAsync("jane@x.com");
         Assert.NotNull(pending);
         pending.Status = EmployeeAccountStatusNames.Approved;

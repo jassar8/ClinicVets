@@ -1,5 +1,6 @@
-﻿using Avalonia;
-using ClinicVets.Desktop.Stability;
+using ClinicVets.Desktop.Services;
+using Avalonia;
+using ClinicVets.Desktop.Helpers.Stability;
 
 namespace ClinicVets.Desktop;
 

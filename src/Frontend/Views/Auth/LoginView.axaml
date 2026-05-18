@@ -1,0 +1,305 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ClinicVets.Desktop.Views.Auth.LoginView"
+             FlowDirection="RightToLeft">
+
+    <UserControl.Styles>
+        <Style Selector="Border.inputShell">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D4E8EF"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="4,0"/>
+        </Style>
+        <Style Selector="TextBox.fieldInput">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="MinHeight" Value="42"/>
+            <Setter Property="Padding" Value="8,10,12,10"/>
+            <Setter Property="CornerRadius" Value="12"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Background="#E8F6FA">
+        <Border Width="920"
+                MinHeight="620"
+                Background="White"
+                CornerRadius="36"
+                BorderBrush="#D3EEF4"
+                BorderThickness="1"
+                BoxShadow="0 18 48 0 #280097C7"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+
+            <!-- RTL: column 0 = right (branding), column 1 = left (form) -->
+            <Grid ColumnDefinitions="380,*">
+
+                <!-- Branding panel (visual right) -->
+                <Border Grid.Column="0"
+                        CornerRadius="0,34,34,0"
+                        ClipToBounds="True">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                            <GradientStop Color="#0F2A3D" Offset="0"/>
+                            <GradientStop Color="#12344D" Offset="0.45"/>
+                            <GradientStop Color="#0D2435" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+
+                    <Grid Margin="24,28">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0"
+                                    VerticalAlignment="Center"
+                                    Spacing="16">
+
+                            <Border Width="210"
+                                    Height="210"
+                                    CornerRadius="105"
+                                    ClipToBounds="True"
+                                    HorizontalAlignment="Center"
+                                    Background="Transparent"
+                                    BoxShadow="0 14 36 0 #5500B7D7">
+                                <Image Source="avares://ClinicVets/Assets/Images/logo-256.png"
+                                       Width="210"
+                                       Height="210"
+                                       Stretch="Uniform"
+                                       RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                            </Border>
+
+                            <StackPanel Spacing="8" HorizontalAlignment="Center">
+                                <TextBlock Text="Clinic Vets"
+                                           FontSize="36"
+                                           FontWeight="Bold"
+                                           Foreground="White"
+                                           TextAlignment="Center"/>
+                                <Border Height="3"
+                                        Width="120"
+                                        CornerRadius="2"
+                                        HorizontalAlignment="Center">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0%,50%" EndPoint="100%,50%">
+                                            <GradientStop Color="#00B7D7" Offset="0"/>
+                                            <GradientStop Color="#0097C7" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                            </StackPanel>
+
+                            <TextBlock Text="????? ????? ????? ???????? ???? 2026"
+                                       FontSize="15"
+                                       Foreground="#BCEFF6"
+                                       TextAlignment="Center"
+                                       TextWrapping="Wrap"
+                                       MaxWidth="300"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <Border Grid.Row="1"
+                                Background="#1A3F5C"
+                                Opacity="0.92"
+                                CornerRadius="22"
+                                Padding="14,12"
+                                Margin="0,12,0,0">
+                            <UniformGrid Columns="4" FlowDirection="RightToLeft">
+                                <StackPanel Spacing="4" HorizontalAlignment="Center">
+                                    <TextBlock Text="??" FontSize="22" TextAlignment="Center"/>
+                                    <TextBlock Text="??????" FontSize="11" FontWeight="SemiBold" Foreground="#E7FAFF" TextAlignment="Center"/>
+                                </StackPanel>
+                                <StackPanel Spacing="4" HorizontalAlignment="Center">
+                                    <TextBlock Text="??" FontSize="22" TextAlignment="Center"/>
+                                    <TextBlock Text="???? ????" FontSize="11" FontWeight="SemiBold" Foreground="#E7FAFF" TextAlignment="Center"/>
+                                </StackPanel>
+                                <StackPanel Spacing="4" HorizontalAlignment="Center">
+                                    <TextBlock Text="??" FontSize="22" TextAlignment="Center"/>
+                                    <TextBlock Text="???????" FontSize="11" FontWeight="SemiBold" Foreground="#E7FAFF" TextAlignment="Center"/>
+                                </StackPanel>
+                                <StackPanel Spacing="4" HorizontalAlignment="Center">
+                                    <TextBlock Text="??" FontSize="22" TextAlignment="Center"/>
+                                    <TextBlock Text="??????" FontSize="11" FontWeight="SemiBold" Foreground="#E7FAFF" TextAlignment="Center"/>
+                                </StackPanel>
+                            </UniformGrid>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Login form (visual left) -->
+                <StackPanel Grid.Column="1"
+                            Width="400"
+                            Spacing="12"
+                            Margin="36,32"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+
+                    <TextBlock Text="?????? ?????"
+                               FontSize="40"
+                               FontWeight="Bold"
+                               Foreground="#13293D"
+                               TextAlignment="Center"/>
+
+                    <TextBlock Text="??????? ?????? ????"
+                               FontSize="17"
+                               Foreground="#5A6B7D"
+                               TextAlignment="Center"
+                               Margin="0,0,0,8"/>
+
+                    <TextBlock Text="?? ?????"
+                               Foreground="#5A6B7D"
+                               FontSize="13"
+                               Margin="8,0,8,-4"/>
+
+                    <Border Classes="inputShell" Width="330" HorizontalAlignment="Center">
+                        <Grid ColumnDefinitions="40,*" FlowDirection="LeftToRight">
+                            <TextBlock Grid.Column="0"
+                                       Text="??"
+                                       FontSize="18"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       Foreground="#8A9AAB"/>
+                            <TextBox x:Name="UsernameInput"
+                                     Grid.Column="1"
+                                     Classes="fieldInput"
+                                     PlaceholderText="?? ?????"
+                                     FlowDirection="LeftToRight"
+                                     TextChanged="ValidateInputs_Changed"/>
+                        </Grid>
+                    </Border>
+
+                    <TextBlock Text="?????"
+                               Foreground="#5A6B7D"
+                               FontSize="13"
+                               Margin="8,4,8,-4"/>
+
+                    <Grid Width="330" ColumnDefinitions="*,48" ColumnSpacing="8" HorizontalAlignment="Center">
+                        <Border Grid.Column="0" Classes="inputShell">
+                            <Grid ColumnDefinitions="40,*" FlowDirection="LeftToRight">
+                                <TextBlock Grid.Column="0"
+                                           Text="??"
+                                           FontSize="17"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Foreground="#8A9AAB"/>
+                                <TextBox x:Name="PasswordInput"
+                                         Grid.Column="1"
+                                         Classes="fieldInput"
+                                         PlaceholderText="?????"
+                                         PasswordChar="*"
+                                         FlowDirection="LeftToRight"
+                                         TextChanged="ValidateInputs_Changed"/>
+                            </Grid>
+                        </Border>
+                        <Button x:Name="PasswordEyeButton"
+                                Grid.Column="1"
+                                Classes="iconToggle"
+                                VerticalAlignment="Center"
+                                Content="??"
+                                Click="TogglePasswordVisibility"/>
+                    </Grid>
+
+                    <Button Content="????? ??????"
+                            Classes="linkButton"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,4"
+                            Click="ForgotPassword_Click"/>
+
+                    <TextBlock x:Name="StatusText"
+                               Text=""
+                               Foreground="#0B7A3B"
+                               FontSize="13"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               MinHeight="16"/>
+
+                    <TextBlock x:Name="ValidationText"
+                               Text=""
+                               Foreground="#C62828"
+                               FontSize="13"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               MinHeight="18"/>
+
+                    <Button Classes="primaryGradient"
+                            Width="330"
+                            Height="50"
+                            HorizontalAlignment="Center"
+                            Click="Login_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                            <TextBlock Text="??" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Text="???????" FontSize="15" FontWeight="Bold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Classes="outlinePrimary"
+                            Width="330"
+                            Height="50"
+                            HorizontalAlignment="Center"
+                            Click="Register_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                            <TextBlock Text="?" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Text="????? ???? ???" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <TextBlock x:Name="DemoRoleLabel"
+                               Text="??? ????? ????"
+                               Foreground="#5A6B7D"
+                               FontSize="13"
+                               Margin="8,8,8,-4"
+                               IsVisible="False"/>
+
+                    <Border x:Name="DemoRoleSelectorShell"
+                            Width="330"
+                            Classes="inputShell"
+                            HorizontalAlignment="Center"
+                            IsVisible="False">
+                        <Grid ColumnDefinitions="40,*" FlowDirection="LeftToRight">
+                            <TextBlock Grid.Column="0"
+                                       Text="??"
+                                       FontSize="18"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"/>
+                            <ComboBox x:Name="DemoRoleSelector"
+                                      Grid.Column="1"
+                                      Classes="demoCombo"
+                                      SelectedIndex="0"
+                                      HorizontalAlignment="Stretch"
+                                      BorderThickness="0"
+                                      Background="Transparent">
+                                <ComboBoxItem Content="Demo Admin — ????/? | ???? ????"/>
+                                <ComboBoxItem Content="Demo Vet — ??????/?? | ??????? ???????"/>
+                                <ComboBoxItem Content="Demo Secretary — ?????/? | ?????? ????? ????"/>
+                            </ComboBox>
+                        </Grid>
+                    </Border>
+
+                    <Button x:Name="DemoModeButton"
+                            Classes="demoDark"
+                            Width="330"
+                            Height="50"
+                            HorizontalAlignment="Center"
+                            IsVisible="False"
+                            Click="DemoMode_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                            <TextBlock Text="??" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Text="????? ???" FontSize="15" FontWeight="Bold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <TextBlock x:Name="DemoHintText"
+                               Text="????: admin · Admin123!  |  ??????: vet@clinicvets.com · Vet12!ab  |  ??????: secretary@clinicvets.com · Sec12!ab"
+                               Foreground="#0B7A3B"
+                               FontSize="11"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               MaxWidth="330"
+                               IsVisible="False"/>
+
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

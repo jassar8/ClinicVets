@@ -1,6 +1,6 @@
 using System.Text;
 using ClinicVets.Application.Services;
-using ClinicVets.Infrastructure.Data;
+using ClinicVets.Infrastructure.Repositories;
 
 namespace ClinicVets.Tests.Integration;
 

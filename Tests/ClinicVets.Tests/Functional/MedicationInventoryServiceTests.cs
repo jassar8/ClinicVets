@@ -1,6 +1,6 @@
 using ClinicVets.Application.Services;
 using ClinicVets.Core.Entities;
-using ClinicVets.Infrastructure.Data;
+using ClinicVets.Infrastructure.Repositories;
 
 namespace ClinicVets.Tests.Functional;
 

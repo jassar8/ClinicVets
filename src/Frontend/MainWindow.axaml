@@ -1,14 +1,14 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="ClinicVets.Desktop.MainWindow"
-        Title="מערכת ניהול מרפאה וטרינרית"
+        Title="????? ????? ????? ????????"
         Width="980"
         Height="680"
         MinWidth="980"
         MinHeight="680"
         WindowStartupLocation="CenterScreen"
         Background="#F3F6FB"
-        Icon="avares://ClinicVets/Assets/logo-128.png">
+        Icon="avares://ClinicVets/Assets/Images/logo-128.png">
 
     <Grid>
         <Border x:Name="MainContent"

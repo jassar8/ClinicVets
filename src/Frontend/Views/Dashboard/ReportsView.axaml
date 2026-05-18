@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ClinicVets.Desktop.Views.Dashboard.ReportsView"
+             FlowDirection="RightToLeft">
+
+    <Grid Background="#EAF8FB">
+        <Border Background="White" CornerRadius="28" BorderBrush="#D3EEF4" BorderThickness="1"
+                Padding="28" Margin="40" MaxWidth="720" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Spacing="16">
+                <Button Content="← חזרה לתפריט" Width="150" Height="38" HorizontalAlignment="Left"
+                        Background="#12344D" BorderBrush="#12344D" Click="Back_Click"/>
+                <TextBlock Text="דוחות" FontSize="28" FontWeight="Bold" Foreground="#13293D" TextAlignment="Center"/>
+                <TextBlock Text="מודול הדוחות יתווסף בגרסה הבאה. ניתן לצפות בסיכום ביקורים במסך הביקורים."
+                           FontSize="15" Foreground="#526172" TextWrapping="Wrap" TextAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

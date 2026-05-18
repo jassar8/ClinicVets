@@ -2,7 +2,7 @@ using ClinicVets.Application.Interfaces;
 using ClinicVets.Application.Security;
 using ClinicVets.Application.Services;
 using ClinicVets.Core.Entities;
-using ClinicVets.Infrastructure.Data;
+using ClinicVets.Infrastructure.Repositories;
 
 namespace ClinicVets.Infrastructure.Demo;
 
@@ -133,13 +133,45 @@ public static class DemoWorkspace
 
         var animals = new List<Animal>
         {
-            new() { CustomerId = c1.Id, Name = "Buddy", Species = "Golden Retriever" },
-            new() { CustomerId = c1.Id, Name = "Luna", Species = "Siamese cat" },
-            new() { CustomerId = c2.Id, Name = "Coco", Species = "Parakeet" },
-            new() { CustomerId = c3.Id, Name = "Felix", Species = "Domestic shorthair" }
+            new() { CustomerId = c1.Id, Name = "Buddy", Species = "כלב", ChipNumber = "3763001", Weight = 30, OwnerIdNumber = c1.NationalId },
+            new() { CustomerId = c1.Id, Name = "Luna", Species = "חתול", ChipNumber = "3763002", Weight = 4.5, OwnerIdNumber = c1.NationalId },
+            new() { CustomerId = c2.Id, Name = "Coco", Species = "ציפור", ChipNumber = "3763003", Weight = 0.2, OwnerIdNumber = c2.NationalId },
+            new() { CustomerId = c3.Id, Name = "Felix", Species = "חתול", ChipNumber = "3763004", Weight = 5.1, OwnerIdNumber = c3.NationalId }
         };
 
         customerDirectory = new InMemoryCustomerDirectoryRepository([c1, c2, c3], animals);
         customers = new CustomerDirectoryService(customerDirectory);
     }
+
+    /// <summary>Demo medicine stock (in-memory; used when demo mode replaces JSON stores).</summary>
+    public static IReadOnlyList<Medication> CreateDemoMedications() =>
+    [
+        new Medication
+        {
+            Id = 1,
+            Name = "Amoxicillin 250mg",
+            StockQuantity = 42,
+            UnitPrice = 12.5,
+            ExpirationDate = DateTime.Today.AddMonths(8),
+            Notes = "Antibiotic tablets"
+        },
+        new Medication
+        {
+            Id = 2,
+            Name = "Rimadyl 100mg",
+            StockQuantity = 4,
+            UnitPrice = 28.0,
+            ExpirationDate = DateTime.Today.AddDays(20),
+            Notes = "Anti-inflammatory"
+        },
+        new Medication
+        {
+            Id = 3,
+            Name = "Frontline Plus",
+            StockQuantity = 18,
+            UnitPrice = 35.75,
+            ExpirationDate = DateTime.Today.AddYears(1),
+            Notes = "Flea and tick treatment"
+        }
+    ];
 }

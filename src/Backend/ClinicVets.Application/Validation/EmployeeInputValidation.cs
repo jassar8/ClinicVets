@@ -17,6 +17,15 @@ public static class EmployeeInputValidation
         return t.Contains('@') && t.Contains('.');
     }
 
+    public static bool IsValidUsername(string username)
+    {
+        var u = username.Trim();
+        if (u.Length is < 6 or > 8)
+            return false;
+
+        return u.All(ch => char.IsAsciiLetterOrDigit(ch));
+    }
+
     public static bool IsValidPassword(string password)
     {
         var p = password.Trim();
