@@ -50,7 +50,7 @@ dotnet run --project Source/ClinicVetsAvalonia.csproj
 powershell -File scripts/Clean-LocalArtifacts.ps1
 ```
 
-**Course documentation:** add PDF/Word/LaTeX files under [`Documentation/TestCases/`](Documentation/TestCases/), [`Documentation/Roadmap/`](Documentation/Roadmap/), and [`Documentation/Reports/`](Documentation/Reports/).
+**Course documentation:** add PDF/Word/LaTeX files under [`Documentation/TestCases/`](Documentation/TestCases/) and [`Documentation/Reports/`](Documentation/Reports/).
 
 ## Run the app (teachers / reviewers)
 
@@ -111,7 +111,6 @@ dotnet test Tests/ClinicVets.Tests/ClinicVets.Tests.csproj
 Add LaTeX, PDF, or Word files under:
 
 - `Documentation/TestCases/`
-- `Documentation/Roadmap/`
 - `Documentation/Reports/`
 
 ## Solution
