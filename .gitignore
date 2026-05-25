@@ -1,0 +1,28 @@
+# Build outputs
+bin/
+obj/
+**/bin/
+**/obj/
+
+# IDE / OS
+.vs/
+.vscode/
+.idea/
+.DS_Store
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Test / coverage
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# NuGet
+*.nupkg
+project.lock.json
+
+# Publish scratch (RunApp is committed intentionally)
+publish/

@@ -1,17 +1,17 @@
 @echo off
 cd /d "%~dp0"
 
-echo Starting ClinicVetsAvalonia...
-echo.
+set EXE=%~dp0RunApp\ClinicVets.exe
 
-dotnet run --project "ClinicVetsAvalonia.csproj"
-
-if errorlevel 1 (
-    echo.
-    echo The app could not start.
-    echo Make sure the .NET SDK is installed on this computer.
-    echo Download: https://dotnet.microsoft.com/download
-    echo.
+if exist "%EXE%" (
+    echo Starting ClinicVets...
+    start "" "%EXE%"
+    exit /b 0
 )
 
+echo RunApp\ClinicVets.exe not found.
+echo Build it with: powershell -File scripts\Publish-RunApp.ps1
+echo Or run from source: dotnet run --project Source\ClinicVetsAvalonia.csproj
+echo.
 pause
+exit /b 1

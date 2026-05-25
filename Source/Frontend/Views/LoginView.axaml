@@ -1,0 +1,181 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ClinicVetsAvalonia.Views.LoginView"
+             FlowDirection="RightToLeft">
+
+    <Grid Background="#EAF8FB">
+        <Border Width="860"
+                Height="560"
+                Background="White"
+                CornerRadius="34"
+                BorderBrush="#D3EEF4"
+                BorderThickness="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+
+        <Grid ColumnDefinitions="340,*">
+            <Border Grid.Column="0"
+                    Background="#12344D"
+                    CornerRadius="32,0,0,32"
+                    Padding="28">
+                <StackPanel VerticalAlignment="Center"
+                            Spacing="18">
+                    <Border Width="206"
+                            Height="206"
+                            Background="#E7FAFF"
+                            CornerRadius="103"
+                            HorizontalAlignment="Center">
+                        <Grid>
+                            <Ellipse Width="152"
+                                     Height="152"
+                                     Fill="#00B7D7"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"/>
+                            <Ellipse Width="94"
+                                     Height="94"
+                                     Fill="#FFE08A"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"/>
+                            <TextBlock Classes="emoji"
+                                       Text="🐾"
+                                       FontSize="52"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <TextBlock Text="Clinic Vets"
+                               FontSize="34"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"/>
+
+                    <TextBlock Text="מערכת ניהול מרפאה וטרינרית לשנת 2026"
+                               FontSize="15"
+                               Foreground="#BCEFF6"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               HorizontalAlignment="Center"/>
+
+                    <Border Background="#1E4966"
+                            CornerRadius="22"
+                            Padding="16"
+                            Margin="0,16,0,0">
+                        <TextBlock Text="לקוחות • בעלי חיים • ביקורים • תרופות"
+                                   Foreground="#E7FAFF"
+                                   FontSize="14"
+                                   FontWeight="Bold"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+        <StackPanel Grid.Column="1"
+                    Width="365"
+                    Spacing="14"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+
+            <TextBlock Text="ברוכים הבאים"
+                       FontSize="38"
+                       FontWeight="Bold"
+                       Foreground="#13293D"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Center"/>
+
+            <TextBlock Text="התחברות לחשבון עובד"
+                       FontSize="17"
+                       TextAlignment="Center"
+                       Foreground="#526172"
+                       HorizontalAlignment="Center"/>
+
+            <TextBlock Text="שם משתמש"
+                       Foreground="#526172"
+                       FontSize="13"
+                       Margin="0,4,16,0"/>
+
+            <TextBox x:Name="UsernameInput"
+                     PlaceholderText="שם משתמש"
+                     Width="310"
+                     FlowDirection="LeftToRight"
+                     TextChanged="ValidateInputs_Changed"
+                     ToolTip.Tip="הכנס שם משתמש באנגלית"/>
+
+            <TextBlock Text="סיסמה"
+                       Foreground="#526172"
+                       FontSize="13"
+                       Margin="0,4,16,0"/>
+
+            <Grid Width="310"
+                  ColumnDefinitions="*,44"
+                  FlowDirection="LeftToRight">
+                <TextBox x:Name="PasswordInput"
+                         Grid.Column="0"
+                         PlaceholderText="סיסמה"
+                         PasswordChar="*"
+                         FlowDirection="LeftToRight"
+                         TextChanged="ValidateInputs_Changed"
+                         ToolTip.Tip="לחץ על העין כדי להציג או להסתיר סיסמה"/>
+
+                <Button x:Name="PasswordEyeButton"
+                        Grid.Column="1"
+                        Classes="password-toggle"
+                        Content="הצג"
+                        Width="40"
+                        Height="36"
+                        Margin="4,0,0,0"
+                        Background="#E8F9FD"
+                        BorderBrush="#BFEAF2"
+                        Foreground="#12344D"
+                        ToolTip.Tip="הצג או הסתר סיסמה"
+                        Click="TogglePasswordVisibility"/>
+            </Grid>
+
+            <Button Content="שכחתי סיסמה?"
+                    Width="150"
+                    Height="34"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Foreground="#007EA7"
+                    HorizontalAlignment="Center"
+                    ToolTip.Tip="איפוס סיסמה לפי אימייל וקוד"
+                    Click="ForgotPassword_Click"/>
+
+            <TextBlock x:Name="StatusText"
+                       Text=""
+                       Foreground="#0B7A3B"
+                       FontSize="13"
+                       FontWeight="Bold"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       MinHeight="18"/>
+
+            <TextBlock x:Name="ValidationText"
+                       Text=""
+                       Foreground="#C62828"
+                       FontSize="13"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       MinHeight="20"/>
+
+            <Button Content="התחברות"
+                    Width="310"
+                    Height="48"
+                    Click="Login_Click"/>
+
+            <Button Content="רישום עובד חדש"
+                    Width="310"
+                    Height="48"
+                    Background="White"
+                    BorderBrush="#0097C7"
+                    Foreground="#0097C7"
+                    Click="Register_Click"/>
+
+        </StackPanel>
+        </Grid>
+        </Border>
+    </Grid>
+</UserControl>
