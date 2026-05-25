@@ -4,6 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <AssemblyName>ClinicVets</AssemblyName>
+    <UseAppHost>true</UseAppHost>
+    <ApplicationIcon>Assets\ClinicVets.ico</ApplicationIcon>
     <ApplicationManifest>Assets\app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
@@ -22,5 +24,14 @@
 
   <ItemGroup>
     <Compile Remove="..\..\Tests\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\ClinicVets.ico" />
+    <Content Include="Assets\ClinicVetsLogo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\ClinicVets.ico" />
   </ItemGroup>
 </Project>

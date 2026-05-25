@@ -9,6 +9,9 @@ obj/
 .vscode/
 .idea/
 .DS_Store
+Thumbs.db
+*.bak
+*~
 *.user
 *.suo
 *.userosscache

@@ -1,4 +1,6 @@
+using System;
 using Avalonia.Controls;
+using Avalonia.Platform;
 using ClinicVetsAvalonia.Data;
 using ClinicVetsAvalonia.Helpers;
 using ClinicVetsAvalonia.Models;
@@ -13,10 +15,23 @@ namespace ClinicVetsAvalonia
         public MainWindow()
         {
             InitializeComponent();
+            SetWindowIcon();
 
             AppData.Initialize();
 
             ShowLogin();
+        }
+
+        private void SetWindowIcon()
+        {
+            try
+            {
+                Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://ClinicVets/Assets/ClinicVets.ico")));
+            }
+            catch
+            {
+                // XAML Icon="/Assets/ClinicVets.ico" remains as fallback when asset loader path differs.
+            }
         }
 
         private void ShowLogin()
