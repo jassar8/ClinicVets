@@ -52,33 +52,25 @@ namespace ClinicVetsAvalonia.Views
             string idNumber = IdNumberInput.Text?.Trim() ?? "";
             string email = EmailInput.Text?.Trim() ?? "";
 
-            if (string.IsNullOrWhiteSpace(username) ||
-                string.IsNullOrWhiteSpace(password) ||
-                string.IsNullOrWhiteSpace(employeeNumber) ||
-                string.IsNullOrWhiteSpace(idNumber) ||
-                string.IsNullOrWhiteSpace(email))
+            if (!ValidationService.ValidateEmployeeRegistration(
+                    username,
+                    password,
+                    employeeNumber,
+                    idNumber,
+                    email,
+                    out string? errorMessage,
+                    showEmptyFieldsMessage: showEmptyMessage))
             {
-                ValidationText.Foreground = Avalonia.Media.Brushes.Firebrick;
-                ValidationText.Text = showEmptyMessage ? "יש למלא את כל שדות העובד" : "";
+                if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    if (ValidationService.GetEmailValidationMessage(email) != null)
+                        UpdateEmailValidationText(email);
+
+                    return ShowValidationError(errorMessage);
+                }
+
+                ValidationText.Text = "";
                 return false;
-            }
-
-            if (!ValidationService.IsValidUsername(username))
-                return ShowValidationError("שם משתמש חייב להיות 6-8 תווים באנגלית, עם מקסימום 2 ספרות");
-
-            if (!ValidationService.IsValidPassword(password))
-                return ShowValidationError("סיסמה חייבת להיות 8-10 תווים ולכלול אות, ספרה ותו מיוחד");
-
-            if (!ValidationService.IsValidEmployeeNumber(employeeNumber))
-                return ShowValidationError("מספר עובד חייב להיות 4 ספרות");
-
-            if (!ValidationService.IsValidIdNumber(idNumber))
-                return ShowValidationError("תעודת זהות חייבת להיות 9 ספרות");
-
-            if (!ValidationService.IsValidEmail(email))
-            {
-                UpdateEmailValidationText(email);
-                return ShowValidationError("יש לתקן את האימייל לפני שמירה");
             }
 
             EmailValidationText.Text = "";
@@ -120,37 +112,6 @@ namespace ClinicVetsAvalonia.Views
             {
                 string roleText = selectedRole.Content.ToString() ?? "מזכיר/ה";
                 role = roleText.Contains("וטרינר") ? "Vet" : "Secretary";
-            }
-
-            if (!ValidationService.IsValidUsername(username))
-            {
-                ShowMessage("שם משתמש חייב להיות 6-8 תווים, באנגלית, עם מקסימום 2 ספרות");
-                return;
-            }
-
-            if (!ValidationService.IsValidPassword(password))
-            {
-                ShowMessage("סיסמה חייבת להיות 8-10 תווים ולכלול אות, ספרה ותו מיוחד");
-                return;
-            }
-
-            if (!ValidationService.IsValidEmployeeNumber(employeeNumber))
-            {
-                ShowMessage("מספר עובד חייב להיות 4 ספרות");
-                return;
-            }
-
-            if (!ValidationService.IsValidIdNumber(idNumber))
-            {
-                ShowMessage("תעודת זהות חייבת להיות 9 ספרות");
-                return;
-            }
-
-            if (!ValidationService.IsValidEmail(email))
-            {
-                UpdateEmailValidationText(email);
-                ShowMessage("יש לתקן את האימייל לפני שמירה");
-                return;
             }
 
             if (!ValidationService.IsValidRole(role))

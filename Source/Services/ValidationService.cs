@@ -52,6 +52,60 @@ namespace ClinicVetsAvalonia.Services
             return role == "Secretary" || role == "Vet";
         }
 
+        public static bool ValidateEmployeeRegistration(
+            string username,
+            string password,
+            string employeeNumber,
+            string idNumber,
+            string email,
+            out string? errorMessage,
+            bool showEmptyFieldsMessage = true)
+        {
+            errorMessage = null;
+
+            if (string.IsNullOrWhiteSpace(username) ||
+                string.IsNullOrWhiteSpace(password) ||
+                string.IsNullOrWhiteSpace(employeeNumber) ||
+                string.IsNullOrWhiteSpace(idNumber) ||
+                string.IsNullOrWhiteSpace(email))
+            {
+                errorMessage = showEmptyFieldsMessage ? "יש למלא את כל שדות העובד" : "";
+                return false;
+            }
+
+            if (!IsValidUsername(username))
+            {
+                errorMessage = "שם משתמש חייב להיות 6-8 תווים באנגלית, עם מקסימום 2 ספרות";
+                return false;
+            }
+
+            if (!IsValidPassword(password))
+            {
+                errorMessage = "סיסמה חייבת להיות 8-10 תווים ולכלול אות, ספרה ותו מיוחד";
+                return false;
+            }
+
+            if (!IsValidEmployeeNumber(employeeNumber))
+            {
+                errorMessage = "מספר עובד חייב להיות 4 ספרות";
+                return false;
+            }
+
+            if (!IsValidIdNumber(idNumber))
+            {
+                errorMessage = "תעודת זהות חייבת להיות 9 ספרות";
+                return false;
+            }
+
+            if (!IsValidEmail(email))
+            {
+                errorMessage = GetEmailValidationMessage(email) ?? "יש לתקן את האימייל לפני שמירה";
+                return false;
+            }
+
+            return true;
+        }
+
         // ---------- Client / General Validation ----------
 
         public static bool IsValidFullName(string fullName)
