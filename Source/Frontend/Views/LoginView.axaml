@@ -134,16 +134,6 @@
                         Click="TogglePasswordVisibility"/>
             </Grid>
 
-            <Button Content="שכחתי סיסמה?"
-                    Width="150"
-                    Height="34"
-                    Background="Transparent"
-                    BorderBrush="Transparent"
-                    Foreground="#007EA7"
-                    HorizontalAlignment="Center"
-                    ToolTip.Tip="איפוס סיסמה לפי אימייל וקוד"
-                    Click="ForgotPassword_Click"/>
-
             <TextBlock x:Name="StatusText"
                        Text=""
                        Foreground="#0B7A3B"
@@ -151,7 +141,8 @@
                        FontWeight="Bold"
                        TextAlignment="Center"
                        TextWrapping="Wrap"
-                       MinHeight="18"/>
+                       MinHeight="18"
+                       Margin="0,6,0,0"/>
 
             <TextBlock x:Name="ValidationText"
                        Text=""

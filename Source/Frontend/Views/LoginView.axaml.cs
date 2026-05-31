@@ -13,7 +13,6 @@ namespace ClinicVetsAvalonia.Views
     {
         public Action<Employee>? LoginSucceeded;
         public Action? RegisterRequested;
-        public Action? ForgotPasswordRequested;
         private bool isPasswordVisible;
 
         public LoginView()
@@ -90,11 +89,6 @@ namespace ClinicVetsAvalonia.Views
         private void Register_Click(object? sender, RoutedEventArgs e)
         {
             RegisterRequested?.Invoke();
-        }
-
-        private void ForgotPassword_Click(object? sender, RoutedEventArgs e)
-        {
-            ForgotPasswordRequested?.Invoke();
         }
     }
 }

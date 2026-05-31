@@ -52,7 +52,6 @@ namespace ClinicVetsAvalonia
             };
 
             loginView.RegisterRequested += ShowRegisterEmployee;
-            loginView.ForgotPasswordRequested += ShowForgotPassword;
 
             ShowPage(loginView);
         }
@@ -65,16 +64,6 @@ namespace ClinicVetsAvalonia
             registerView.RegistrationCompleted += ShowLogin;
 
             ShowPage(registerView);
-        }
-
-        private void ShowForgotPassword()
-        {
-            var forgotPasswordView = new ForgotPasswordView();
-
-            forgotPasswordView.BackToLogin += ShowLogin;
-            forgotPasswordView.PasswordResetCompleted += ShowLogin;
-
-            ShowPage(forgotPasswordView);
         }
 
         private void ShowMainMenu()

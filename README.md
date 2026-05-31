@@ -9,7 +9,7 @@ Desktop veterinary clinic management application (Avalonia UI, .NET 10, SQLite).
 | [`Source/`](Source/) | Application source code |
 | [`Source/Frontend/`](Source/Frontend/) | UI: views, main window, app entry, UI helpers |
 | [`Source/Models/`](Source/Models/) | Entity models (client, animal, visit, medication, …) |
-| [`Source/Services/`](Source/Services/) | Business rules (validation, password reset) |
+| [`Source/Services/`](Source/Services/) | Business rules (validation) |
 | [`Source/Data/`](Source/Data/) | SQLite persistence (`AppData`) |
 | [`Source/Backend/`](Source/Backend/) | Architecture notes (desktop app; no HTTP API) |
 | [`Source/Assets/`](Source/Assets/) | App manifest, logo PNG, multi-size `ClinicVets.ico` |

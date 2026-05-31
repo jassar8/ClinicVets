@@ -29,3 +29,5 @@ project.lock.json
 
 # Publish scratch (RunApp is committed intentionally)
 publish/
+
+.fake

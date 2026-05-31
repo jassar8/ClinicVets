@@ -5,7 +5,7 @@ This is a single-process Avalonia desktop application. There is no separate HTTP
 Backend responsibilities are implemented in:
 
 - **`../Data/`** — SQLite persistence (`AppData.cs`), load/save, schema
-- **`../Services/`** — Business rules (validation, password reset)
+- **`../Services/`** — Business rules (validation)
 
 The **`../Models/`** folder holds entity types shared by the UI and data layer.
 
