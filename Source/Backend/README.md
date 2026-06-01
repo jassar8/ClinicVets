@@ -4,7 +4,7 @@ This is a single-process Avalonia desktop application. There is no separate HTTP
 
 Backend responsibilities are implemented in:
 
-- **`../Data/`** — SQLite persistence (`AppData.cs`), load/save, schema
+- **`../Data/`** — SQLite persistence + Excel mirror (`ClinicVets.xlsx`, `ExcelExportService`)
 - **`../Services/`** — Business rules (validation)
 
 The **`../Models/`** folder holds entity types shared by the UI and data layer.

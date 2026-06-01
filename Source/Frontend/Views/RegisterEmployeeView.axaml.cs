@@ -152,7 +152,8 @@ namespace ClinicVetsAvalonia.Views
                 EmployeeNumber = employeeNumber,
                 IdNumber = idNumber,
                 Email = email,
-                Role = role
+                Role = role,
+                IsApproved = true
             });
 
             AppData.SaveEmployeesToDatabase();

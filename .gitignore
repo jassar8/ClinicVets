@@ -17,6 +17,10 @@ Thumbs.db
 *.userosscache
 *.sln.docstates
 
+# Local SQLite (runtime)
+Source/Data/*.db
+Source/Data/*.db-*
+
 # Test / coverage
 TestResults/
 *.trx

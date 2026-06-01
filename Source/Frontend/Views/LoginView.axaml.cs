@@ -73,6 +73,8 @@ namespace ClinicVetsAvalonia.Views
             if (!ValidateInputs(showEmptyMessage: true))
                 return;
 
+            AppData.LoadEmployees();
+
             var employee = AppData.Employees.FirstOrDefault(emp =>
                 emp.Username == username && emp.Password == password);
 
@@ -80,6 +82,13 @@ namespace ClinicVetsAvalonia.Views
             {
                 ValidationText.Text = "שם משתמש או סיסמה שגויים";
                 ShowMessage("שם משתמש או סיסמה שגויים");
+                return;
+            }
+
+            if (!employee.IsApproved)
+            {
+                ValidationText.Text = "חשבון העובד טרם אושר";
+                ShowMessage("חשבון העובד טרם אושר על ידי מנהל");
                 return;
             }
 

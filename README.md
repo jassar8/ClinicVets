@@ -1,6 +1,6 @@
 # ClinicVets
 
-Desktop veterinary clinic management application (Avalonia UI, .NET 10, SQLite).
+Desktop veterinary clinic management application (Avalonia UI, .NET 10, SQLite + Excel mirror export).
 
 ## Project layout
 
@@ -10,7 +10,7 @@ Desktop veterinary clinic management application (Avalonia UI, .NET 10, SQLite).
 | [`Source/Frontend/`](Source/Frontend/) | UI: views, main window, app entry, UI helpers |
 | [`Source/Models/`](Source/Models/) | Entity models (client, animal, visit, medication, …) |
 | [`Source/Services/`](Source/Services/) | Business rules (validation) |
-| [`Source/Data/`](Source/Data/) | SQLite persistence (`AppData`) |
+| [`Source/Data/`](Source/Data/) | SQLite persistence, Excel export (`ClinicVets.xlsx`) |
 | [`Source/Backend/`](Source/Backend/) | Architecture notes (desktop app; no HTTP API) |
 | [`Source/Assets/`](Source/Assets/) | App manifest, logo PNG, multi-size `ClinicVets.ico` |
 | [`Tests/`](Tests/) | Automated tests |
@@ -27,14 +27,19 @@ Desktop veterinary clinic management application (Avalonia UI, .NET 10, SQLite).
 **Quick start (no SDK required):**
 
 1. Open [`RunApp/`](RunApp/) and double-click **`ClinicVets.exe`**, or run [`Run-Windows.bat`](Run-Windows.bat) from the repo root.
-2. Log in with a demo account (password for both: `1234`):
+2. Log in with a demo account (password for all seeded users: `Pass123!`):
 
-| User | Role | Main screens |
-|------|------|----------------|
-| `admin` | Secretary | Customers (clients), animals |
-| `vet` | Vet | Animals, visits, medications |
+| User | Role |
+|------|------|
+| `sarah1` | Secretary |
+| `david2` | Vet |
+| `noa345` | Secretary |
+| `mike99` | Vet |
+| `lior12` | Vet |
 
-3. Data is stored in `%AppData%\ClinicVetsAvalonia\clinic.db` (created on first run).
+3. **Data persistence (course requirement):**
+   - **SQLite (primary):** `%LocalAppData%\ClinicVets\ClinicVets.db` (created on first run). An older database at `%AppData%\ClinicVetsAvalonia\clinic.db` is copied automatically once if the new file does not exist yet.
+   - **Excel (mirror):** [`Source/Data/ClinicVets.xlsx`](Source/Data/ClinicVets.xlsx) — updated automatically when you add or change data in the app (same sheets as the database: employees, approvals, clients, animals, medications, visits, treatments). If the project folder is not writable (e.g. from `RunApp/`), a copy is also kept at `%LocalAppData%\ClinicVets\ClinicVets.xlsx`.
 
 **For developers** (requires [.NET 10 SDK](https://dotnet.microsoft.com/download)):
 
@@ -59,7 +64,7 @@ powershell -File scripts/Clean-LocalArtifacts.ps1
 
 Or use **`Run-Windows.bat`** at the repository root.
 
-**Demo logins:** `admin` / `1234` (Secretary), `vet` / `1234` (Vet). Database is stored under `%AppData%\ClinicVetsAvalonia\clinic.db` (not beside the exe).
+**Demo logins:** five fake users (`sarah1`, `david2`, `noa345`, `mike99`, `lior12`) — password `Pass123!`. Database: `%LocalAppData%\ClinicVets\ClinicVets.db`. Excel mirror: `Source/Data/ClinicVets.xlsx`. On startup, missing fake users are added automatically; set `DatabaseSettings.SeedFakeUsersOnStartup = false` to disable.
 
 ## Develop
 
