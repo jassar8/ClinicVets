@@ -29,19 +29,6 @@ namespace ClinicVetsAvalonia.Data
             ExcelExportService.ExportAll();
         }
 
-        /// <summary>Adds any of the five fake users that are not already in the database.</summary>
-        public static int SeedFakeUsers()
-        {
-            int added = FakeDataSeeder.SeedMissingEmployees(EmployeeRepository);
-            if (added > 0)
-            {
-                LoadEmployees();
-                ExcelExportService.ExportAll();
-            }
-
-            return added;
-        }
-
         public static void ReloadAll()
         {
             LoadEmployees();

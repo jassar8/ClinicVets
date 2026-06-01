@@ -17,6 +17,13 @@ namespace ClinicVetsAvalonia.Data
 
         private static string ResolveActivePath()
         {
+            if (DatabaseSettings.IsPublishedBuild)
+            {
+                string portableExcel = Path.Combine(AppContext.BaseDirectory, "Data", FileName);
+                Directory.CreateDirectory(Path.GetDirectoryName(portableExcel)!);
+                return portableExcel;
+            }
+
             if (TryEnsureWritable(ProjectExcelPath))
                 return ProjectExcelPath;
 

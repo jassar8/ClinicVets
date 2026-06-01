@@ -2,6 +2,18 @@
 
 Desktop veterinary clinic management application (Avalonia UI, .NET 10, SQLite + Excel mirror export).
 
+## HOW TO RUN (for teachers)
+
+1. Open the project folder `ClinicVets`
+2. Double-click **`Run-ClinicVets.bat`**
+3. Log in with demo user **`admin12`** / password **`Admin123!`**
+
+No Visual Studio or .NET SDK required.
+
+Demo data (customers, animals, medicines, visits) is created automatically on first run. Database and Excel files are saved in **`RunApp/Data/`** next to the executable.
+
+Alternative: open the [`RunApp/`](RunApp/) folder and double-click **`ClinicVets.exe`** directly.
+
 ## Project layout
 
 | Folder | Purpose |
@@ -19,27 +31,32 @@ Desktop veterinary clinic management application (Avalonia UI, .NET 10, SQLite +
 | [`Tests/ClinicVets.Tests/IntegrationTests/`](Tests/ClinicVets.Tests/IntegrationTests/) | Integration-style tests |
 | [`Tests/ClinicVets.Tests/GuiTests/`](Tests/ClinicVets.Tests/GuiTests/) | Placeholder for future GUI tests |
 | [`Documentation/`](Documentation/) | Test cases, roadmap, reports (course docs) |
-| [`RunApp/`](RunApp/) | **Runnable build** for reviewers (self-contained Windows x64) |
+| [`RunApp/`](RunApp/) | **Runnable EXE** + DLLs (self-contained Windows x64); data in `RunApp/Data/` |
+| **`Run-ClinicVets.bat`** | **Double-click launcher** at project root (recommended for teachers) |
 | [`scripts/`](scripts/) | Build/publish, icon, shortcut, and cleanup scripts (see below) |
 
 ## Submission / teacher review
 
-**Quick start (no SDK required):**
+**Quick start (no SDK required):** see [HOW TO RUN](#how-to-run-for-teachers) above.
 
-1. Open [`RunApp/`](RunApp/) and double-click **`ClinicVets.exe`**, or run [`Run-Windows.bat`](Run-Windows.bat) from the repo root.
-2. Log in with a demo account (password for all seeded users: `Pass123!`):
+**Demo logins** (seed data is created automatically on first run when the database is empty):
 
-| User | Role |
-|------|------|
-| `sarah1` | Secretary |
-| `david2` | Vet |
-| `noa345` | Secretary |
-| `mike99` | Vet |
-| `lior12` | Vet |
+| User | Password | Role (app) | Notes |
+|------|----------|--------------|-------|
+| `admin12` | `Admin123!` | Secretary | Admin-style account (full clinic access as secretary) |
+| `secuser` | `Sec123!a` | Secretary | Secretary demo |
+| `vetuser` | `Vet123!a` | Vet | Veterinarian demo |
+| `sarah1` | `Pass123!` | Secretary | Extra secretary |
+| `david2` | `Pass123!` | Vet | Extra veterinarian |
+| `roni12` | `Pass123!` | Vet | Extra veterinarian |
 
-3. **Data persistence (course requirement):**
-   - **SQLite (primary):** `%LocalAppData%\ClinicVets\ClinicVets.db` (created on first run). An older database at `%AppData%\ClinicVetsAvalonia\clinic.db` is copied automatically once if the new file does not exist yet.
-   - **Excel (mirror):** [`Source/Data/ClinicVets.xlsx`](Source/Data/ClinicVets.xlsx) — updated automatically when you add or change data in the app (same sheets as the database: employees, approvals, clients, animals, medications, visits, treatments). If the project folder is not writable (e.g. from `RunApp/`), a copy is also kept at `%LocalAppData%\ClinicVets\ClinicVets.xlsx`.
+Seeded demo also includes **5 customers**, **6 animals**, **6 medicines**, and **6 visits** with treatments.
+
+**Data persistence (course requirement):**
+
+- **SQLite (primary):** `RunApp/Data/ClinicVets.db` when running the published EXE (portable, visible in the project).
+- **Excel (mirror):** `RunApp/Data/ClinicVets.xlsx` — updated when you add or change data in the app.
+- **Developers** (`dotnet run`): `%LocalAppData%\ClinicVets\` and [`Source/Data/ClinicVets.xlsx`](Source/Data/ClinicVets.xlsx).
 
 **For developers** (requires [.NET 10 SDK](https://dotnet.microsoft.com/download)):
 
@@ -56,15 +73,6 @@ powershell -File scripts/Clean-LocalArtifacts.ps1
 ```
 
 **Course documentation:** add PDF/Word/LaTeX files under [`Documentation/TestCases/`](Documentation/TestCases/) and [`Documentation/Reports/`](Documentation/Reports/).
-
-## Run the app (teachers / reviewers)
-
-1. Open the `RunApp` folder.
-2. Double-click **`ClinicVets.exe`** (Windows x64, self-contained; no .NET SDK required).
-
-Or use **`Run-Windows.bat`** at the repository root.
-
-**Demo logins:** five fake users (`sarah1`, `david2`, `noa345`, `mike99`, `lior12`) — password `Pass123!`. Database: `%LocalAppData%\ClinicVets\ClinicVets.db`. Excel mirror: `Source/Data/ClinicVets.xlsx`. On startup, missing fake users are added automatically; set `DatabaseSettings.SeedFakeUsersOnStartup = false` to disable.
 
 ## Develop
 

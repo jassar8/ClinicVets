@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
-using ClinicVetsAvalonia.Data.Repositories;
-using ClinicVetsAvalonia.Models;
 
 namespace ClinicVetsAvalonia.Data
 {
@@ -12,14 +10,7 @@ namespace ClinicVetsAvalonia.Data
         {
             DatabaseSettings.EnsureFolderExists();
             CreateTables();
-
-            var repository = new EmployeeRepository();
-
-            if (DatabaseSettings.SeedDemoDataWhenEmpty && repository.LoadAll().Count == 0)
-                SeedFakeEmployees(repository);
-
-            if (DatabaseSettings.SeedFakeUsersOnStartup)
-                FakeDataSeeder.SeedMissingEmployees(repository);
+            FakeDataSeeder.SeedAllIfEmpty();
         }
 
         private static void CreateTables()
@@ -171,12 +162,6 @@ namespace ClinicVetsAvalonia.Data
                 insertCommand.Parameters.AddWithValue("@ApprovedAt", DateTime.UtcNow.ToString("o"));
                 insertCommand.ExecuteNonQuery();
             }
-        }
-
-        private static void SeedFakeEmployees(EmployeeRepository repository)
-        {
-            foreach (var employee in FakeDataSeeder.CreateFiveEmployees())
-                repository.Insert(employee);
         }
     }
 }

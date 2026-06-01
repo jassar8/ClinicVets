@@ -33,4 +33,29 @@ if (-not (Test-Path $exe)) {
 $EmbedIcon = Join-Path $Root "scripts\Embed-ExeIcon.ps1"
 & $EmbedIcon -ExePath $exe
 
+# Teacher helper files (survive full RunApp republish)
+$dataDir = Join-Path $OutDir "Data"
+New-Item -ItemType Directory -Force -Path $dataDir | Out-Null
+if (-not (Test-Path (Join-Path $dataDir ".gitkeep"))) {
+    New-Item -ItemType File -Path (Join-Path $dataDir ".gitkeep") -Force | Out-Null
+}
+$howToRun = Join-Path $OutDir "HOW-TO-RUN.txt"
+@(
+    "ClinicVets - How to run"
+    "========================="
+    ""
+    "For teachers and reviewers:"
+    ""
+    "1. Go to the main project folder (the folder that contains Run-ClinicVets.bat)"
+    "2. Double-click Run-ClinicVets.bat"
+    "3. Log in with username: admin12   password: Admin123!"
+    ""
+    "No Visual Studio or .NET SDK is required."
+    ""
+    "Data files (created on first run):"
+    "  RunApp\Data\ClinicVets.db"
+    "  RunApp\Data\ClinicVets.xlsx"
+    ""
+) | Set-Content -Path $howToRun -Encoding UTF8
+
 Write-Host "Done: $exe"

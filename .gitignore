@@ -21,6 +21,11 @@ Thumbs.db
 Source/Data/*.db
 Source/Data/*.db-*
 
+# Portable data next to published EXE (created on first run)
+RunApp/Data/*.db
+RunApp/Data/*.xlsx
+RunApp/Data/~$*
+
 # Test / coverage
 TestResults/
 *.trx
