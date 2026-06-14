@@ -297,7 +297,8 @@
                 CornerRadius="28"
                 Padding="16"
                 Margin="18,22,18,22">
-            <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="12">
                 <StackPanel Spacing="6"
                             Margin="0,0,0,14">
                     <TextBlock x:Name="VisitsJournalTitleText"
@@ -314,8 +315,7 @@
                                TextWrapping="Wrap"/>
                 </StackPanel>
 
-                <Border Grid.Row="1"
-                        Background="#F8FCFD"
+                <Border Background="#F8FCFD"
                         BorderBrush="#D3EEF4"
                         BorderThickness="1"
                         CornerRadius="22"
@@ -411,7 +411,6 @@
                 </Border>
 
                 <Border x:Name="SelectedAnimalPanel"
-                        Grid.Row="2"
                         IsVisible="False"
                         Background="#F8FCFD"
                         BorderBrush="#D3EEF4"
@@ -478,8 +477,8 @@
                     </Grid>
                 </Border>
 
-                <ScrollViewer Grid.Row="3"
-                              VerticalScrollBarVisibility="Auto"
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              MaxHeight="360"
                               FlowDirection="LeftToRight">
                     <Grid FlowDirection="LeftToRight"
                           HorizontalAlignment="Stretch">
@@ -490,8 +489,7 @@
                     </Grid>
                 </ScrollViewer>
 
-                <Border Grid.Row="4"
-                        Background="#F3FAFD"
+                <Border Background="#F3FAFD"
                         BorderBrush="#D3EEF4"
                         BorderThickness="1"
                         CornerRadius="20"
@@ -503,7 +501,8 @@
                                Foreground="#2D3748"
                                TextWrapping="Wrap"/>
                 </Border>
-            </Grid>
+            </StackPanel>
+            </ScrollViewer>
         </Border>
     </Grid>
 </UserControl>
