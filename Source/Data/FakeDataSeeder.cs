@@ -42,9 +42,9 @@ namespace ClinicVetsAvalonia.Data
         [
             new Employee
             {
-                Username = "admin12",
+                Username = "admin1",
                 Password = "Admin123!",
-                EmployeeNumber = "0001",
+                EmployeeNumber = "1001",
                 Email = "admin@clinic.com",
                 IdNumber = "300000018",
                 Role = "Secretary",
@@ -54,7 +54,7 @@ namespace ClinicVetsAvalonia.Data
             {
                 Username = "secuser",
                 Password = "Sec123!a",
-                EmployeeNumber = "0002",
+                EmployeeNumber = "1002",
                 Email = "sec@clinic.com",
                 IdNumber = "300000027",
                 Role = "Secretary",
@@ -64,7 +64,7 @@ namespace ClinicVetsAvalonia.Data
             {
                 Username = "vetuser",
                 Password = "Vet123!a",
-                EmployeeNumber = "0003",
+                EmployeeNumber = "1003",
                 Email = "vet@clinic.com",
                 IdNumber = "300000036",
                 Role = "Vet",
@@ -74,7 +74,7 @@ namespace ClinicVetsAvalonia.Data
             {
                 Username = "sarah1",
                 Password = "Pass123!",
-                EmployeeNumber = "0004",
+                EmployeeNumber = "1004",
                 Email = "sarah@clinic.com",
                 IdNumber = "301234567",
                 Role = "Secretary",
@@ -84,7 +84,7 @@ namespace ClinicVetsAvalonia.Data
             {
                 Username = "david2",
                 Password = "Pass123!",
-                EmployeeNumber = "0005",
+                EmployeeNumber = "1005",
                 Email = "david@clinic.com",
                 IdNumber = "302345678",
                 Role = "Vet",
@@ -94,7 +94,7 @@ namespace ClinicVetsAvalonia.Data
             {
                 Username = "roni12",
                 Password = "Pass123!",
-                EmployeeNumber = "0006",
+                EmployeeNumber = "1006",
                 Email = "roni@clinic.com",
                 IdNumber = "303456789",
                 Role = "Vet",

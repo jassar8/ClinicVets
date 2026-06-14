@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using ClinicVetsAvalonia.Data;
 using ClinicVetsAvalonia.Helpers;
 using ClinicVetsAvalonia.Models;
 using ClinicVetsAvalonia.Services;
@@ -70,29 +68,22 @@ namespace ClinicVetsAvalonia.Views
             string username = UsernameInput.Text?.Trim() ?? "";
             string password = PasswordInput.Text?.Trim() ?? "";
 
-            if (!ValidateInputs(showEmptyMessage: true))
-                return;
+            var result = AuthService.TryLogin(username, password);
 
-            AppData.LoadEmployees();
-
-            var employee = AppData.Employees.FirstOrDefault(emp =>
-                emp.Username == username && emp.Password == password);
-
-            if (employee == null)
+            if (!result.Success)
             {
-                ValidationText.Text = "שם משתמש או סיסמה שגויים";
-                ShowMessage("שם משתמש או סיסמה שגויים");
+                ValidationText.Foreground = Avalonia.Media.Brushes.Firebrick;
+                ValidationText.Text = result.ErrorMessage;
+
+                if (result.Reason == LoginFailureReason.InvalidCredentials)
+                    ShowMessage(result.ErrorMessage);
+                else if (result.Reason == LoginFailureReason.NotApproved)
+                    ShowMessage("חשבון העובד טרם אושר על ידי מנהל");
+
                 return;
             }
 
-            if (!employee.IsApproved)
-            {
-                ValidationText.Text = "חשבון העובד טרם אושר";
-                ShowMessage("חשבון העובד טרם אושר על ידי מנהל");
-                return;
-            }
-
-            LoginSucceeded?.Invoke(employee);
+            LoginSucceeded?.Invoke(result.Employee!);
         }
 
         private void Register_Click(object? sender, RoutedEventArgs e)
