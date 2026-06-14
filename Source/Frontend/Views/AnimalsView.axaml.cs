@@ -381,6 +381,7 @@ namespace ClinicVetsAvalonia.Views
                 "הנתונים נטענו. אפשר לעדכן או למחוק לפי הצורך");
             isAddingNewAnimal = false;
             UpdateAnimalActionMode();
+            UpdateAnimalVetNote(animal.ChipNumber);
             SetValidationMessage("כרטיס החיה נטען ואפשר לעדכן אותו", isValid: true);
         }
 
@@ -577,6 +578,25 @@ namespace ClinicVetsAvalonia.Views
             VaccinationDatePicker.SelectedDate = DateTime.Today;
             ValidationText.Text = "";
             BirthDateValidationText.Text = "";
+            HideAnimalVetNote();
+        }
+
+        private void UpdateAnimalVetNote(string chipNumber)
+        {
+            if (AnimalVetNotePanel == null || AnimalVetNoteText == null)
+                return;
+
+            AnimalVetNoteText.Text = AnimalNoteService.GetLatestVetNoteOrPlaceholder(chipNumber);
+            AnimalVetNotePanel.IsVisible = true;
+        }
+
+        private void HideAnimalVetNote()
+        {
+            if (AnimalVetNotePanel == null || AnimalVetNoteText == null)
+                return;
+
+            AnimalVetNoteText.Text = AnimalNoteService.NoNoteText;
+            AnimalVetNotePanel.IsVisible = false;
         }
 
         private string GetFullChipNumberFromInput()
@@ -834,6 +854,14 @@ namespace ClinicVetsAvalonia.Views
                                 },
                                 new TextBlock
                                 {
+                                    Text = $"הערת וטרינר: {AnimalNoteService.GetLatestVetNoteOrPlaceholder(animal.ChipNumber)}",
+                                    FontSize = 13,
+                                    TextAlignment = TextAlignment.Center,
+                                    TextWrapping = TextWrapping.Wrap,
+                                    Foreground = new SolidColorBrush(Color.Parse("#526172"))
+                                },
+                                new TextBlock
+                                {
                                     Text = "לחץ לפתיחת כרטיס",
                                     FontSize = 12,
                                     FontWeight = FontWeight.Bold,
@@ -879,6 +907,7 @@ namespace ClinicVetsAvalonia.Views
                 }
             }
 
+            UpdateAnimalVetNote(animal.ChipNumber);
             SetValidationMessage("כרטיס החיה נטען ואפשר לעדכן אותו", isValid: true);
         }
 

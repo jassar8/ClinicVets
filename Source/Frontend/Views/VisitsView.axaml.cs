@@ -545,6 +545,7 @@ namespace ClinicVetsAvalonia.Views
 
             AppData.SaveMedicationsToDatabase();
             AppData.SaveVisitsToDatabase();
+            RefreshSelectedAnimalCard();
 
             UIHelper.ShowMessage(this, "הביקור נשמר בהצלחה");
             ClearFields();
@@ -606,6 +607,7 @@ namespace ClinicVetsAvalonia.Views
 
             AppData.SaveMedicationsToDatabase();
             AppData.SaveVisitsToDatabase();
+            RefreshSelectedAnimalCard();
 
             UIHelper.ShowMessage(this, "הביקור עודכן בהצלחה");
             ClearFields();
@@ -659,6 +661,7 @@ namespace ClinicVetsAvalonia.Views
             selectedVisit.ArrivalStatus = "Arrived";
             selectedVisit.ArrivalNote = ArrivalNoteInput.Text?.Trim() ?? "";
             AppData.SaveVisitsToDatabase();
+            RefreshSelectedAnimalCard();
 
             SelectArrivalStatus("Arrived");
             UIHelper.ShowMessage(this, "הגעת הלקוח אושרה ונשמרה עם ההערה");
@@ -749,6 +752,7 @@ namespace ClinicVetsAvalonia.Views
 
             AppData.SaveMedicationsToDatabase();
             AppData.SaveVisitsToDatabase();
+            RefreshSelectedAnimalCard();
             UIHelper.ShowMessage(this, "סומן שלא הגיע ונקבע תור חדש לפי התאריך והשעה שבטופס");
             ClearFields();
             RefreshVisitsList();
@@ -1647,6 +1651,18 @@ namespace ClinicVetsAvalonia.Views
             }));
         }
 
+        private void RefreshSelectedAnimalCard()
+        {
+            if (string.IsNullOrWhiteSpace(selectedAnimalChipNumber))
+                return;
+
+            var animal = AppData.Animals
+                .FirstOrDefault(a => a.ChipNumber == selectedAnimalChipNumber);
+
+            if (animal != null)
+                ShowSelectedAnimalCard(animal);
+        }
+
         private void ShowSelectedAnimalCard(Animal animal)
         {
             var owner = AppData.Clients.FirstOrDefault(client => client.IdNumber == animal.OwnerIdNumber);
@@ -1673,6 +1689,8 @@ namespace ClinicVetsAvalonia.Views
                 ? "חיסון: צריך חיסון שנתי"
                 : "חיסון: תקין";
             SelectedAnimalVisitsCountText.Text = $"ביקורים שמורים: {visitsCount}";
+            SelectedAnimalNoteText.Text =
+                $"הערת וטרינר: {AnimalNoteService.GetLatestVetNoteOrPlaceholder(animal.ChipNumber)}";
             SelectedAnimalVaccineText.Foreground = vaccinationDue
                 ? Brushes.Firebrick
                 : Brushes.ForestGreen;

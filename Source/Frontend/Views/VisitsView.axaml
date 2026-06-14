@@ -463,6 +463,11 @@
                                        FontWeight="Bold"
                                        Foreground="#12344D"
                                        TextWrapping="Wrap"/>
+                            <TextBlock x:Name="SelectedAnimalNoteText"
+                                       Text="הערת וטרינר: אין הערה"
+                                       FontSize="14"
+                                       Foreground="#526172"
+                                       TextWrapping="Wrap"/>
                         </StackPanel>
 
                         <Button x:Name="ShowAllVisitsButton"
