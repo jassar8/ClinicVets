@@ -77,8 +77,6 @@ namespace ClinicVetsAvalonia.Views
 
                 if (result.Reason == LoginFailureReason.InvalidCredentials)
                     ShowMessage(result.ErrorMessage);
-                else if (result.Reason == LoginFailureReason.NotApproved)
-                    ShowMessage("חשבון העובד טרם אושר על ידי מנהל");
 
                 return;
             }

@@ -23,7 +23,7 @@ public class ExcelExportIntegrationTests
 
             using var workbook = new ClosedXML.Excel.XLWorkbook(excelPath);
             Assert.Contains(workbook.Worksheets, ws => ws.Name == "Employees");
-            Assert.Contains(workbook.Worksheets, ws => ws.Name == "EmployeeApprovals");
+            Assert.DoesNotContain(workbook.Worksheets, ws => ws.Name == "EmployeeApprovals");
             Assert.Contains(workbook.Worksheets, ws => ws.Name == "Clients");
             Assert.Contains(workbook.Worksheets, ws => ws.Name == "Animals");
             Assert.Contains(workbook.Worksheets, ws => ws.Name == "Medications");

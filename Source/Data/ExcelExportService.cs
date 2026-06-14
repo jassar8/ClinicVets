@@ -19,7 +19,6 @@ namespace ClinicVetsAvalonia.Data
 
                 using var workbook = new XLWorkbook();
                 WriteEmployeesSheet(workbook);
-                WriteEmployeeApprovalsSheet(workbook);
                 WriteClientsSheet(workbook);
                 WriteAnimalsSheet(workbook);
                 WriteMedicationsSheet(workbook);
@@ -80,29 +79,6 @@ namespace ClinicVetsAvalonia.Data
                 sheet.Cell(row, 4).Value = employee.Email;
                 sheet.Cell(row, 5).Value = employee.IdNumber;
                 sheet.Cell(row, 6).Value = employee.Role;
-                row++;
-            }
-
-            sheet.Columns().AdjustToContents();
-        }
-
-        private static void WriteEmployeeApprovalsSheet(XLWorkbook workbook)
-        {
-            var sheet = workbook.Worksheets.Add("EmployeeApprovals");
-            sheet.Cell(1, 1).Value = "Username";
-            sheet.Cell(1, 2).Value = "IsApproved";
-            sheet.Cell(1, 3).Value = "ApprovedBy";
-            sheet.Cell(1, 4).Value = "ApprovedAt";
-
-            int row = 2;
-            foreach (var employee in AppData.Employees)
-            {
-                sheet.Cell(row, 1).Value = employee.Username;
-                sheet.Cell(row, 2).Value = employee.IsApproved ? 1 : 0;
-                sheet.Cell(row, 3).Value = employee.IsApproved ? "system" : "";
-                sheet.Cell(row, 4).Value = employee.IsApproved
-                    ? DateTime.UtcNow.ToString("o")
-                    : "";
                 row++;
             }
 

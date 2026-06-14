@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
 
 namespace ClinicVetsAvalonia.Data
@@ -28,14 +26,9 @@ namespace ClinicVetsAvalonia.Data
                     Role TEXT NOT NULL
                 );");
 
-            Execute(connection, @"
-                CREATE TABLE IF NOT EXISTS EmployeeApprovals (
-                    Username TEXT PRIMARY KEY,
-                    IsApproved INTEGER NOT NULL DEFAULT 1,
-                    ApprovedBy TEXT NOT NULL DEFAULT '',
-                    ApprovedAt TEXT,
-                    FOREIGN KEY (Username) REFERENCES Employees(Username) ON DELETE CASCADE
-                );");
+            // The employee approval system was removed; drop the legacy table if present
+            // so existing databases stay consistent with the simplified schema.
+            Execute(connection, "DROP TABLE IF EXISTS EmployeeApprovals;");
 
             Execute(connection, @"
                 CREATE TABLE IF NOT EXISTS Clients (
@@ -101,7 +94,6 @@ namespace ClinicVetsAvalonia.Data
             SqliteRepositoryBase_EnsureColumn(connection, "Clients", "Gender", "TEXT NOT NULL DEFAULT 'זכר'");
             SqliteRepositoryBase_EnsureColumn(connection, "Visits", "ArrivalStatus", "TEXT NOT NULL DEFAULT 'Scheduled'");
             SqliteRepositoryBase_EnsureColumn(connection, "Visits", "ArrivalNote", "TEXT NOT NULL DEFAULT ''");
-            BackfillEmployeeApprovals(connection);
         }
 
         private static void Execute(SqliteConnection connection, string sql)
@@ -136,31 +128,6 @@ namespace ClinicVetsAvalonia.Data
                     $"ALTER TABLE {tableName} ADD COLUMN {columnName} {columnDefinition};",
                     connection);
                 alterCommand.ExecuteNonQuery();
-            }
-        }
-
-        private static void BackfillEmployeeApprovals(SqliteConnection connection)
-        {
-            var missing = new List<string>();
-
-            using (var selectCommand = new SqliteCommand(
-                "SELECT Username FROM Employees WHERE Username NOT IN (SELECT Username FROM EmployeeApprovals);",
-                connection))
-            using (var reader = selectCommand.ExecuteReader())
-            {
-                while (reader.Read())
-                    missing.Add(reader.GetString(0));
-            }
-
-            foreach (string username in missing)
-            {
-                using var insertCommand = new SqliteCommand(@"
-                    INSERT INTO EmployeeApprovals (Username, IsApproved, ApprovedBy, ApprovedAt)
-                    VALUES (@Username, 1, 'system', @ApprovedAt);",
-                    connection);
-                insertCommand.Parameters.AddWithValue("@Username", username);
-                insertCommand.Parameters.AddWithValue("@ApprovedAt", DateTime.UtcNow.ToString("o"));
-                insertCommand.ExecuteNonQuery();
             }
         }
     }

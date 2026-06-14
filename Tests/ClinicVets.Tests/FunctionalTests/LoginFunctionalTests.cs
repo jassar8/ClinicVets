@@ -15,8 +15,7 @@ public class LoginFunctionalTests
             EmployeeNumber = "1002",
             Email = "sec@clinic.com",
             IdNumber = "300000027",
-            Role = "Secretary",
-            IsApproved = true
+            Role = "Secretary"
         },
         new Employee
         {
@@ -25,28 +24,7 @@ public class LoginFunctionalTests
             EmployeeNumber = "1003",
             Email = "vet@clinic.com",
             IdNumber = "300000036",
-            Role = "Vet",
-            IsApproved = true
-        },
-        new Employee
-        {
-            Username = "penduser",
-            Password = "Pass123!",
-            EmployeeNumber = "2001",
-            Email = "pending@clinic.com",
-            IdNumber = "300000045",
-            Role = "Secretary",
-            IsApproved = false
-        },
-        new Employee
-        {
-            Username = "rejuser1",
-            Password = "Pass123!",
-            EmployeeNumber = "2002",
-            Email = "rejected@clinic.com",
-            IdNumber = "300000054",
-            Role = "Vet",
-            IsApproved = false
+            Role = "Vet"
         }
     ];
 
@@ -79,6 +57,7 @@ public class LoginFunctionalTests
         Assert.False(result.Success);
         Assert.Null(result.Employee);
         Assert.Equal(LoginFailureReason.InvalidCredentials, result.Reason);
+        Assert.False(string.IsNullOrEmpty(result.ErrorMessage));
     }
 
     [Fact]
@@ -110,23 +89,25 @@ public class LoginFunctionalTests
     }
 
     [Fact]
-    public void Login_WithRejectedEmployee_ShouldFail()
+    public void Login_ImmediatelyAfterRegistration_ShouldSucceed()
     {
-        var result = AuthService.TryLogin("rejuser1", "Pass123!", BuildEmployees());
+        // Approval was removed: a freshly registered employee can log in right away.
+        var employees = BuildEmployees();
+        employees.Add(new Employee
+        {
+            Username = "newuser",
+            Password = "New123!a",
+            EmployeeNumber = "1009",
+            Email = "new@clinic.com",
+            IdNumber = "300000063",
+            Role = "Secretary"
+        });
 
-        Assert.False(result.Success);
-        Assert.Null(result.Employee);
-        Assert.Equal(LoginFailureReason.NotApproved, result.Reason);
-    }
+        var result = AuthService.TryLogin("newuser", "New123!a", employees);
 
-    [Fact]
-    public void Login_WithPendingEmployee_ShouldFail()
-    {
-        var result = AuthService.TryLogin("penduser", "Pass123!", BuildEmployees());
-
-        Assert.False(result.Success);
-        Assert.Null(result.Employee);
-        Assert.Equal(LoginFailureReason.NotApproved, result.Reason);
+        Assert.True(result.Success);
+        Assert.NotNull(result.Employee);
+        Assert.Equal(LoginFailureReason.None, result.Reason);
     }
 
     [Fact]
@@ -145,5 +126,51 @@ public class LoginFunctionalTests
 
         Assert.True(result.Success);
         Assert.Equal("Vet", result.Role);
+    }
+
+    [Fact]
+    public void Login_WithValidCredentials_ShouldSucceed()
+    {
+        var result = AuthService.TryLogin("secuser", "Sec123!a", BuildEmployees());
+
+        Assert.True(result.Success);
+        Assert.NotNull(result.Employee);
+        Assert.Equal(LoginFailureReason.None, result.Reason);
+        Assert.True(string.IsNullOrEmpty(result.ErrorMessage));
+    }
+
+    [Fact]
+    public void Login_WithUnknownEmail_ShouldFail()
+    {
+        // Login uses Username, not email. An email that is not a registered username
+        // must be rejected (you cannot sign in with an email address).
+        var result = AuthService.TryLogin("ghost@clinic.com", "Sec123!a", BuildEmployees());
+
+        Assert.False(result.Success);
+        Assert.Null(result.Employee);
+        Assert.False(string.IsNullOrEmpty(result.ErrorMessage));
+    }
+
+    [Fact]
+    public void Login_WithMissingPassword_ShouldFail()
+    {
+        var result = AuthService.TryLogin("secuser", "", BuildEmployees());
+
+        Assert.False(result.Success);
+        Assert.Null(result.Employee);
+        Assert.Equal(LoginFailureReason.EmptyFields, result.Reason);
+        Assert.False(string.IsNullOrEmpty(result.ErrorMessage));
+    }
+
+    [Fact]
+    public void Login_WithWrongEmployeeId_ShouldFail()
+    {
+        // Login uses Username, not Employee ID. Using an employee number as the
+        // identifier must be rejected (you cannot sign in with an Employee ID).
+        var result = AuthService.TryLogin("1002", "Sec123!a", BuildEmployees());
+
+        Assert.False(result.Success);
+        Assert.Null(result.Employee);
+        Assert.False(string.IsNullOrEmpty(result.ErrorMessage));
     }
 }

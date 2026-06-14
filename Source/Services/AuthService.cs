@@ -10,8 +10,7 @@ namespace ClinicVetsAvalonia.Services
         None,
         EmptyFields,
         InvalidUsernameFormat,
-        InvalidCredentials,
-        NotApproved
+        InvalidCredentials
     }
 
     public sealed class LoginResult
@@ -34,7 +33,6 @@ namespace ClinicVetsAvalonia.Services
         public const string EmptyFieldsMessage = "יש למלא שם משתמש וסיסמה";
         public const string InvalidUsernameFormatMessage = "שם משתמש צריך להיות 6-8 תווים באנגלית, עד 2 ספרות";
         public const string InvalidCredentialsMessage = "שם משתמש או סיסמה שגויים";
-        public const string NotApprovedMessage = "חשבון העובד טרם אושר";
 
         public static LoginResult TryLogin(string username, string password, IEnumerable<Employee> employees)
         {
@@ -52,9 +50,6 @@ namespace ClinicVetsAvalonia.Services
 
             if (employee == null)
                 return LoginResult.Fail(LoginFailureReason.InvalidCredentials, InvalidCredentialsMessage);
-
-            if (!employee.IsApproved)
-                return LoginResult.Fail(LoginFailureReason.NotApproved, NotApprovedMessage);
 
             return LoginResult.Ok(employee);
         }

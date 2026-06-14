@@ -47,8 +47,7 @@ namespace ClinicVetsAvalonia.Data
                 EmployeeNumber = "1001",
                 Email = "admin@clinic.com",
                 IdNumber = "300000018",
-                Role = "Secretary",
-                IsApproved = true
+                Role = "Secretary"
             },
             new Employee
             {
@@ -57,8 +56,7 @@ namespace ClinicVetsAvalonia.Data
                 EmployeeNumber = "1002",
                 Email = "sec@clinic.com",
                 IdNumber = "300000027",
-                Role = "Secretary",
-                IsApproved = true
+                Role = "Secretary"
             },
             new Employee
             {
@@ -67,8 +65,7 @@ namespace ClinicVetsAvalonia.Data
                 EmployeeNumber = "1003",
                 Email = "vet@clinic.com",
                 IdNumber = "300000036",
-                Role = "Vet",
-                IsApproved = true
+                Role = "Vet"
             },
             new Employee
             {
@@ -77,8 +74,7 @@ namespace ClinicVetsAvalonia.Data
                 EmployeeNumber = "1004",
                 Email = "sarah@clinic.com",
                 IdNumber = "301234567",
-                Role = "Secretary",
-                IsApproved = true
+                Role = "Secretary"
             },
             new Employee
             {
@@ -87,8 +83,7 @@ namespace ClinicVetsAvalonia.Data
                 EmployeeNumber = "1005",
                 Email = "david@clinic.com",
                 IdNumber = "302345678",
-                Role = "Vet",
-                IsApproved = true
+                Role = "Vet"
             },
             new Employee
             {
@@ -97,8 +92,7 @@ namespace ClinicVetsAvalonia.Data
                 EmployeeNumber = "1006",
                 Email = "roni@clinic.com",
                 IdNumber = "303456789",
-                Role = "Vet",
-                IsApproved = true
+                Role = "Vet"
             }
         ];
 
