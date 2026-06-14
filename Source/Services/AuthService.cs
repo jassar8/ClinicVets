@@ -5,6 +5,7 @@ using ClinicVetsAvalonia.Models;
 
 namespace ClinicVetsAvalonia.Services
 {
+    // Why a login attempt failed, so the UI can show the matching message.
     public enum LoginFailureReason
     {
         None,
@@ -13,6 +14,7 @@ namespace ClinicVetsAvalonia.Services
         InvalidCredentials
     }
 
+    // Outcome of a login attempt: success plus the employee/role, or a failure reason and message.
     public sealed class LoginResult
     {
         public bool Success { get; init; }
@@ -28,12 +30,15 @@ namespace ClinicVetsAvalonia.Services
             new() { Success = true, Employee = employee, Role = employee.Role };
     }
 
+    // Centralizes all login logic so it can be unit-tested without the UI.
     public static class AuthService
     {
         public const string EmptyFieldsMessage = "יש למלא שם משתמש וסיסמה";
         public const string InvalidUsernameFormatMessage = "שם משתמש צריך להיות 6-8 תווים באנגלית, עד 2 ספרות";
         public const string InvalidCredentialsMessage = "שם משתמש או סיסמה שגויים";
 
+        // Core login check against a given employee list. Validation order:
+        // empty fields -> username format -> username/password match. Used by tests.
         public static LoginResult TryLogin(string username, string password, IEnumerable<Employee> employees)
         {
             username = (username ?? "").Trim();
@@ -54,6 +59,7 @@ namespace ClinicVetsAvalonia.Services
             return LoginResult.Ok(employee);
         }
 
+        // UI entry point: loads the current employees from the database, then runs the core check.
         public static LoginResult TryLogin(string username, string password)
         {
             AppData.LoadEmployees();

@@ -2,8 +2,10 @@ using ClinicVetsAvalonia.Models;
 
 namespace ClinicVetsAvalonia.Tests;
 
+// Tests for visit arrival rules: default status, when a visit is closed, and when arrival can be recorded.
 public class VisitRulesTests
 {
+    // A new visit should start in the "Scheduled" arrival status.
     [Fact]
     public void NewVisit_DefaultsToScheduledArrivalStatus()
     {
@@ -12,6 +14,7 @@ public class VisitRulesTests
         Assert.Equal("Scheduled", visit.ArrivalStatus);
     }
 
+    // Once a visit is Arrived or NoShow it is final and closed for further editing.
     [Theory]
     [InlineData("Arrived")]
     [InlineData("NoShow")]
@@ -22,6 +25,7 @@ public class VisitRulesTests
         Assert.True(IsVisitClosed(visit));
     }
 
+    // Negative: arrival cannot be recorded for a visit whose date is still in the future.
     [Fact]
     public void FutureVisit_ShouldNotAllowArrivalRecording()
     {
@@ -34,6 +38,7 @@ public class VisitRulesTests
         Assert.False(CanRecordArrival(visit, DateTime.Now));
     }
 
+    // Positive: a scheduled visit whose time has passed can have its arrival recorded.
     [Fact]
     public void PassedScheduledVisit_AllowsArrivalRecording()
     {

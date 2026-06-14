@@ -7,8 +7,11 @@ using ClinicVetsAvalonia.Services;
 
 namespace ClinicVetsAvalonia.Data
 {
+    // Provides realistic, validation-compliant demo data for the presentation. It only fills
+    // an empty database, so it never duplicates data across restarts.
     public static class FakeDataSeeder
     {
+        // Treats the database as empty when there are no employees and no clients.
         public static bool IsDatabaseEmpty()
         {
             var employeeRepository = new EmployeeRepository();
@@ -17,6 +20,8 @@ namespace ClinicVetsAvalonia.Data
                    clientRepository.LoadAll().Count == 0;
         }
 
+        // Inserts the full set of linked demo records (employees, clients, animals,
+        // medications, visits) only when seeding is enabled and the database is empty.
         public static void SeedAllIfEmpty()
         {
             if (!DatabaseSettings.SeedDemoDataWhenEmpty || !IsDatabaseEmpty())
@@ -393,6 +398,8 @@ namespace ClinicVetsAvalonia.Data
         }
 
         /// <summary>Validates seed payloads against ValidationService (used in tests).</summary>
+        // Verifies every demo record satisfies the app's validation rules. A test calls this
+        // so broken demo data fails the build instead of surprising us during the demo.
         public static bool ValidateSeedData()
         {
             var clients = CreateClients();

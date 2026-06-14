@@ -63,6 +63,8 @@ namespace ClinicVetsAvalonia.Views
             PasswordEyeButton.Content = isPasswordVisible ? UiIcons.HidePassword : UiIcons.ShowPassword;
         }
 
+        // Delegates the actual login decision to AuthService and reacts to the result:
+        // show the error on failure, or raise LoginSucceeded so MainWindow opens the menu.
         private void Login_Click(object? sender, RoutedEventArgs e)
         {
             string username = UsernameInput.Text?.Trim() ?? "";

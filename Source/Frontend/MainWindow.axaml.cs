@@ -8,6 +8,8 @@ using ClinicVetsAvalonia.Views;
 
 namespace ClinicVetsAvalonia
 {
+    // Root window and navigation host. It tracks the logged-in employee and swaps the
+    // current page (login -> register -> main menu -> feature screens) inside MainContent.
     public partial class MainWindow : Window
     {
         private Employee? currentEmployee;
@@ -17,6 +19,7 @@ namespace ClinicVetsAvalonia
             InitializeComponent();
             SetWindowIcon();
 
+            // Prepare the database and demo data before showing the first screen.
             AppData.Initialize();
 
             ShowLogin();
@@ -39,6 +42,8 @@ namespace ClinicVetsAvalonia
             ShowLogin("");
         }
 
+        // Shows the login screen. On success we remember the employee and open the menu;
+        // the optional status message is shown after actions like a completed registration.
         private void ShowLogin(string statusMessage)
         {
             var loginView = string.IsNullOrWhiteSpace(statusMessage)
@@ -56,6 +61,7 @@ namespace ClinicVetsAvalonia
             ShowPage(loginView);
         }
 
+        // Shows the employee registration screen and returns to login when done or cancelled.
         private void ShowRegisterEmployee()
         {
             var registerView = new RegisterEmployeeView();
@@ -66,6 +72,7 @@ namespace ClinicVetsAvalonia
             ShowPage(registerView);
         }
 
+        // Main menu after login; wires each menu button to its feature screen and logout.
         private void ShowMainMenu()
         {
             if (currentEmployee == null)
@@ -138,12 +145,15 @@ namespace ClinicVetsAvalonia
             ShowPage(medicationsView);
         }
 
+        // Swaps the visible page inside the window's content host.
         private void ShowPage(Control page)
         {
             MainContent.Child = page;
             page.Focus();
         }
 
+        // Role-based access gate. Secretary can open Clients/Animals; Vet can open
+        // Animals/Visits/Medications. Anything else is blocked with a message.
         private bool CanOpenScreen(string screenName)
         {
             if (currentEmployee == null)

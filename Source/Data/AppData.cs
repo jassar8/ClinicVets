@@ -4,6 +4,8 @@ using ClinicVetsAvalonia.Models;
 
 namespace ClinicVetsAvalonia.Data
 {
+    // In-memory cache of all app data and the single entry point that coordinates
+    // the SQLite repositories and the Excel export. Screens read/write these lists.
     public static class AppData
     {
         private static readonly EmployeeRepository EmployeeRepository = new();
@@ -22,6 +24,8 @@ namespace ClinicVetsAvalonia.Data
 
         public static string ExcelFilePath => ExcelSettings.ActiveExcelPath;
 
+        // App startup: make sure the database exists and is seeded, load everything into
+        // memory, then mirror it to Excel. Called once when the main window opens.
         public static void Initialize()
         {
             DatabaseInitializer.Initialize();
@@ -29,6 +33,7 @@ namespace ClinicVetsAvalonia.Data
             ExcelExportService.ExportAll();
         }
 
+        // Reloads every list from the database (used after startup and re-seeding).
         public static void ReloadAll()
         {
             LoadEmployees();
@@ -43,6 +48,8 @@ namespace ClinicVetsAvalonia.Data
             Employees = EmployeeRepository.LoadAll();
         }
 
+        // Shared save pattern used by every entity: persist to SQLite, reload to get the
+        // canonical state back, then re-export the Excel mirror so the two stay consistent.
         public static void SaveEmployeesToDatabase()
         {
             EmployeeRepository.SaveAll(Employees);

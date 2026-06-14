@@ -4,8 +4,12 @@ using ClinicVetsAvalonia.Services;
 
 namespace ClinicVetsAvalonia.Tests;
 
+// Functional tests for the login flow (AuthService).
+// Note on "fail" tests: a negative test checks that login is correctly REJECTED for bad input.
+// The test itself is still expected to PASS, because the app rejecting invalid input is the correct behavior.
 public class LoginFunctionalTests
 {
+    // Shared fixture: one approved Secretary and one approved Vet to log in against.
     private static List<Employee> BuildEmployees() =>
     [
         new Employee
@@ -28,6 +32,9 @@ public class LoginFunctionalTests
         }
     ];
 
+    // ---------- Positive tests (valid input should succeed) ----------
+
+    // Positive: a Secretary's correct username and password should log in successfully.
     [Fact]
     public void Login_WithValidSecretaryCredentials_ShouldSucceed()
     {
@@ -39,6 +46,7 @@ public class LoginFunctionalTests
         Assert.Equal(LoginFailureReason.None, result.Reason);
     }
 
+    // Positive: a Vet's correct username and password should log in successfully.
     [Fact]
     public void Login_WithValidVetCredentials_ShouldSucceed()
     {
@@ -49,6 +57,9 @@ public class LoginFunctionalTests
         Assert.Equal("vetuser", result.Employee!.Username);
     }
 
+    // ---------- Negative tests (invalid input should be rejected; the test still PASSES) ----------
+
+    // Negative: correct username but wrong password -> rejected as invalid credentials.
     [Fact]
     public void Login_WithWrongPassword_ShouldFail()
     {
@@ -60,6 +71,7 @@ public class LoginFunctionalTests
         Assert.False(string.IsNullOrEmpty(result.ErrorMessage));
     }
 
+    // Negative: a username that does not exist -> rejected as invalid credentials.
     [Fact]
     public void Login_WithUnknownUsername_ShouldFail()
     {
@@ -70,6 +82,7 @@ public class LoginFunctionalTests
         Assert.Equal(LoginFailureReason.InvalidCredentials, result.Reason);
     }
 
+    // Negative: empty username -> rejected because required fields are missing.
     [Fact]
     public void Login_WithEmptyUsername_ShouldFail()
     {
@@ -79,6 +92,7 @@ public class LoginFunctionalTests
         Assert.Equal(LoginFailureReason.EmptyFields, result.Reason);
     }
 
+    // Negative: empty password -> rejected because required fields are missing.
     [Fact]
     public void Login_WithEmptyPassword_ShouldFail()
     {
@@ -88,6 +102,7 @@ public class LoginFunctionalTests
         Assert.Equal(LoginFailureReason.EmptyFields, result.Reason);
     }
 
+    // Positive: a freshly registered employee can log in immediately.
     [Fact]
     public void Login_ImmediatelyAfterRegistration_ShouldSucceed()
     {
@@ -110,6 +125,7 @@ public class LoginFunctionalTests
         Assert.Equal(LoginFailureReason.None, result.Reason);
     }
 
+    // Positive: a successful login should report the Secretary role (used for screen access).
     [Fact]
     public void Login_ShouldReturnCorrectRole_ForSecretary()
     {
@@ -119,6 +135,7 @@ public class LoginFunctionalTests
         Assert.Equal("Secretary", result.Role);
     }
 
+    // Positive: a successful login should report the Vet role (used for screen access).
     [Fact]
     public void Login_ShouldReturnCorrectRole_ForVeterinarian()
     {
@@ -128,6 +145,7 @@ public class LoginFunctionalTests
         Assert.Equal("Vet", result.Role);
     }
 
+    // Positive: valid credentials should succeed with no error message.
     [Fact]
     public void Login_WithValidCredentials_ShouldSucceed()
     {
@@ -139,6 +157,7 @@ public class LoginFunctionalTests
         Assert.True(string.IsNullOrEmpty(result.ErrorMessage));
     }
 
+    // Negative: an email address is not a username, so it must be rejected.
     [Fact]
     public void Login_WithUnknownEmail_ShouldFail()
     {
@@ -151,6 +170,7 @@ public class LoginFunctionalTests
         Assert.False(string.IsNullOrEmpty(result.ErrorMessage));
     }
 
+    // Negative: missing password -> rejected because required fields are missing.
     [Fact]
     public void Login_WithMissingPassword_ShouldFail()
     {
@@ -162,6 +182,7 @@ public class LoginFunctionalTests
         Assert.False(string.IsNullOrEmpty(result.ErrorMessage));
     }
 
+    // Negative: an Employee ID is not a username, so it must be rejected.
     [Fact]
     public void Login_WithWrongEmployeeId_ShouldFail()
     {

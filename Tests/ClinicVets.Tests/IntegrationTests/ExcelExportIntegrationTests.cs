@@ -4,8 +4,11 @@ using ClinicVetsAvalonia.Data;
 
 namespace ClinicVetsAvalonia.Tests;
 
+// Integration test for the Excel mirror: confirms the expected sheets exist after startup
+// and that the removed EmployeeApprovals sheet is no longer written.
 public class ExcelExportIntegrationTests
 {
+    // Initializing the app should produce a workbook with one sheet per entity and no approvals sheet.
     [Fact]
     public void Initialize_CreatesExcelWorkbookWithExpectedSheets()
     {

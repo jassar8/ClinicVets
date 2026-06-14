@@ -2,8 +2,10 @@ using ClinicVetsAvalonia.Models;
 
 namespace ClinicVetsAvalonia.Tests;
 
+// Integration tests for the relationships between clients, their animals, and each animal's visits.
 public class ClientAnimalIntegrationTests
 {
+    // An animal should be linked to the client whose ID matches its OwnerIdNumber.
     [Fact]
     public void Animal_WithOwnerIdNumber_AppearsUnderMatchingClient()
     {
@@ -37,6 +39,7 @@ public class ClientAnimalIntegrationTests
         Assert.Equal("ZAZA", clientAnimals[0].Name);
     }
 
+    // A visit should appear only in the history of the animal whose chip number it references.
     [Fact]
     public void Visit_WithAnimalChipNumber_AppearsInThatAnimalVisitHistory()
     {
@@ -71,6 +74,7 @@ public class ClientAnimalIntegrationTests
         Assert.Equal("Vaccination", animalVisits[0].Reason);
     }
 
+    // The "upcoming" visit for an animal is the nearest scheduled visit that is not in the past.
     [Fact]
     public void UpcomingVisit_ForAnimal_IsTheNearestFutureVisit()
     {

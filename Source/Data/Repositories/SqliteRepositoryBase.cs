@@ -2,6 +2,7 @@ using Microsoft.Data.Sqlite;
 
 namespace ClinicVetsAvalonia.Data.Repositories
 {
+    // Shared helpers for the SQLite repositories: open a connection and add missing columns.
     internal abstract class SqliteRepositoryBase
     {
         protected static SqliteConnection OpenConnection()

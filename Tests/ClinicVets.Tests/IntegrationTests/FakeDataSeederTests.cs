@@ -4,14 +4,17 @@ using ClinicVetsAvalonia.Data;
 
 namespace ClinicVetsAvalonia.Tests;
 
+// Integration tests for the demo data seeder: data validity and run-once behavior.
 public class FakeDataSeederTests
 {
+    // Every demo record must satisfy the app's validation rules.
     [Fact]
     public void SeedData_PassesAllValidationRules()
     {
         Assert.True(FakeDataSeeder.ValidateSeedData());
     }
 
+    // Seeding an empty database fills it once; running initialize again must NOT duplicate data.
     [Fact]
     public void SeedAllIfEmpty_PopulatesDatabaseOnce()
     {

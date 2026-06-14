@@ -4,10 +4,14 @@ using ClosedXML.Excel;
 
 namespace ClinicVetsAvalonia.Data
 {
+    // Excel is a one-way, write-only mirror of the SQLite data (it is never read back as a source).
+    // It is regenerated on startup and after every save so the workbook always matches the database.
     public static class ExcelExportService
     {
         public static string LastExportPath { get; private set; } = "";
 
+        // Writes one sheet per entity into a fresh workbook. A locked/open file is ignored
+        // so it can never block the actual database save.
         public static void ExportAll()
         {
             try

@@ -2,8 +2,11 @@ using ClinicVetsAvalonia.Models;
 
 namespace ClinicVetsAvalonia.Tests;
 
+// Tests for visit cost calculation and migrating older single-medication visits to treatment lines.
 public class VisitTreatmentTests
 {
+    // Total cost should equal the base cost plus the sum of all treatment line costs,
+    // and the legacy medication fields should mirror the last line.
     [Fact]
     public void SyncLegacyMedicationFields_CalculatesTotalFromBaseAndLines()
     {
@@ -30,6 +33,8 @@ public class VisitTreatmentTests
         Assert.Equal(2, visit.MedicationQuantity);
     }
 
+    // An older visit stored without treatment lines can be migrated into a single line
+    // without changing its existing total cost.
     [Fact]
     public void LegacyVisitWithoutLines_CanBeMigratedToSingleTreatmentLine()
     {

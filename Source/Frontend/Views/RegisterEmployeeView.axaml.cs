@@ -94,6 +94,8 @@ namespace ClinicVetsAvalonia.Views
             PasswordEyeButton.Content = isPasswordVisible ? UiIcons.HidePassword : UiIcons.ShowPassword;
         }
 
+        // Registration save flow: validate all fields, reject duplicate username/ID/employee
+        // number/email, then add the new employee and persist. The account can log in immediately.
         private void SaveEmployee_Click(object? sender, RoutedEventArgs e)
         {
             string username = UsernameInput.Text?.Trim() ?? "";

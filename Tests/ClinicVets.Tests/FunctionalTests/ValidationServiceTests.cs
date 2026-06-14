@@ -3,8 +3,13 @@ using ClinicVetsAvalonia.Services;
 
 namespace ClinicVetsAvalonia.Tests;
 
+// Unit tests for the validation rules. Each rule is checked with both valid and invalid input.
+// The "invalid" tests assert that bad input is correctly rejected, so they still PASS.
 public class ValidationServiceTests
 {
+    // ---------- Chip number: 7 digits, "376" prefix ----------
+
+    // Positive: well-formed Israeli chip numbers are accepted.
     [Theory]
     [InlineData("3761234")]
     [InlineData("3760000")]
@@ -14,6 +19,7 @@ public class ValidationServiceTests
         Assert.True(ValidationService.IsValidChipNumber(chipNumber));
     }
 
+    // Negative: wrong length, wrong prefix, letters, or empty are rejected.
     [Theory]
     [InlineData("376123")]
     [InlineData("37612345")]
@@ -25,6 +31,9 @@ public class ValidationServiceTests
         Assert.False(ValidationService.IsValidChipNumber(chipNumber));
     }
 
+    // ---------- Weight: allowed range 0.1 - 100 kg ----------
+
+    // Positive: weights at and within the boundaries are accepted.
     [Theory]
     [InlineData(0.1)]
     [InlineData(25)]
@@ -34,6 +43,7 @@ public class ValidationServiceTests
         Assert.True(ValidationService.IsValidWeight(weight));
     }
 
+    // Negative: zero, above the max, or negative weights are rejected.
     [Theory]
     [InlineData(0)]
     [InlineData(100.1)]
@@ -43,6 +53,9 @@ public class ValidationServiceTests
         Assert.False(ValidationService.IsValidWeight(weight));
     }
 
+    // ---------- Email: single "@" and an allowed suffix ----------
+
+    // Positive: emails ending in an allowed suffix (.com, .co.il, .net, .org, .il) are accepted.
     [Theory]
     [InlineData("user@gmail.com")]
     [InlineData("user@example.co.il")]
@@ -56,6 +69,7 @@ public class ValidationServiceTests
         Assert.Null(ValidationService.GetEmailValidationMessage(email));
     }
 
+    // Negative: missing suffix/"@", disallowed suffix, or empty are rejected with a message.
     [Theory]
     [InlineData("user@gmail")]
     [InlineData("user@host.edu")]
@@ -68,6 +82,9 @@ public class ValidationServiceTests
         Assert.NotNull(ValidationService.GetEmailValidationMessage(email));
     }
 
+    // ---------- Birth date: in the past and not before year 2000 ----------
+
+    // Positive: yesterday is a valid birth date.
     [Fact]
     public void BirthDate_Yesterday_IsValid()
     {
@@ -77,6 +94,7 @@ public class ValidationServiceTests
         Assert.Null(ValidationService.GetBirthDateValidationMessage(birthDate));
     }
 
+    // Positive: the year-2000 lower boundary is valid.
     [Fact]
     public void BirthDate_Year2000_IsValid()
     {
@@ -86,6 +104,7 @@ public class ValidationServiceTests
         Assert.Null(ValidationService.GetBirthDateValidationMessage(birthDate));
     }
 
+    // Negative: a future birth date is rejected with the correct message.
     [Fact]
     public void BirthDate_Tomorrow_IsInvalid()
     {
@@ -95,6 +114,7 @@ public class ValidationServiceTests
         Assert.Equal("תאריך לידה חייב להיות בעבר", ValidationService.GetBirthDateValidationMessage(birthDate));
     }
 
+    // Negative: a birth date before year 2000 is rejected with the correct message.
     [Fact]
     public void BirthDate_BeforeYear2000_IsInvalid()
     {

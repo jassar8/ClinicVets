@@ -4,8 +4,11 @@ using ClinicVetsAvalonia.Models;
 
 namespace ClinicVetsAvalonia.Data.Repositories
 {
+    // Data access for employees. Like the other repositories it uses a simple
+    // "load all" / "save all" (clear the table, then re-insert every row) pattern.
     internal sealed class EmployeeRepository : SqliteRepositoryBase
     {
+        // Reads every employee row into model objects.
         public List<Employee> LoadAll()
         {
             var employees = new List<Employee>();
@@ -35,6 +38,7 @@ namespace ClinicVetsAvalonia.Data.Repositories
             return employees;
         }
 
+        // Replaces all stored employees with the given list (delete then re-insert).
         public void SaveAll(IReadOnlyList<Employee> employees)
         {
             using var connection = OpenConnection();

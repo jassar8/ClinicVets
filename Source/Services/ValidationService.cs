@@ -3,10 +3,12 @@ using System.Linq;
 
 namespace ClinicVetsAvalonia.Services
 {
+    // Central place for all input validation rules used by registration, login, and the data screens.
     public static class ValidationService
     {
         // ---------- Employee Validation ----------
 
+        // Username: 6-8 chars, English letters/digits only, at most 2 digits.
         public static bool IsValidUsername(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
@@ -24,6 +26,7 @@ namespace ClinicVetsAvalonia.Services
             return digitCount <= 2 && onlyEnglishLettersOrDigits;
         }
 
+        // Password: 8-10 chars and must contain a letter, a digit, and a special character (! $ # ,).
         public static bool IsValidPassword(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
@@ -40,6 +43,7 @@ namespace ClinicVetsAvalonia.Services
                    hasSpecial;
         }
 
+        // Employee ID number: exactly 4 digits (uniqueness is checked separately at registration).
         public static bool IsValidEmployeeNumber(string employeeNumber)
         {
             return !string.IsNullOrWhiteSpace(employeeNumber) &&
@@ -47,11 +51,13 @@ namespace ClinicVetsAvalonia.Services
                    employeeNumber.All(char.IsDigit);
         }
 
+        // Only two roles exist in the system: Secretary and Vet (Veterinarian).
         public static bool IsValidRole(string role)
         {
             return role == "Secretary" || role == "Vet";
         }
 
+        // Runs every employee rule in order and returns the first error message (if any) via out param.
         public static bool ValidateEmployeeRegistration(
             string username,
             string password,
@@ -114,6 +120,7 @@ namespace ClinicVetsAvalonia.Services
                    fullName.All(ch => char.IsLetter(ch) || char.IsWhiteSpace(ch));
         }
 
+        // National ID: exactly 9 digits.
         public static bool IsValidIdNumber(string idNumber)
         {
             return !string.IsNullOrWhiteSpace(idNumber) &&
@@ -134,6 +141,8 @@ namespace ClinicVetsAvalonia.Services
             return GetEmailValidationMessage(email) == null;
         }
 
+        // Email must contain a single "@", a domain, and end with an allowed suffix
+        // (.com, .co.il, .net, .org, .il). Returns the specific error message, or null when valid.
         public static string? GetEmailValidationMessage(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
@@ -210,6 +219,7 @@ namespace ClinicVetsAvalonia.Services
                    birthDate.Date <= DateTime.Today;
         }
 
+        // Animal chip: exactly 7 digits and must start with the Israeli "376" prefix.
         public static bool IsValidChipNumber(string chipNumber)
         {
             return !string.IsNullOrWhiteSpace(chipNumber) &&

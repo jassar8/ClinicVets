@@ -2,8 +2,10 @@ using Microsoft.Data.Sqlite;
 
 namespace ClinicVetsAvalonia.Data
 {
+    // Builds the SQLite schema on first run and seeds demo data when the database is empty.
     public static class DatabaseInitializer
     {
+        // Ensure the data folder exists, create any missing tables, then seed demo data if needed.
         public static void Initialize()
         {
             DatabaseSettings.EnsureFolderExists();
@@ -11,6 +13,8 @@ namespace ClinicVetsAvalonia.Data
             FakeDataSeeder.SeedAllIfEmpty();
         }
 
+        // Creates each table if it does not exist, drops the removed approval table,
+        // and adds any columns introduced after the original schema.
         private static void CreateTables()
         {
             using var connection = new SqliteConnection(DatabaseSettings.ConnectionString);
